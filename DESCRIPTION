@@ -23,6 +23,20 @@ Authors@R:
              role = c("aut"),
              email = "ellen.c.martin@ntnu.no"))
 Description: The package facilitates the inference process of integrated species distribution models across Norway using both presence only and presence absence data.
+Depends:
+    R (>= 3.5),
+    INLA,
+    inlabru (>= 2.3.1),
+    inlabruSDMs,
+    PointedSDMs,
+    dplyr,
+    raster,
+    sp (>= 1.4-5),
+    RANN,
+    stats,
+    spocc,
+    maps,
+    maptools
 License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
