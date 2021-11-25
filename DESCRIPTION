@@ -1,0 +1,30 @@
+Package: NorwaySDMs
+Title: R package used to create reproducible species distribution models across Norway using INLA.
+Version: 0.0.0.9000
+Authors@R: 
+    c(person(given = "Philip",
+           family = "Mostert",
+           role = c("aut", "cre"),
+           email = "philip.s.mostert@ntnu.no"),
+      person(given = "Angeline",
+           family = "Bruls",
+           role = c("aut"),
+           email = "angeline.bruls@ntnu.no),
+      person(given = "Ragnhild",
+             family = "Bjørkås",
+             role = c("aut"),
+             email = "ragnhild.bjorkas@ntnu.no"),
+      person(given = "Wouter",
+             family = "Koch",
+             role = c("aut"),
+             email = "wouter.koch@artsdatabanken.no"),
+      person(given = "Ellen",
+             family = "Martin",
+             role = c("aut"),
+             email = "ellen.c.martin@ntnu.no"))
+Description: The package facilitates the inference process of integrated species distribution models across Norway using both presence only and presence absence data.
+License: GPL (>= 3)
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.2
