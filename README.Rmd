@@ -1,0 +1,30 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# NorwaySDMs
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+The goal of NorwaySDMs is to create reproducible species distribution models across Norway using INLA.
+
+## Installation
+
+You can install the development version of this package from [GitHub](https://github.com/) with:
+
+``` r
+# install.packages("devtools")
+devtools::install_github("PhilipMostert/NorwaySDMs")
+```
