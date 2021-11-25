@@ -49,5 +49,10 @@ testthat::test_that('Test that structuredData is able to differentiate between P
   expect_error(structuredData(PO, PA_wrong_coords, datasetType = c('PO','PA'), responsePA = 'PAresp',
                               trialsPA = 'trials', speciesName = 'species', coordinateNames = c('x','y')),'All datasets are required to have the same coordinate names specified by coordinateNames.')
 
+  PO_wrong_species <- PO
+  names(PO_wrong_species@data) <- 'NotSpecies'
+  expect_error(structuredData(PO_wrong_species, PA, datasetType = c('PO','PA'), responsePA = 'PAresp',
+                              trialsPA = 'trials', speciesName = 'species', coordinateNames = c('x','y')), 'All datasets names are required to have the same species variable name specified with speciesName.')
+
 
 })
