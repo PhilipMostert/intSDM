@@ -1,5 +1,5 @@
 #' Function to run an SDM on select species, location and environmental covariates.
-#' 
+#'
 #' @param speciesNames A vector of species' names to collect from GBIF.
 #' @param structuredData Additional datasets to integrate with the presence only GBIF data. See the \code{structuredData} function. Defaults to \code{NULL}.
 #' @param spatialCovariates Spatial covariates to include in the model. May be a \code{Raster} or \code{Spatial} object. Cannot be non-\code{NULL} if \code{worldclimCovariates} is non-\code{NULL}.
@@ -9,7 +9,7 @@
 #' @param boundary SpatialPolygons object of the study area. If \code{NULL} an object may be formed with \code{location}.
 #' @param return Object to return. Has to be one of \code{c('boundary' ,'species plot', 'mesh', 'mesh plot', 'model', 'predictions', 'predictions map')}.
 #' @param mesh An inla.mesh object to include in the model. Defaults to \code{NULL}.
-#' @param meshParameters A list of inla.mesh arguments to create a mesh if \code{mesh = NULL}. 
+#' @param meshParameters A list of inla.mesh arguments to create a mesh if \code{mesh = NULL}.
 #' @param spdeModel inla.spde model used in the model. May be a named list where the name of the spde object is the name of the associated dataset. Default NULL uses inla.spde2.matern.
 #' @param projection CRS projection to use. Defaults to \code{CRS('+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs')}.
 #' @param limit Set the number of species downloaded. Defaults to \code{10000}.
@@ -17,7 +17,7 @@
 #'
 #' @export
 
-# Additional data 
+# Additional data
 speciesModel <- function(speciesNames, structuredData = NULL,
                          spatialCovariates = NULL,
                          worldclimCovariates = NULL,
@@ -28,13 +28,13 @@ speciesModel <- function(speciesNames, structuredData = NULL,
                          spdeModel = NULL,
                          projection = CRS('+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs'),
                          limit = 10000, options = list()) {
-  
+
   if (!is.null(structuredData)) {
-    
-    if (class(structuredData)[1] != 'structuredData') stop('Please run your additional data through the structuredData function.') 
-    
+
+    if (class(structuredData)[1] != 'structuredData') stop('Please run your additional data through the structuredData function.')
+
   }
-  
+
   worldclimIndex <- data.frame(index = paste0('layer.',1:19),
                                variable = c('Annual Mean Temperature', 'Mean Diurnal Range',
                                             'Isothermality', 'Temperature Seasonality', 'Max Temperature of Warmest Month',
@@ -45,114 +45,114 @@ speciesModel <- function(speciesNames, structuredData = NULL,
                                             'Precipitation of Driest Month', 'Precipitation Seasonality ',
                                             'Precipitation of Wettest Quarter', 'Precipitation of Driest Quarter',
                                             'Precipitation of Warmest Quarter', 'Precipitation of Coldest Quarter'))
-  
+
   if (length(return) > 1) stop('return must contain only one element.')
-  
+
   if (!return%in%c('boundary' , 'species plot', 'mesh', 'mesh plot', 'model', 'predictions', 'predictions map')) stop('return is not one of: species plot, mesh plot, model, predictions, predictions map.')
-  
-  if (!is.null(boundary)) {
-    
-    if(class(boundary) != 'SpatialPolygons' | class(boundary) != 'SpatialPolygonsDataFrame') stop('Boundary needs to be a SpatialPolygon*s object.') 
-    
-  }
-  
+
+  #if (!is.null(boundary)) {
+
+  #  if(class(boundary) != 'SpatialPolygons' | class(boundary) != 'SpatialPolygonsDataFrame') stop('Boundary needs to be a SpatialPolygon*s object.')
+
+  #}
+
   if (!is.null(worldclimCovariates) & !is.null(spatialCovariates)) stop("One of worldclimCovariates and spatialCovariates must be NULL. Please only chose one set of spatial covariates to model (or none)")
-  
+
   if (!is.null(spatialCovariates)) {
-    
+
     if (class(spatialCovariates) == 'data.frame') stop('data.frame spatial covariates are not permitted. Please convert these to a Raster* or Spatial* object.')
   }
-  
+
   if (!is.null(worldclimCovariates)) {
-    
+
     if (!any(worldclimCovariates%in%worldclimIndex[,2])) stop('worldclimCovariates given includes variable names not present in the worldclim dataset.')
-    
+
   }
-  
+
   if (is.null(boundary)) {
     ## or get from getData('GADM' , country="NOR", level=1) using RASTER ??
     ## probably better but super slow
     #boundary <- fhimaps::norway_nuts3_map_b2020_default_sf
     #boundary <- as(boundary,'Spatial')
      if (location == 'Norway') {
-       
-       norwayfill <- maps::map("world", "norway", fill=TRUE, plot=FALSE, 
+
+       norwayfill <- maps::map("world", "norway", fill=TRUE, plot=FALSE,
                          ylim=c(58,72), xlim=c(4,32))
        IDs <- sapply(strsplit(norwayfill$names, ":"), function(x) x[1])
-       boundary <- maptools::map2SpatialPolygons(norwayfill, IDs = IDs, 
+       boundary <- maptools::map2SpatialPolygons(norwayfill, IDs = IDs,
                                           proj4string = Projection)
-       
+
     }
     else {
-      
+
       #stop('TODO::Subset to get the separate counties through mapNO[[1]][1:11]. Make data.frame with index for all counties.')
-      
-      boundary <- raster::getData(name = 'GADM', country = 'NOR', level = 1) 
-      
-      if (!all(location)%in%c("Akershus", "Ãstfold", "Aust-Agder", "Buskerud", "Finnmark", "Hedmark", "Hordaland",       
+
+      boundary <- raster::getData(name = 'GADM', country = 'NOR', level = 1)
+
+      if (!all(location)%in%c("Akershus", "Ãstfold", "Aust-Agder", "Buskerud", "Finnmark", "Hedmark", "Hordaland",
                               "Møre og Romsdal", "Nord-Trøndelag", "Nordland", "Oppland", "Oslo", "Rogaland", "Sogn og Fjordane",
                               "Sør-Trøndelag", "Telemark", "Troms", "Vest-Agder", "Vestfold" )) stop('At least one of the locations provided is not a valid county in Norway. NOTE: Trøndelag is given as Nord-Trøndelag and Sør-Trøndelag"')
-      
+
       warning('Location is given as a region of Norway. Mesh creation may be slow.')
-      
+
       boundary <- boundary[boundary$NAME_1 == location,]
     }
-    
+
     if (return == 'boundary') return(boundary)
-    
+
   }
-  
+
   if (!is.null(structuredData)) {
     ##Rename all coord names to "latitude";"longitude" to reduce arguments required
     ##Also standardize speciesName to 'species'
-    
+
     coordinateNames <- attributes(structuredData)['coordinateNames']
     speciesName <- attributes(structuredData)['speciesName']
     responsePA <- attributes(structuredData)['responsePA']
     trialsPA <- attributes(structuredData)['trialsPA']
-    
+
     structuredData <- append(structuredData@dataPO, structuredData@dataPA)
-    
+
     if (coordinateNames != c('longitude', 'latitude')) {
-      
+
       structuredData <- lapply(structuredData, function(x) {
-        
+
         colnames(x@coords) <- c('longitude', 'latitude')
         return(x)
-        
+
       })
-      
+
       if (speciesName != 'species') {
-        
+
         structuredData <- lapply(structuredData, function(x) {
-          
+
           names(x@data)[names(x) == speciesName] <- 'species'
           return(x)
-          
+
         })
-        
+
         #responsePA <- attributes(structuredData)['responsePA']
-        
+
         if (!is.null(responsePA)) responsePA <- 'responsePA'
-        
+
         #trialsPA <- attributes(structuredData)['trialsPA']
-        
+
         if (!is.null(trialsPA)) trialsPA <- 'trialsPA'
-        
+
       }
-      
+
     }
-  } 
+  }
   else {
     speciesName <- 'species'
     responsePA <- 'responsePA'
     trialsPA <- 'trialsPA'
-    
+
   }
-  
+
   if (is.null(mesh)) {
     if (is.null(meshParameters)) stop('meshParameters cannot be NULL if mesh is NULL.')
-    
+
     boundary <- as(boundary, 'SpatialPolygons')
     message('Making inla.mesh object:')
     mesh <- PointedSDMs::MakeSpatialRegion(bdry = boundary, coords = c('longitude', 'latitude'),
@@ -160,34 +160,34 @@ speciesModel <- function(speciesNames, structuredData = NULL,
     mesh <- mesh$mesh
     mesh$proj4string <- proj
     mesh$crs <- proj
-    
+
     if (return == 'mesh') return(mesh)
-  
+
   }
   else {
     ###TODO
     ##Make BBOX from mesh object
-    
+
   }
-  
+
   if (return == 'mesh plot') {
-    
-    meshPlot <- ggplot() + 
+
+    meshPlot <- ggplot() +
       gg(mesh) +
       ggtitle('Plot of mesh') +
       xlab('Longitude') +
       ylab('Latitude') +
       theme(plot.title = element_text(hjust = 0.5))
-    return(meshPlot)  
-    
+    return(meshPlot)
+
   }
   ## Should this be an optional argument???
   message('Obtaining GBIF species data:')
-  species_data <- spocc::occ(query = speciesNames, 
+  species_data <- spocc::occ(query = speciesNames,
                              limit = limit,
                              geometry = boundary@bbox)
-  
-  species_data <- do.call(dplyr::bind_rows, 
+
+  species_data <- do.call(dplyr::bind_rows,
                           species_data$gbif$data)
   ##Why am I getting species other than the ones from speciesNames????
   ##Or think of nice ways to standardize all species names::
@@ -195,18 +195,18 @@ speciesModel <- function(speciesNames, structuredData = NULL,
   ##But is tough since species in structuredData does not
   ##Necessarily need to be in the PO data and vice versa ...
   species_data$species <- gsub(' ', '_', species_data$species)
-  
+
   all_data <- sp::SpatialPointsDataFrame(coords = cbind(species_data$longitude, species_data$latitude),
                                          data = data.frame(species = species_data$species),
                                          proj4string = projection)
   ##Correct??
   colnames(all_data@coords) <- c('longitude', 'latitude')
-  
+
   ##Select species only within boundary???
   ##Why are species leaking through the bbox??
   all_data <- all_data[boundary, ]
   all_data <- list(dataGBIF = all_data)
-  
+
   ###Things to do::
   ## so structured data is a list of sp objects -- possibly causing issues
   ## Create a list; all data with one element; all_data
@@ -214,84 +214,84 @@ speciesModel <- function(speciesNames, structuredData = NULL,
   ## Note that names may not be ket as is?
   ######
   if (!is.null(structuredData)) {
-    
+
     for (dataset in 2:(length(structuredData) + 1)) {
-      
+
       all_data[[dataset]] <- structuredData[[(dataset - 1)]]
       names(all_data)[[dataset]] <- names(structuredData)[[(dataset - 1)]]
-      
+
     }
-    
+
   }
-  
+
   if (return == 'species plot') {
-    
-    data_to_plot <- lapply(all_data, function(x) x[, 'species']) 
+
+    data_to_plot <- lapply(all_data, function(x) x[, 'species'])
     data_to_plot <- do.call(rbind.SpatialPointsDataFrame, data_to_plot)
-    
+
     plot <- ggplot() + gg(boundary) + gg(data_to_plot, aes(colour = species))
     return(plot)
   }
-  
-  message('Organizing the data:') 
+
+  message('Organizing the data:')
   organized_data <- inlabruSDMs::organize_data(all_data, poresp = 'responsePO',
                                                paresp = responsePA, trialname = trialsPA,
                                                coords = c('longitude', 'latitude'),
                                                proj = projection, marks = FALSE,
                                                speciesname = 'species',
                                                mesh = mesh)
-  
-  
+
+
   if (!is.null(worldclimCovariates)) {
     ##Some reason worldclim includes half of Norway in the one lat and the other half in the other lat when res = 0.5
     ##Need to glue the two raster files together
     message('Obtaining worldclim covariates:')
     bioclimS <- raster::getData("worldclim", var = "bio", res = 0.5, lon = 5, lat = 60)
     bioclimN <- raster::getData("worldclim", var = "bio", res = 0.5, lon = 5, lat = 70)
-    
+
     r1 <- raster::crop(bioclimN, bbox(boundary))
     r2 <- raster::crop(bioclimS, bbox(boundary))
-    
+
     mergedNO <- raster::merge(r1, r2)
     spatialCovariates <- raster::mask(mergedNO, boundary)
-    
+
     #spatialCovariates <- subset(spatialCovariates,worldclimIndex[,'index'][worldclimIndex['variable'] == worldclimCovariates])
     spatialCovariates <- as(spatialCovariates, 'SpatialPixelsDataFrame')
     spatialCovariates <- spatialCovariates[,worldclimIndex[,'index'][worldclimIndex['variable'] == worldclimCovariates]]
     names(spatialCovariates) <- gsub(' ', '_', worldclimCovariates)
-    
+
   }
   else
     if (is.null(spatialCovariates) & is.null(worldclimCovariates)) spatialCovariates <- NULL
-  
+
   ##Don't know why this needs to be a dataframe...
   if (!is.null(spatialCovariates) & scale) spatialCovariates@data <- data.frame(scale(spatialCovariates@data))
-  
-  
+
+
   message('Running model:')
 
   spatialModel <- inlabruSDMs::bru_sdm(data = organized_data, spatialcovariates = spatialCovariates,
                                       sharedspatial = TRUE, specieseffects = TRUE, spdemodel = spdeModel,
                                       options = options)
-  
+
   if (return == 'model') return(spatialModel)
-  
+
   ##Then predict
   message('Predicting model:')
-  
+
   #covariateNames <- ifelse(is.null(spatialCovariates), NULL, names(spatialCovariates))
-  
+  mesh$crs <- projection
   ##Try calling predict.bru_sdm manually???
   modelPredict <- inlabruSDMs::predict.bru_sdm(spatialModel, mesh = mesh, mask = boundary,
                                                species = TRUE, covariates = spatialModel$spatial_covariates_used,
                                                fun = 'linear', datasetstopredict = spatialModel$dataset_names)
-  
+
   if (return == 'predictions') return(modelPredict)
-  
+
   message('Plotting predictions')
   predictPlot <- plot(modelPredict, whattoplot = 'mean',
                       plot = FALSE)
-  
+
   return(predictPlot)
-  
+
 }
