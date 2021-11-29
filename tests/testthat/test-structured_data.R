@@ -26,10 +26,10 @@ testthat::test_that('Test that structured_data is able to differentiate between 
   #Add trial name
   PA$trials <- sample(x = c(1,2,3), size = nrow(PA@coords), replace = TRUE)
 
-  dataObj <- structuredData(PO, PA, datasetType = c('PO','PA'), responsePA = 'PAresp',
+  dataObj <- structured_data(PO, PA, datasetType = c('PO','PA'), responsePA = 'PAresp',
                             trialsPA = 'trials', speciesName = 'species', coordinateNames = c('x','y'))
 
-  expect_s4_class(dataObj, 'structuredData')
+  expect_s4_class(dataObj, 'structured_data')
 
   expect_true(class(dataObj@dataPO$PO) == 'SpatialPointsDataFrame')
   expect_true(class(dataObj@dataPA$PA) == 'SpatialPointsDataFrame')
@@ -42,16 +42,16 @@ testthat::test_that('Test that structured_data is able to differentiate between 
 
   ##Check warnings
 
-  expect_error(structuredData(PO, PA, datasetType = c('Present only','PA'), responsePA = 'PAresp',
+  expect_error(structured_data(PO, PA, datasetType = c('Present only','PA'), responsePA = 'PAresp',
                                 trialsPA = 'trials', speciesName = 'species', coordinateNames = c('x','y')),'datasetType must be a vector with values: "PO" or "PA".')
   PA_wrong_coords <- PA
   colnames(PA_wrong_coords@coords) <- c('NotX','NotY')
-  expect_error(structuredData(PO, PA_wrong_coords, datasetType = c('PO','PA'), responsePA = 'PAresp',
+  expect_error(structured_data(PO, PA_wrong_coords, datasetType = c('PO','PA'), responsePA = 'PAresp',
                               trialsPA = 'trials', speciesName = 'species', coordinateNames = c('x','y')),'All datasets are required to have the same coordinate names specified by coordinateNames.')
 
   PO_wrong_species <- PO
   names(PO_wrong_species@data) <- 'NotSpecies'
-  expect_error(structuredData(PO_wrong_species, PA, datasetType = c('PO','PA'), responsePA = 'PAresp',
+  expect_error(structured_data(PO_wrong_species, PA, datasetType = c('PO','PA'), responsePA = 'PAresp',
                               trialsPA = 'trials', speciesName = 'species', coordinateNames = c('x','y')), 'All datasets names are required to have the same species variable name specified with speciesName.')
 
 
