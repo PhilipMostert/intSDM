@@ -80,7 +80,7 @@ species_model <- function(speciesNames, structuredData = NULL,
                          ylim=c(58,72), xlim=c(4,32))
        IDs <- sapply(strsplit(norwayfill$names, ":"), function(x) x[1])
        boundary <- maptools::map2SpatialPolygons(norwayfill, IDs = IDs,
-                                          proj4string = Projection)
+                                          proj4string = projection)
 
     }
     else {
@@ -89,9 +89,9 @@ species_model <- function(speciesNames, structuredData = NULL,
 
       boundary <- raster::getData(name = 'GADM', country = 'NOR', level = 1)
 
-      if (!all(location)%in%c("Akershus", "Ãstfold", "Aust-Agder", "Buskerud", "Finnmark", "Hedmark", "Hordaland",
+      if (!any(location%in%c("Akershus", "Ãstfold", "Aust-Agder", "Buskerud", "Finnmark", "Hedmark", "Hordaland",
                               "Møre og Romsdal", "Nord-Trøndelag", "Nordland", "Oppland", "Oslo", "Rogaland", "Sogn og Fjordane",
-                              "Sør-Trøndelag", "Telemark", "Troms", "Vest-Agder", "Vestfold" )) stop('At least one of the locations provided is not a valid county in Norway. NOTE: Trøndelag is given as Nord-Trøndelag and Sør-Trøndelag"')
+                              "Sør-Trøndelag", "Telemark", "Troms", "Vest-Agder", "Vestfold"))) stop('At least one of the locations provided is not a valid county in Norway. NOTE: Trøndelag is given as Nord-Trøndelag and Sør-Trøndelag"')
 
       warning('Location is given as a region of Norway. Mesh creation may be slow.')
 
@@ -113,7 +113,7 @@ species_model <- function(speciesNames, structuredData = NULL,
     coordinateNames <- attributes(structuredData)['coordinateNames']
     speciesName <- attributes(structuredData)['speciesName']
     responsePA <- attributes(structuredData)['responsePA']
-    trialsPA <- attributes(structuredData)['trialsPA']
+    trialsPA <- unlist(attributes(structuredData)['trialsPA'])
 
     structuredData <- append(structuredData@dataPO, structuredData@dataPA)
 
@@ -294,6 +294,7 @@ species_model <- function(speciesNames, structuredData = NULL,
   #covariateNames <- ifelse(is.null(spatialCovariates), NULL, names(spatialCovariates))
   mesh$crs <- projection
   ##Try calling predict.bru_sdm manually???
+  ##Need to add something -- if # species == 1 then predict only spatial field and not species = TRUE?
   modelPredict <- inlabruSDMs::predict.bru_sdm(spatialModel, mesh = mesh, mask = boundary,
                                                species = TRUE, covariates = spatialModel$spatial_covariates_used,
                                                fun = 'linear', datasetstopredict = spatialModel$dataset_names)
@@ -311,3 +312,4 @@ species_model <- function(speciesNames, structuredData = NULL,
   predictPlot
 
 }
+
