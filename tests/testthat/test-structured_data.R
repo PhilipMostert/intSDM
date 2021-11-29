@@ -1,4 +1,4 @@
-testthat::test_that('Test that structuredData is able to differentiate between PO and PA data + provide correct output.', {
+testthat::test_that('Test that structured_data is able to differentiate between PO and PA data + provide correct output.', {
 
   #Arbitrary projection
   projection <- CRS('+proj=tmerc')
