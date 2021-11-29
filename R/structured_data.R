@@ -9,7 +9,7 @@
 #'
 #' @export
 
-structuredData <- function(..., datasetType = NULL, responsePA = NULL,
+structured_data <- function(..., datasetType = NULL, responsePA = NULL,
                           trialsPA = NULL, speciesName = 'species',
                           coordinateNames = c('latitude', 'longitude')) {
 

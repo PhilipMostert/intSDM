@@ -18,7 +18,7 @@
 #' @export
 
 # Additional data
-speciesModel <- function(speciesNames, structuredData = NULL,
+species_model <- function(speciesNames, structuredData = NULL,
                          spatialCovariates = NULL,
                          worldclimCovariates = NULL,
                          scale = FALSE,
