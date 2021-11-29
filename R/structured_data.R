@@ -21,7 +21,7 @@ structured_data <- function(..., datasetType = NULL, responsePA = NULL,
 
   if (length(data) != length(datasetType)) stop('The length of the datasets is not equal to the length of datasetType.')
 
-  if ('PA'%in%datasetType & is.null(responsePA)) stop('PA datasets are included in datasetType, but responsePA is NULL.')
+  if ('PA'%in%datasetType && is.null(responsePA)) stop('PA datasets are included in datasetType, but responsePA is NULL.')
 
   if (is.null(speciesName)) stop('Please supply a species variable name.')
 
@@ -129,7 +129,7 @@ structured_data <- function(..., datasetType = NULL, responsePA = NULL,
 
   names(data) <- data_names
 
-  if (any(datasetType == 'PO') & any(datasetType == 'PA')) {
+  if (any(datasetType == 'PO') && any(datasetType == 'PA')) {
 
   PO_data <- data[datasetType == 'PO']
   PA_data <- data[datasetType == 'PA']
