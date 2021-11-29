@@ -41,7 +41,7 @@ testthat::test_that('Test that species_model can produce all of the returns corr
   #Make random points
   #Random presence only dataset
   #Choose 10 points of arbitrary species
-  species <- 'Fraxinus excelsior'
+  species <- c('Fraxinus excelsior', 'Ulmus glabra')
 
   PO <- spsample(boundary, n = 20, 'random', CRSobs = projection)
   #Add species name
@@ -79,8 +79,6 @@ testthat::test_that('Test that species_model can produce all of the returns corr
 
 
   #Check return = 'predictions'
-
-  species <- c(species, 'Ulmus glabra')
 
   predictions <- species_model(return = 'predictions',
                                boundary = boundary, speciesNames = species,
