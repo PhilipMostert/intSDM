@@ -166,6 +166,6 @@ structured_data <- function(..., datasetType = NULL, responsePA = NULL,
   attr(data_object, 'speciesName') <- speciesName
   attr(data_object, 'coordinateNames') <- coordinateNames
 
-  return(data_object)
+  data_object
 
 }

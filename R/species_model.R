@@ -98,7 +98,11 @@ species_model <- function(speciesNames, structuredData = NULL,
       boundary <- boundary[boundary$NAME_1 == location,]
     }
 
-    if (return == 'boundary') return(boundary)
+    if (return == 'boundary') {
+
+      return(boundary)
+
+    }
 
   }
 
@@ -161,7 +165,11 @@ species_model <- function(speciesNames, structuredData = NULL,
     mesh$proj4string <- proj
     mesh$crs <- proj
 
-    if (return == 'mesh') return(mesh)
+    if (return == 'mesh') {
+
+      return(mesh)
+
+    }
 
   }
   else {
@@ -274,7 +282,11 @@ species_model <- function(speciesNames, structuredData = NULL,
                                       sharedspatial = TRUE, specieseffects = TRUE, spdemodel = spdeModel,
                                       options = options)
 
-  if (return == 'model') return(spatialModel)
+  if (return == 'model') {
+
+    return(spatialModel)
+
+  }
 
   ##Then predict
   message('Predicting model:')
@@ -286,12 +298,16 @@ species_model <- function(speciesNames, structuredData = NULL,
                                                species = TRUE, covariates = spatialModel$spatial_covariates_used,
                                                fun = 'linear', datasetstopredict = spatialModel$dataset_names)
 
-  if (return == 'predictions') return(modelPredict)
+  if (return == 'predictions') {
+
+    return(modelPredict)
+
+  }
 
   message('Plotting predictions')
   predictPlot <- plot(modelPredict, whattoplot = 'mean',
                       plot = FALSE)
 
-  return(predictPlot)
+  predictPlot
 
 }
