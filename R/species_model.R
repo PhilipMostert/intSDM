@@ -1,7 +1,7 @@
 #' Function to run an SDM on select species, location and environmental covariates.
 #'
 #' @param speciesNames A vector of species' names to collect from GBIF.
-#' @param structuredData Additional datasets to integrate with the presence only GBIF data. See the \code{structuredData} function. Defaults to \code{NULL}.
+#' @param structuredData Additional datasets to integrate with the presence only GBIF data. See the \code{structured_data} function. Defaults to \code{NULL}.
 #' @param spatialCovariates Spatial covariates to include in the model. May be a \code{Raster} or \code{Spatial} object. Cannot be non-\code{NULL} if \code{worldclimCovariates} is non-\code{NULL}.
 #' @param worldclimCovariates Names of the covariates to extract from Worldclim. Defaults to \code{NULL}; cannot be non-\code{NULL} if \code{spatialCovariates} is non-\code{NULL}.
 #' @param scale Should the spatial covariates be scaled. Defaults to \code{FALSE}.
@@ -31,7 +31,7 @@ species_model <- function(speciesNames, structuredData = NULL,
 
   if (!is.null(structuredData)) {
 
-    if (class(structuredData)[1] != 'structuredData') stop('Please run your additional data through the structuredData function.')
+    if (class(structuredData)[1] != 'structuredData') stop('Please run your additional data through the structured_data function.')
 
   }
 
