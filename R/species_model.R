@@ -114,6 +114,7 @@ species_model <- function(speciesNames, structuredData = NULL,
     speciesName <- attributes(structuredData)['speciesName']
     responsePA <- attributes(structuredData)['responsePA']
     trialsPA <- unlist(attributes(structuredData)['trialsPA'])
+    responseCount <- attributes(structuredData)['responseCount']
 
     structuredData <- append(structuredData@dataPO, structuredData@dataPA)
 
@@ -151,6 +152,7 @@ species_model <- function(speciesNames, structuredData = NULL,
     speciesName <- 'species'
     responsePA <- 'responsePA'
     trialsPA <- 'trialsPA'
+    responseCount <- 'responseCount'
 
   }
 
@@ -242,7 +244,7 @@ species_model <- function(speciesNames, structuredData = NULL,
   }
 
   message('Organizing the data:')
-  organized_data <- inlabruSDMs::organize_data(all_data, poresp = 'responsePO',
+  organized_data <- inlabruSDMs::organize_data(all_data, countresp = responseCount,
                                                paresp = responsePA, trialname = trialsPA,
                                                coords = c('longitude', 'latitude'),
                                                proj = projection, marks = FALSE,
