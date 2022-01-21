@@ -33,7 +33,7 @@ setMethod('show', 'structuredData',
     for (dataset in 1:length(object@dataPO)) {
       cat('Summary of:', names(object@dataPO)[[dataset]])
       cat('\n')
-      print(summary(object@dataPO[[dataset]]))
+      print(object@dataPO[[dataset]])
       cat('\n')
 
       }
@@ -50,7 +50,7 @@ setMethod('show', 'structuredData',
     for (dataset in 1:length(object@dataPA)) {
       cat('Summary of:', names(object@dataPA)[[dataset]])
       cat('\n')
-      print(summary(object@dataPA[[dataset]]))
+      print(object@dataPA[[dataset]])
       cat('\n')
 
      }
