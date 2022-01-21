@@ -33,8 +33,7 @@ setMethod('show', 'structuredData',
     for (dataset in 1:length(object@dataPO)) {
       cat('Summary of:', names(object@dataPO)[[dataset]])
       cat('\n')
-      print.obj <- object@dataPO[[dataset]]
-      print(summary(print.obj))
+      print(object@dataPO[[dataset]])
       cat('\n')
 
       }
@@ -51,8 +50,7 @@ setMethod('show', 'structuredData',
     for (dataset in 1:length(object@dataPA)) {
       cat('Summary of:', names(object@dataPA)[[dataset]])
       cat('\n')
-      print.obj <- object@dataPO[[dataset]]
-      print(summary(print.obj))
+      print(object@dataPO[[dataset]])
       cat('\n')
 
      }
@@ -69,8 +67,7 @@ setMethod('show', 'structuredData',
     for (dataset in 1:length(object@dataCount)) {
       cat('Summary of:', names(object@dataCount)[[dataset]])
       cat('\n')
-      print.obj <- object@dataPO[[dataset]]
-      print(summary(print.obj))
+      print(object@dataPO[[dataset]])
       cat('\n')
 
     }
