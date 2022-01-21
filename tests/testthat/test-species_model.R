@@ -75,7 +75,7 @@ testthat::test_that('Test that species_model can produce all of the returns corr
                          boundary = boundary, speciesNames = species,
                          limit = 10, mesh = mesh, worldclimCovariates = covariate)
 
-  expect_setequal(class(model), c('bru_sdm', 'bru', 'iinla', 'inla'))
+  expect_setequal(class(model), c('bruSdm', 'bru', 'iinla', 'inla'))
 
 
   #Check return = 'predictions'
@@ -84,7 +84,7 @@ testthat::test_that('Test that species_model can produce all of the returns corr
                                boundary = boundary, speciesNames = species,
                                limit = 10, mesh = mesh, worldclimCovariates = covariate)
 
-  expect_setequal(class(predictions), c("predict_bru_sdm", "list"))
+  expect_setequal(class(predictions), c("predict_bruSdm", "list"))
 
   #Check return = 'predictions map'
 

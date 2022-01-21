@@ -243,13 +243,12 @@ species_model <- function(speciesNames, structuredData = NULL,
     return(plot)
   }
 
-  message('Organizing the data:')
-  organized_data <- inlabruSDMs::organize_data(all_data, countresp = responseCount,
-                                               paresp = responsePA, trialname = trialsPA,
-                                               coords = c('longitude', 'latitude'),
-                                               proj = projection, marks = FALSE,
-                                               speciesname = 'species',
-                                               mesh = mesh)
+  #organized_data <- inlabruSDMs::organize_data(all_data, countresp = responseCount,
+  #                                             paresp = responsePA, trialname = trialsPA,
+  #                                             coords = c('longitude', 'latitude'),
+  #                                             proj = projection, marks = FALSE,
+  #                                             speciesname = 'species',
+  #                                             mesh = mesh)
 
 
   if (!is.null(worldclimCovariates)) {
@@ -277,12 +276,21 @@ species_model <- function(speciesNames, structuredData = NULL,
   ##Don't know why this needs to be a dataframe...
   if (!is.null(spatialCovariates) & scale) spatialCovariates@data <- data.frame(scale(spatialCovariates@data))
 
+  message('Organizing the data:')
+
+  organized_data <- inlabruSDMs::bruSDM(all_data, spatialCovariates = spatialCovariates, Coordinates = c('longitude', 'latitude'),
+                                        INLAmesh = mesh, responseCounts = responseCount, responsePA = responsePA,
+                                        trialsPA = trialsPA, speciesName = 'species', Projection = projection)
+
+
 
   message('Running model:')
 
-  spatialModel <- inlabruSDMs::bru_sdm(data = organized_data, spatialcovariates = spatialCovariates,
-                                      sharedspatial = TRUE, specieseffects = TRUE, spdemodel = spdeModel,
-                                      options = options)
+  #spatialModel <- inlabruSDMs::bru_sdm(data = organized_data, spatialcovariates = spatialCovariates,
+  #                                    sharedspatial = TRUE, specieseffects = TRUE, spdemodel = spdeModel,
+  #                                    options = options)
+
+  spatalModel <- inlabruSDMs::runModel(organized_data, options = options)
 
   if (return == 'model') {
 
@@ -298,8 +306,8 @@ species_model <- function(speciesNames, structuredData = NULL,
   ##Try calling predict.bru_sdm manually???
   ##Need to add something -- if # species == 1 then predict only spatial field and not species = TRUE?
   modelPredict <- inlabruSDMs::predict.bru_sdm(spatialModel, mesh = mesh, mask = boundary,
-                                               species = TRUE, covariates = spatialModel$spatial_covariates_used,
-                                               fun = 'linear', datasetstopredict = spatialModel$dataset_names)
+                                               species = TRUE, covariates = spatialModel[['spatCovs']][['name']],
+                                               fun = '')
 
   if (return == 'predictions') {
 
