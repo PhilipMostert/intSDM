@@ -6,7 +6,7 @@ setClassUnion("listorNULL", c('list','NULL'))
 
 #'bru_sdm_data class
 #'
-#' @export
+#' @exportS3Method
 
 setClass('structuredData',
          slots = c(dataPO = 'listorNULL',
@@ -16,7 +16,7 @@ setClass('structuredData',
 
 #'Print methods for structuredData object
 #'
-#' @export
+#' @exportS3Method
 #'
 
 setMethod('show', 'structuredData',
