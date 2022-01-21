@@ -32,6 +32,7 @@ Depends:
     dplyr,
     raster,
     sp (>= 1.4-5),
+    sf,
     RANN,
     stats,
     spocc,
