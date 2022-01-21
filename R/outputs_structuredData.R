@@ -16,7 +16,7 @@ setClass('structuredData',
 
 #'Print methods for structuredData object
 #'
-#' @exportS3Method
+#' @method print structuredData
 #'
 
 setMethod('show', 'structuredData',
