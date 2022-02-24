@@ -243,13 +243,6 @@ species_model <- function(speciesNames, structuredData = NULL,
     return(plot)
   }
 
-  #organized_data <- inlabruSDMs::organize_data(all_data, countresp = responseCount,
-  #                                             paresp = responsePA, trialname = trialsPA,
-  #                                             coords = c('longitude', 'latitude'),
-  #                                             proj = projection, marks = FALSE,
-  #                                             speciesname = 'species',
-  #                                             mesh = mesh)
-
 
   if (!is.null(worldclimCovariates)) {
     ##Some reason worldclim includes half of Norway in the one lat and the other half in the other lat when res = 0.5
@@ -306,7 +299,8 @@ species_model <- function(speciesNames, structuredData = NULL,
   ##Try calling predict.bru_sdm manually???
   ##Need to add something -- if # species == 1 then predict only spatial field and not species = TRUE?
   modelPredict <- inlabruSDMs::predict.bru_sdm(spatialModel, mesh = mesh, mask = boundary,
-                                               species = TRUE, covariates = spatialModel[['spatCovs']][['name']],
+                                               spatial = TRUE, intercepts = TRUE,
+                                               covariates = spatialModel[['spatCovs']][['name']],
                                                fun = '')
 
   if (return == 'predictions') {
