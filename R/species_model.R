@@ -14,6 +14,7 @@
 #' @param projection CRS projection to use. Defaults to \code{CRS('+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs')}.
 #' @param limit Set the number of species downloaded. Defaults to \code{10000}.
 #' @param options A list of \code{INLA} and \code{inlabru} options. Defaults to \code{NULL}.
+#' @param ... Additional arguments used in inlabruSDMs's bruSDM function.
 #'
 #' @export
 
@@ -27,7 +28,7 @@ species_model <- function(speciesNames, structuredData = NULL,
                          mesh = NULL, meshParameters = NULL,
                          spdeModel = NULL,
                          projection = CRS('+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs'),
-                         limit = 10000, options = list()) {
+                         limit = 10000, options = list(), ...) {
 
   if (!is.null(structuredData)) {
 
@@ -273,7 +274,8 @@ species_model <- function(speciesNames, structuredData = NULL,
 
   organized_data <- inlabruSDMs::bruSDM(all_data, spatialCovariates = spatialCovariates, Coordinates = c('longitude', 'latitude'),
                                         INLAmesh = mesh, responseCounts = responseCount, responsePA = responsePA,
-                                        trialsPA = trialsPA, speciesName = 'species', Projection = projection, pointsField = spdeModel)
+                                        trialsPA = trialsPA, speciesName = 'species',
+                                        Projection = projection, pointsField = spdeModel, ...)
 
 
 
