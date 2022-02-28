@@ -273,7 +273,7 @@ species_model <- function(speciesNames, structuredData = NULL,
   message('Organizing the data:')
 
   organized_data <- inlabruSDMs::bruSDM(all_data, spatialCovariates = spatialCovariates, Coordinates = c('longitude', 'latitude'),
-                                        INLAmesh = mesh, responseCounts = responseCount, responsePA = responsePA,
+                                        Mesh = mesh, responseCounts = responseCount, responsePA = responsePA,
                                         trialsPA = trialsPA, speciesName = 'species',
                                         Projection = projection, pointsField = spdeModel, ...)
 
