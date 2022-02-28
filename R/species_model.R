@@ -117,8 +117,7 @@ species_model <- function(speciesNames, structuredData = NULL,
     trialsPA <- unlist(attributes(structuredData)['trialsPA'])
     responseCount <- unlist(attributes(structuredData)['responseCount'])
 
-    structuredData <- append(structuredData@dataPO, structuredData@dataPA)
-    structuredData <- append(structuredData, structuredData@dataCount)
+    structuredData <- append(structuredData@dataPO, append(structuredData@dataPA, structuredData@dataCount))
 
     if (coordinateNames != c('longitude', 'latitude')) {
 
