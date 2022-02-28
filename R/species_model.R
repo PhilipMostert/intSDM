@@ -111,11 +111,11 @@ species_model <- function(speciesNames, structuredData = NULL,
     ##Rename all coord names to "latitude";"longitude" to reduce arguments required
     ##Also standardize speciesName to 'species'
 
-    coordinateNames <- attributes(structuredData)['coordinateNames']
-    speciesName <- attributes(structuredData)['speciesName']
-    responsePA <- attributes(structuredData)['responsePA']
+    coordinateNames <- unlist(attributes(structuredData)['coordinateNames'])
+    speciesName <- unlist(attributes(structuredData)['speciesName'])
+    responsePA <- unlist(attributes(structuredData)['responsePA'])
     trialsPA <- unlist(attributes(structuredData)['trialsPA'])
-    responseCount <- attributes(structuredData)['responseCount']
+    responseCount <- unlist(attributes(structuredData)['responseCount'])
 
     structuredData <- append(structuredData@dataPO, structuredData@dataPA, structuredData@dataCount)
 
