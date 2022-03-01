@@ -5,6 +5,7 @@
 #' @param structuredData Additional datasets to integrate with the presence only GBIF data. See the \code{structured_data} function. Defaults to \code{NULL}.
 #' @param spatialCovariates Spatial covariates to include in the model. May be a \code{Raster} or \code{Spatial} object. Cannot be non-\code{NULL} if \code{worldclimCovariates} is non-\code{NULL}.
 #' @param worldclimCovariates Names of the covariates to extract from Worldclim. Defaults to \code{NULL}; cannot be non-\code{NULL} if \code{spatialCovariates} is non-\code{NULL}.
+#' @param res Resolution for the world clim covariates. Valid values are: \code{0.5,2.5,5,10}. Defaults to \code{0.5}.
 #' @param scale Should the spatial covariates be scaled. Defaults to \code{FALSE}.
 #' @param location Which area of Norway to model. Defaults to \code{'Norway'} which suggests a model for the entire county.
 #' @param boundary SpatialPolygons object of the study area. If \code{NULL} an object may be formed with \code{location}.
@@ -23,6 +24,7 @@
 species_model <- function(speciesNames, structuredData = NULL,
                          spatialCovariates = NULL,
                          worldclimCovariates = NULL,
+                         res = 0.5,
                          scale = FALSE,
                          location = 'Norway', boundary = NULL,
                          return = 'predictions map',
@@ -259,8 +261,8 @@ species_model <- function(speciesNames, structuredData = NULL,
     ##Some reason worldclim includes half of Norway in the one lat and the other half in the other lat when res = 0.5
     ##Need to glue the two raster files together
     message('Obtaining worldclim covariates:')
-    bioclimS <- raster::getData("worldclim", var = "bio", res = 0.5, lon = 5, lat = 60)
-    bioclimN <- raster::getData("worldclim", var = "bio", res = 0.5, lon = 5, lat = 70)
+    bioclimS <- raster::getData("worldclim", var = "bio", res = res, lon = 5, lat = 60)
+    bioclimN <- raster::getData("worldclim", var = "bio", res = res, lon = 5, lat = 70)
 
     r1 <- raster::crop(bioclimN, bbox(boundary))
     r2 <- raster::crop(bioclimS, bbox(boundary))
