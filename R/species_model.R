@@ -31,6 +31,8 @@ species_model <- function(speciesNames, structuredData = NULL,
                          projection = CRS('+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs'),
                          limit = 10000, options = list(), ...) {
 
+  if (missing(speciesNames) && is.null(structuredData)) stop('Please provide at least one of speciesNames and structuredData.')
+
   if (!is.null(structuredData)) {
 
     if (class(structuredData)[1] != 'structuredData') stop('Please run your additional data through the structured_data function.')
@@ -194,6 +196,8 @@ species_model <- function(speciesNames, structuredData = NULL,
 
   }
   ## Should this be an optional argument???
+  if (!missing(speciesNames)){
+
   message('Obtaining GBIF species data:')
   species_data <- spocc::occ(query = speciesNames,
                              limit = limit,
@@ -237,6 +241,9 @@ species_model <- function(speciesNames, structuredData = NULL,
     }
 
   }
+
+  }
+  else all_data <- structuredData
 
   if (return == 'species plot') {
 
