@@ -9,7 +9,7 @@
 #' @param scale Should the spatial covariates be scaled. Defaults to \code{FALSE}.
 #' @param location Which area of Norway to model. Defaults to \code{'Norway'} which suggests a model for the entire county.
 #' @param boundary SpatialPolygons object of the study area. If \code{NULL} an object may be formed with \code{location}.
-#' @param return Object to return. Has to be one of \code{c('boundary' ,'species plot', 'mesh', 'mesh plot', 'model', 'predictions', 'predictions map')}.
+#' @param return Object to return. Has to be one of \code{c('boundary', 'species', 'species plot', 'mesh', 'mesh plot', 'model', 'predictions', 'predictions map')}.
 #' @param mesh An inla.mesh object to include in the model. Defaults to \code{NULL}.
 #' @param meshParameters A list of inla.mesh arguments to create a mesh if \code{mesh = NULL}.
 #' @param spdeModel inla.spde model used in the model. May be a named list where the name of the spde object is the name of the associated dataset. Default NULL uses inla.spde2.matern.
@@ -54,7 +54,7 @@ species_model <- function(speciesNames, structuredData = NULL,
 
   if (length(return) > 1) stop('return must contain only one element.')
 
-  if (!return%in%c('boundary' , 'species plot', 'mesh', 'mesh plot', 'model', 'predictions', 'predictions map')) stop('return is not one of: species plot, mesh plot, model, predictions, predictions map.')
+  if (!return%in%c('boundary','species', 'species plot', 'mesh', 'mesh plot', 'model', 'predictions', 'predictions map')) stop('return is not one of: species plot, mesh plot, model, predictions, predictions map.')
 
   #if (!is.null(boundary)) {
 
@@ -227,6 +227,8 @@ species_model <- function(speciesNames, structuredData = NULL,
   all_data <- all_data[boundary, ]
   all_data <- list(dataGBIF = all_data)
 
+
+  if (return == 'species') return(all_data)
   ###Things to do::
   ## so structured data is a list of sp objects -- possibly causing issues
   ## Create a list; all data with one element; all_data
