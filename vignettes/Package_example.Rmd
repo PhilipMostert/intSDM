@@ -1,0 +1,230 @@
+---
+title: "NorwaySDMs: R package to produce species distribution models in a reporducible framework"
+output: html_notebook
+---
+
+```{r Install package, warning = FALSE, message = FALSE}
+
+devtools::install_github('PhilipMostert/NorwaySDMs')
+library(NorwaySDMs)
+
+```
+
+```{r Load packages, warning = FALSE, message = FALSE}
+
+library(ggplot2)
+library(sf)
+library(sp)
+library(plyr)
+library(dplyr) 
+library(ggmap) 
+library(maps)
+library(PointedSDMs)
+library(inlabruSDMs)
+library(spatstat)
+library(maptools)
+library(INLA)
+library(rgeos)
+library(fields)
+library(viridis)
+library(RColorBrewer)
+
+```
+
+```{r Norway map, warning = FALSE, message = FALSE}
+
+Projection <- CRS('+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs')
+
+norwayfill <- map("world", "norway", fill=TRUE, plot=FALSE, 
+                  ylim=c(58,72), xlim=c(4,32))
+IDs <- sapply(strsplit(norwayfill$names, ":"), function(x) x[1])
+norway.poly <- map2SpatialPolygons(norwayfill, IDs = IDs, 
+                                   proj4string = Projection)
+
+```
+
+```{r Read PA data, warning = FALSE, message = FALSE}
+
+norge_data <- read.csv('VU.PA.data.Norge.txt', sep = ' ')
+
+olso_data <- read.csv('VU.PA.data.Olso.txt', sep = ' ')
+olso_data <- olso_data[!(olso_data$decimalLongitude == 0),] 
+oslo_data <- olso_data[!(olso_data$decimalLatitude == 0),]
+
+PA_data <- rbind(norge_data, olso_data)
+
+```
+
+```{r Select three species, warning = FALSE, message = FALSE}
+
+abundant <- PA_data %>% group_by(scientificName) %>%
+                        count() %>% 
+                        arrange(desc(freq)) %>%
+                        data.frame
+abundant <- abundant[1:3, 'scientificName']
+
+PA_data <- PA_data[PA_data$scientificName%in%abundant,]
+
+PA_data <- sp::SpatialPointsDataFrame(coords = data.frame(PA_data$decimalLongitude,                                                PA_data$decimalLatitude),
+                     data = data.frame(scientificName = PA_data$scientificName, 
+                                      individualCount = PA_data$individualCount),
+                                      proj4string = Projection)
+
+```
+
+```{r Plot of PA, warning = FALSE, message = FALSE}
+
+ggplot() + 
+  gg(norway.poly) + 
+  gg(PA_data) # + others...
+
+
+```
+
+```{r Plot of grid, warning = FALSE, message = FALSE}
+
+grid <- makegrid(norway.poly, cellsize = 0.25, pretty = FALSE)
+grid <- SpatialPoints(grid, proj4string = Projection)
+ggplot() +
+  gg(grid) + 
+  gg(PA_data) + 
+  gg(norway.poly) #+ others...
+
+spgrdWithin <- SpatialPixels(grid[norway.poly,])
+spgrdWithin <- as(spgrdWithin, "SpatialPolygons")
+ggplot() + 
+  gg(spgrdWithin) #+ others...
+
+```
+
+```{r Assign species to nearest grid, warning = FALSE, message = FALSE}
+
+PA_data_frame <- as.data.frame(PA_data)
+closest <- RANN::nn2(data = grid@coords, query = PA_data_frame[,3:4], k = 1)
+grid$ID <- seq(nrow(grid@coords))
+
+closest_ind <- as.data.frame(closest) %>%
+  dplyr::rename(ID = nn.idx)
+
+closest_ind$scientificName <- PA_data_frame$scientificName
+closest_ind$individualCount <- PA_data_frame$individualCount
+
+joined <- dplyr::inner_join(closest_ind,as.data.frame(grid), by = 'ID') 
+
+grid_data <- sp::SpatialPointsDataFrame(coords = data.frame(joined$x1, joined$x2),
+                                        data = data.frame(scientificName = joined$scientificName, individualCount = joined$individualCount),
+                                        proj4string = Projection)
+colnames(grid_data@coords) <- c('x','y')
+
+```
+
+```{r Plot of gridded data, warning = FALSE, message = FALSE}
+
+grid_data <- grid_data[!is.na(over(grid_data, norway.poly)),]
+ggplot() + gg(norway.poly) + gg(grid_data, col = 'red') #+ gg(grid)
+
+```
+
+```{r Create grid index, warning = FALSE, message = FALSE}
+
+species <- unique(grid_data$scientificName)
+
+unique_grid <- as.data.frame(grid_data) %>%
+  group_by(x,y) %>%
+  slice(1) %>%
+  dplyr::select(x,y) %>%
+  data.frame()
+
+grid_index <- list()
+for (i in 1:nrow(unique_grid)) {
+  
+  x <- unique_grid[i,1]
+  y <- unique_grid[i,2]
+  
+  present <- grid_data[grid_data@coords[,1] == x & grid_data@coords[,2] == y,]
+  
+  not_in <- species[!species%in%present$scientificName]
+  
+  if (!identical(not_in, character(0))) {
+    
+    ind <- data.frame(scientificName = not_in, individualCount = 0)
+    
+    ind_coords <- data.frame(x,y) %>% slice(rep(1:n(), each = length(not_in)))
+    
+    absent <- sp::SpatialPointsDataFrame(coords = ind_coords, data = ind,
+                                         proj4string = Projection)
+    
+    grid_index[[i]] <- rbind.SpatialPointsDataFrame(present, absent)
+    
+  }
+  else grid_index[[i]] <- present
+  
+}
+
+```
+
+```{r Plot of PA data in grid, warning = FALSE, message = FALSE}
+
+
+PA_data <- do.call(rbind.SpatialPointsDataFrame, grid_index)
+
+ggplot() + gg(PA_data, aes(col = factor(individualCount))) +
+  facet_grid(~scientificName) +
+  gg(norway.poly) +
+  gg(spgrdWithin) +
+  coord_equal() +
+  scale_fill_continuous(guide = guide_legend()) +
+  scale_color_manual(labels = c('Absent', "Present"), values = c("#d11141", "#00aedb")) +
+  labs(x = 'Longitude', y = 'Latitude', col = 'Grid Observation') +
+  ggtitle('Present absence data') +
+  theme_classic() +
+  theme(legend.position="bottom",
+        plot.title = element_text(hjust = 0.5))
+
+```
+
+```{r Structured data, warning = FALSE, message = FALSE}
+
+colnames(PA_data@coords) <- c('longitude','latitude')
+PA_data$scientificName <- gsub(' ','_',PA_data$scientificName)
+names(PA_data@data) <- c('species', 'individualCount')
+
+structured <- structured_data(PA_data, datasetType = 'PA',
+                             responsePA = 'individualCount',
+                             coordinateNames = colnames(PA_data@coords))
+
+```
+
+```{r Mesh construction, warning = FALSE, message = FALSE}
+
+mesh <- species_model(speciesNames = unique(structured@dataPA$PA_data$species),
+                               structuredData = structured,
+                               boundary = norway.poly,
+                               return = 'mesh', limit = 5000,
+meshParameters = list(cutoff=0.08, max.edge=c(1, 3), offset=c(1,1))
+
+ggplot() + gg(mesh)
+
+```
+
+```{r All species plot, warning = FALSE, message = FALSE}
+
+species_plot <- species_model(speciesNames = unique(structured@dataPA$PA_data$species),
+                               structuredData = structured,
+                               boundary = norway.poly,
+                               return = 'species plot', limit = 5000, mesh = mesh)
+ggplot() + gg(species_plot)
+
+```
+
+```{r Prediction maps, warning = FALSE, message = FALSE}
+
+prediction_maps <- species_model(speciesNames = unique(structured@dataPA$PA_data$species),                                    scale = TRUE, structuredData = structured,
+                               worldclimCovariates = 'Annual Mean Temperature', 
+                               boundary = norway.poly,
+                               return = 'predictions map', limit = 5000,
+                               mesh = mesh)
+
+ggplot() + gg(prediction_maps)
+
+```
