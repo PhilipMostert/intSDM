@@ -219,7 +219,7 @@ structured <- structured_data(PA_data, datasetType = 'PA',
 
 ```
 
-The package's second function (`species_model`) is used as the template for the reproducible workflow: being able to produce a variety of different objects useful for the ecologist in their analysis. These objects may be controlled using the argument: *return*, which may take one of the following values: "*boundary", "species plot", "mesh", "mesh plot", "model", "predictions" or "predictions map".*
+The package's second function (`species_model`) is used as the template for the reproducible workflow: being able to produce a variety of different objects useful for the ecologist in their analysis. These objects may be controlled using the argument: *return*, which may take one of the following values: "*boundary", "species" ,"species plot", "mesh", "mesh plot", "model", "predictions" or "predictions map".*
 
 One of the objects required for our model is an *inla.mesh* object, which we will use in the approximation of our spatial random fields.
 
