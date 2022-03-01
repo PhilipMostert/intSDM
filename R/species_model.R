@@ -1,6 +1,7 @@
 #' Function to run an SDM on select species, location and environmental covariates.
 #'
 #' @param speciesNames A vector of species' names to collect from GBIF.
+#' @param date Vector of length two denoting the date range to select species from. Defaults to \code{NULL}.
 #' @param structuredData Additional datasets to integrate with the presence only GBIF data. See the \code{structured_data} function. Defaults to \code{NULL}.
 #' @param spatialCovariates Spatial covariates to include in the model. May be a \code{Raster} or \code{Spatial} object. Cannot be non-\code{NULL} if \code{worldclimCovariates} is non-\code{NULL}.
 #' @param worldclimCovariates Names of the covariates to extract from Worldclim. Defaults to \code{NULL}; cannot be non-\code{NULL} if \code{spatialCovariates} is non-\code{NULL}.
@@ -197,7 +198,8 @@ species_model <- function(speciesNames, structuredData = NULL,
   species_data <- spocc::occ(query = speciesNames,
                              limit = limit,
                              geometry = boundary@bbox,
-                             has_coords = TRUE)
+                             has_coords = TRUE,
+                             date = date)
 
   species_data <- do.call(dplyr::bind_rows,
                           species_data$gbif$data)
