@@ -196,7 +196,8 @@ species_model <- function(speciesNames, structuredData = NULL,
   message('Obtaining GBIF species data:')
   species_data <- spocc::occ(query = speciesNames,
                              limit = limit,
-                             geometry = boundary@bbox)
+                             geometry = boundary@bbox,
+                             has_coords = TRUE)
 
   species_data <- do.call(dplyr::bind_rows,
                           species_data$gbif$data)
