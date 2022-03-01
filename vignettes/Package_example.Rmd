@@ -3,7 +3,7 @@ title: "NorwaySDMs: R package to produce species distribution models in a repord
 output: html_notebook
 ---
 
-In support of our manuscript, we developed an R package to help construct point-process species distribution models (SDMs) from disperate in a simple and reproducible framework. This *RMarkdown* document presents an illustration of the package by creating an SDM for red-listed plant species obtained via the *Vascular Plant Field Notes* in Norway, as well as citizen-science data obtained from *Global Biodiversity Information Facility* (*GBIF*). The first step in exploring this document is to download the package using the following script:
+In support of our manuscript, we developed an R package to help construct point-process species distribution models (SDMs) from disparate in a simple and reproducible framework. This *RMarkdown* document presents an illustration of the package by creating an SDM for red-listed plant species obtained via the *Vascular Plant Field Notes* in Norway, as well as citizen-science data obtained from *Global Biodiversity Information Facility* (*GBIF*). The first step in exploring this document is to download the package using the following script:
 
 ```{r Install package, warning = FALSE, message = FALSE}
 
@@ -19,7 +19,6 @@ As well as any of the following packages required:
 library(ggplot2)
 library(sf)
 library(sp)
-library(plyr)
 library(dplyr) 
 library(ggmap) 
 library(maps)
@@ -49,6 +48,8 @@ norway.poly <- map2SpatialPolygons(norwayfill, IDs = IDs,
 
 ```
 
+#### Data wrangling
+
 Before conducting any analysis, we explore and make some adjustments to the data which we will use later in our integrated model. The *Vascular Plant Field Notes* is ... (ADD LATER).
 
 ```{r Read PA data, warning = FALSE, message = FALSE}
@@ -68,9 +69,9 @@ In this analysis, we chose the three most abundant species available in our data
 ```{r Select three species, warning = FALSE, message = FALSE}
 
 abundant <- PA_data %>% group_by(scientificName) %>%
-                        count() %>% 
-                        arrange(desc(freq)) %>%
-                        data.frame
+                        count() %>%
+                        arrange(desc(n)) %>%
+                        data.frame()
 abundant <- abundant[1:3, 'scientificName']
 
 PA_data <- PA_data[PA_data$scientificName%in%abundant,]
@@ -82,11 +83,18 @@ PA_data <- sp::SpatialPointsDataFrame(coords = data.frame(PA_data$decimalLongitu
 
 ```
 
+The three species selected for this analysis from the *Vascular Plant Field Notes* (*arnica montana, fraxinus excelsior* and *ulmus glabra)* have records predominantly spread across the southern and eastern part of Norway. However the species *ulmus glabra (*which has the largest spread of the three species selected), has some of the records approaching the middle and middle-upper parts of Norway.
+
 ```{r Plot of PA, warning = FALSE, message = FALSE}
 
 ggplot() + 
   gg(norway.poly) + 
-  gg(PA_data) # + others...
+  gg(PA_data) +
+  facet_grid(~scientificName) +
+  ggtitle('Vascular Plant Field Notes') +
+  theme_classic() +
+  theme(legend.position="bottom",
+        plot.title = element_text(hjust = 0.5))
 
 
 ```
@@ -97,15 +105,16 @@ We treated the *Vascular Plant Field Notes* as detection/non-detection data by c
 
 grid <- makegrid(norway.poly, cellsize = 0.25, pretty = FALSE)
 grid <- SpatialPoints(grid, proj4string = Projection)
-ggplot() +
-  gg(grid) + 
-  gg(PA_data) + 
-  gg(norway.poly) #+ others...
 
 spgrdWithin <- SpatialPixels(grid[norway.poly,])
 spgrdWithin <- as(spgrdWithin, "SpatialPolygons")
+
 ggplot() + 
-  gg(spgrdWithin) #+ others...
+  gg(spgrdWithin) +
+    ggtitle('Norway on a gridded map') +
+  theme_classic() +
+  theme(legend.position="bottom",
+        plot.title = element_text(hjust = 0.5))
 
 ```
 
@@ -128,12 +137,8 @@ grid_data <- sp::SpatialPointsDataFrame(coords = data.frame(joined$x1, joined$x2
                                         proj4string = Projection)
 colnames(grid_data@coords) <- c('x','y')
 
-```
-
-```{r Plot of gridded data, warning = FALSE, message = FALSE}
-
+#Remove the observations not in the boundary
 grid_data <- grid_data[!is.na(over(grid_data, norway.poly)),]
-ggplot() + gg(norway.poly) + gg(grid_data, col = 'red') #+ gg(grid)
 
 ```
 
@@ -175,6 +180,8 @@ for (i in 1:nrow(unique_grid)) {
 
 ```
 
+Finally, we create a plot of our detection/non-detection data in each gridded sampling region.
+
 ```{r Plot of PA data in grid, warning = FALSE, message = FALSE}
 
 
@@ -195,6 +202,10 @@ ggplot() + gg(PA_data, aes(col = factor(individualCount))) +
 
 ```
 
+#### NorwaySDMs
+
+*NorwaySDMs* essentially has two packages which assist in creating a reproducible SDM. The first of which is called `structured_data`, which aims to re-structure and and assign the relevant metadata to the structured datasets, to be used in the integrated model. The argument *dataType* may take on one of three values per dataset: "*PA"*, "*PO"* or "*count"*, which are used to define the underlying sampling process of the dataset. The rest of the arguments for the function (*responsePA*, *trialsPA, responseCount, speciesName, coordinateNames)* are merely used to specify the appropriate column names in the datasets for the relevant variables.
+
 ```{r Structured data, warning = FALSE, message = FALSE}
 
 colnames(PA_data@coords) <- c('longitude','latitude')
@@ -202,22 +213,31 @@ PA_data$scientificName <- gsub(' ','_',PA_data$scientificName)
 names(PA_data@data) <- c('species', 'individualCount')
 
 structured <- structured_data(PA_data, datasetType = 'PA',
-                             responsePA = 'individualCount',
-                             coordinateNames = colnames(PA_data@coords))
+                              speciesName = 'species',
+                              responsePA = 'individualCount',
+                              coordinateNames = colnames(PA_data@coords))
 
 ```
+
+The package's second function (`species_model`) is used as the template for the reproducible workflow: being able to produce a variety of different objects useful for the ecologist in their analysis. These objects may be controlled using the argument: *return*, which may take one of the following values: "*boundary", "species plot", "mesh", "mesh plot", "model", "predictions" or "predictions map".*
+
+One of the objects required for our model is an *inla.mesh* object, which we will use in the approximation of our spatial random fields.
 
 ```{r Mesh construction, warning = FALSE, message = FALSE}
 
-mesh <- species_model(speciesNames = unique(structured@dataPA$PA_data$species),
-                               structuredData = structured,
-                               boundary = norway.poly,
-                               return = 'mesh', limit = 5000,
-meshParameters = list(cutoff=0.08, max.edge=c(1, 3), offset=c(1,1))
+mesh <- species_model(boundary = norway.poly,
+                      return = 'mesh', limit = 5000, meshParameters = list(cutoff=0.08, max.edge=c(1, 3), offset=c(1,1)))
 
-ggplot() + gg(mesh)
+ggplot() +
+  gg(mesh) +
+      ggtitle('inla.mesh object') +
+  theme_classic() +
+  theme(legend.position="bottom",
+        plot.title = element_text(hjust = 0.5))
 
 ```
+
+To include PO data from *GBIF*, we specify the names of the species we want with the *speciesNames* arguments. These species will be selected around the area specified around either the *spatial.polygons* object specified with the argument *boundary*, or by selecting counties across Norway using the *location* argument. The *limit* argument is identical to the one used in *spocc*'s *occ* function: which defines the number of records to return.
 
 ```{r All species plot, warning = FALSE, message = FALSE}
 
@@ -225,9 +245,15 @@ species_plot <- species_model(speciesNames = unique(structured@dataPA$PA_data$sp
                                structuredData = structured,
                                boundary = norway.poly,
                                return = 'species plot', limit = 5000, mesh = mesh)
-ggplot() + gg(species_plot)
+species_plot +
+      ggtitle('Plot of the species data') +
+  theme_classic() +
+  theme(legend.position="bottom",
+        plot.title = element_text(hjust = 0.5))
 
 ```
+
+Finally, by specifying *return = 'predictions map'*, we will run our SDM and subsequently produce a map of the log of the intensity function for the species across their studied map. We select the spatial covariates we want in the model using the *worldclimCovariates* argument, which may take on any of the nineteen names available from *worldclim*. We furthermore scale these covariates using *scale*.
 
 ```{r Prediction maps, warning = FALSE, message = FALSE}
 
@@ -237,6 +263,10 @@ prediction_maps <- species_model(speciesNames = unique(structured@dataPA$PA_data
                                return = 'predictions map', limit = 5000,
                                mesh = mesh)
 
-ggplot() + gg(prediction_maps)
+prediction_maps +
+      ggtitle('Plot of the log intensity of the species') +
+  theme_classic() +
+  theme(legend.position="bottom",
+        plot.title = element_text(hjust = 0.5))## plus rest
 
 ```
