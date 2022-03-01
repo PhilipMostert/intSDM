@@ -6,14 +6,14 @@
 #' @param trialsPA Name of the trial name variable in the \code{PA} datasets. Defaults to \code{NULL}.
 #' @param responseCount Name of the response variable in the \code{count} datasets. Defaults to \code{NULL}.
 #' @param speciesName Name of the species variable name. Defaults to \code{'species'}.
-#' @param coordinateNames Name of the coordinates used in the model. Defaults to \code{c("latitude","longitude")}.
+#' @param coordinateNames Name of the coordinates used in the model. Defaults to \code{c('longitude', 'latitude')}.
 #'
 #' @export
 
 structured_data <- function(..., datasetType = NULL, responsePA = NULL,
                           trialsPA = NULL, responseCount = NULL,
                           speciesName = 'species',
-                          coordinateNames = c('latitude', 'longitude')) {
+                          coordinateNames = c('longitude', 'latitude')) {
 
   if (is.null(datasetType)) stop('datasetType cannot be NULL.')
 
