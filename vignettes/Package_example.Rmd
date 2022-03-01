@@ -3,12 +3,16 @@ title: "NorwaySDMs: R package to produce species distribution models in a repord
 output: html_notebook
 ---
 
+In support of our manuscript, we developed an R package to help construct point-process species distribution models (SDMs) from disperate in a simple and reproducible framework. This *RMarkdown* document presents an illustration of the package by creating an SDM for red-listed plant species obtained via the *Vascular Plant Field Notes* in Norway, as well as citizen-science data obtained from *Global Biodiversity Information Facility* (*GBIF*). The first step in exploring this document is to download the package using the following script:
+
 ```{r Install package, warning = FALSE, message = FALSE}
 
 devtools::install_github('PhilipMostert/NorwaySDMs')
 library(NorwaySDMs)
 
 ```
+
+As well as any of the following packages required:
 
 ```{r Load packages, warning = FALSE, message = FALSE}
 
@@ -31,6 +35,8 @@ library(RColorBrewer)
 
 ```
 
+And finally by loading in some objects which will be required later on.
+
 ```{r Norway map, warning = FALSE, message = FALSE}
 
 Projection <- CRS('+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs')
@@ -43,17 +49,21 @@ norway.poly <- map2SpatialPolygons(norwayfill, IDs = IDs,
 
 ```
 
+Before conducting any analysis, we explore and make some adjustments to the data which we will use later in our integrated model. The *Vascular Plant Field Notes* is ... (ADD LATER).
+
 ```{r Read PA data, warning = FALSE, message = FALSE}
 
-norge_data <- read.csv('VU.PA.data.Norge.txt', sep = ' ')
+norge_data <- read.csv('./data/VU.PA.data.Norge.txt', sep = ' ')
 
-olso_data <- read.csv('VU.PA.data.Olso.txt', sep = ' ')
+olso_data <- read.csv('./data/VU.PA.data.Olso.txt', sep = ' ')
 olso_data <- olso_data[!(olso_data$decimalLongitude == 0),] 
 oslo_data <- olso_data[!(olso_data$decimalLatitude == 0),]
 
 PA_data <- rbind(norge_data, olso_data)
 
 ```
+
+In this analysis, we chose the three most abundant species available in our dataset. This was done mainly to make the example more computationally friendly, but also because a significant proportion of the plants in the dataset only had a handful of observations (a possible consequence of working with red-listed data), making inference on those species difficult.
 
 ```{r Select three species, warning = FALSE, message = FALSE}
 
@@ -80,6 +90,8 @@ ggplot() +
 
 
 ```
+
+We treated the *Vascular Plant Field Notes* as detection/non-detection data by creating a gridded map of sampling locations across our Norway polygon and noting which sampling locations contained which species of plants. That is, we treated these data as a Bernoulli random variable taking on unity if the species was detected in a given grid, otherwise taking on zero if it was not detected. To do this, we used a nearest neighbour classifier to assign each of the plant species' location to its nearest grid point.
 
 ```{r Plot of grid, warning = FALSE, message = FALSE}
 
