@@ -202,7 +202,7 @@ species_model <- function(speciesNames, structuredData = NULL,
 
   message('Obtaining GBIF species data:')
 
-  if (is.null(data)) {
+  if (is.null(date)) {
 
     species_data <- spocc::occ(query = speciesNames,
                                limit = limit,
