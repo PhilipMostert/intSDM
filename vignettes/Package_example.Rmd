@@ -50,7 +50,7 @@ norway.poly <- map2SpatialPolygons(norwayfill, IDs = IDs,
 
 #### Data wrangling
 
-Before conducting any analysis, we explore and make some adjustments to the data which we will use later in our integrated model. The *Vascular Plant Field Notes* is ... (ADD LATER).
+Before conducting any analysis, we explore and make some adjustments to the data which we will use later in our integrated model. The *Vascular Plant Field Notes* is a collection of observations provided by the Norwegian University of Science and Technology's University Museum and the University of Oslo, containing records of standardized cross-lists of most vascular plants found in Norway.
 
 ```{r Read PA data, warning = FALSE, message = FALSE}
 
