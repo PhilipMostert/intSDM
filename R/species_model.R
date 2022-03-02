@@ -21,17 +21,19 @@
 #' @export
 
 # Additional data
-species_model <- function(speciesNames, structuredData = NULL,
-                         spatialCovariates = NULL,
-                         worldclimCovariates = NULL,
-                         res = 0.5,
-                         scale = FALSE,
-                         location = 'Norway', boundary = NULL,
-                         return = 'predictions map',
-                         mesh = NULL, meshParameters = NULL,
-                         spdeModel = NULL,
-                         projection = CRS('+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs'),
-                         limit = 10000, options = list(), ...) {
+species_model <- function(speciesNames,
+                          date = NULL,
+                          structuredData = NULL,
+                          spatialCovariates = NULL,
+                          worldclimCovariates = NULL,
+                          res = 0.5,
+                          scale = FALSE,
+                          location = 'Norway', boundary = NULL,
+                          return = 'predictions map',
+                          mesh = NULL, meshParameters = NULL,
+                          spdeModel = NULL,
+                          projection = CRS('+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs'),
+                          limit = 10000, options = list(), ...) {
 
   if (missing(speciesNames) && is.null(structuredData)) stop('Please provide at least one of speciesNames and structuredData.')
 
