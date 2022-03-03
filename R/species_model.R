@@ -35,7 +35,7 @@ species_model <- function(speciesNames,
                           projection = CRS('+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs'),
                           limit = 10000, options = list(), ...) {
 
-  if (missing(speciesNames) && is.null(structuredData)) stop('Please provide at least one of speciesNames and structuredData.')
+  if (missing(speciesNames) && is.null(structuredData) && return %in% c('model', 'predictions', 'predictions map')) stop('Please provide at least one of speciesNames and structuredData.')
 
   if (!is.null(structuredData)) {
 
