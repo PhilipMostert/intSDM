@@ -310,7 +310,7 @@ species_model <- function(speciesNames,
   #                                    sharedspatial = TRUE, specieseffects = TRUE, spdemodel = spdeModel,
   #                                    options = options)
 
-  spatailModel <- inlabruSDMs::runModel(organized_data, options = options)
+  spatialModel <- inlabruSDMs::runModel(organized_data, options = options)
 
   if (return == 'model') {
 
