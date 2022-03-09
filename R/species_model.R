@@ -325,7 +325,7 @@ species_model <- function(speciesNames,
   mesh$crs <- projection
   ##Try calling predict.bru_sdm manually???
   ##Need to add something -- if # species == 1 then predict only spatial field and not species = TRUE?
-  modelPredict <- inlabruSDMs::predict.bru_sdm(spatialModel, mesh = mesh, mask = boundary,
+  modelPredict <- predict(spatialModel, mesh = mesh, mask = boundary,
                                                spatial = TRUE, intercepts = TRUE,
                                                covariates = spatialModel[['spatCovs']][['name']],
                                                fun = '')
