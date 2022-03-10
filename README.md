@@ -1,12 +1,12 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# NorwaySDMs
+# intSDM
 
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of NorwaySDMs is to create reproducible species distribution
+The goal of intSDM is to create reproducible species distribution
 models across Norway using INLA.
 
 ## Installation
@@ -16,5 +16,5 @@ You can install the development version of this package from
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("PhilipMostert/NorwaySDMs")
+devtools::install_github("PhilipMostert/intSDM")
 ```
