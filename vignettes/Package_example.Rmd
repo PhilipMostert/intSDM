@@ -1,5 +1,5 @@
 ---
-title: "NorwaySDMs: R package to produce species distribution models in a reporducible framework"
+title: "intSDM: R package to produce species distribution models in a reporducible framework"
 output: html_notebook
 ---
 
@@ -7,8 +7,8 @@ In support of our manuscript, we developed an R package to help construct point-
 
 ```{r Install package, warning = FALSE, message = FALSE}
 
-devtools::install_github('PhilipMostert/NorwaySDMs')
-library(NorwaySDMs)
+devtools::install_github('PhilipMostert/intSDM')
+library(intSDM)
 
 ```
 
@@ -24,6 +24,7 @@ library(ggmap)
 library(maps)
 library(PointedSDMs)
 library(inlabruSDMs)
+library(intSDM)
 library(spatstat)
 library(maptools)
 library(INLA)
