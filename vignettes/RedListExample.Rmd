@@ -1,15 +1,31 @@
 ---
-title: "NorwaySDMs: R package to produce species distribution models in a reporducible framework"
-output: html_notebook
+title: "RedListExample"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{RedListExample}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
 
 In support of our manuscript, we developed an R package to help construct point-process species distribution models (SDMs) from disparate in a simple and reproducible framework. This *RMarkdown* document presents an illustration of the package by creating an SDM for red-listed plant species obtained via the *Vascular Plant Field Notes* in Norway, as well as citizen-science data obtained from *Global Biodiversity Information Facility* (*GBIF*). The first step in exploring this document is to download the package using the following script:
 
-```{r Install package, warning = FALSE, message = FALSE}
+```{r Install package, eval = FALSE}
 
 devtools::install_github('PhilipMostert/NorwaySDMs')
-library(NorwaySDMs)
 
+```
+
+
+
+```{r setup}
+library(NorwaySDMs)
 ```
 
 As well as any of the following packages required:
