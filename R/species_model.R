@@ -16,7 +16,7 @@
 #' @param projection CRS projection to use. Defaults to \code{CRS('+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs')}.
 #' @param limit Set the number of species downloaded. Defaults to \code{10000}.
 #' @param options A list of \code{INLA} and \code{inlabru} options. Defaults to \code{NULL}.
-#' @param ... Additional arguments used in inlabruSDMs's bruSDM function.
+#' @param ... Additional arguments used in cSDMs's intModel function.
 #'
 #' @export
 
@@ -297,7 +297,7 @@ species_model <- function(speciesNames,
 
   message('Organizing the data:')
 
-  organized_data <- inlabruSDMs::bruSDM(all_data, spatialCovariates = spatialCovariates, Coordinates = c('longitude', 'latitude'),
+  organized_data <- cSDMs::intModel(all_data, spatialCovariates = spatialCovariates, Coordinates = c('longitude', 'latitude'),
                                         Mesh = mesh, responseCounts = responseCount, responsePA = responsePA,
                                         trialsPA = trialsPA, speciesName = 'species',
                                         Projection = projection, pointsField = spdeModel, ...)
@@ -310,7 +310,7 @@ species_model <- function(speciesNames,
   #                                    sharedspatial = TRUE, specieseffects = TRUE, spdemodel = spdeModel,
   #                                    options = options)
 
-  spatialModel <- inlabruSDMs::runModel(organized_data, options = options)
+  spatialModel <- cSDMs::runModel(organized_data, options = options)
 
   if (return == 'model') {
 

@@ -11,7 +11,7 @@ structured_data(
   trialsPA = NULL,
   responseCount = NULL,
   speciesName = "species",
-  coordinateNames = c("latitude", "longitude")
+  coordinateNames = c("longitude", "latitude")
 )
 }
 \arguments{
@@ -27,7 +27,7 @@ structured_data(
 
 \item{speciesName}{Name of the species variable name. Defaults to \code{'species'}.}
 
-\item{coordinateNames}{Name of the coordinates used in the model. Defaults to \code{c("latitude","longitude")}.}
+\item{coordinateNames}{Name of the coordinates used in the model. Defaults to \code{c('longitude', 'latitude')}.}
 }
 \description{
 Function to convert a collection of datasets into an object which can be used in \code{speciesModel}.

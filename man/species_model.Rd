@@ -6,9 +6,11 @@
 \usage{
 species_model(
   speciesNames,
+  date = NULL,
   structuredData = NULL,
   spatialCovariates = NULL,
   worldclimCovariates = NULL,
+  res = 0.5,
   scale = FALSE,
   location = "Norway",
   boundary = NULL,
@@ -18,11 +20,14 @@ species_model(
   spdeModel = NULL,
   projection = CRS("+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs"),
   limit = 10000,
-  options = list()
+  options = list(),
+  ...
 )
 }
 \arguments{
 \item{speciesNames}{A vector of species' names to collect from GBIF.}
+
+\item{date}{Vector of length two denoting the date range to select species from. Defaults to \code{NULL}.}
 
 \item{structuredData}{Additional datasets to integrate with the presence only GBIF data. See the \code{structured_data} function. Defaults to \code{NULL}.}
 
@@ -30,13 +35,15 @@ species_model(
 
 \item{worldclimCovariates}{Names of the covariates to extract from Worldclim. Defaults to \code{NULL}; cannot be non-\code{NULL} if \code{spatialCovariates} is non-\code{NULL}.}
 
+\item{res}{Resolution for the world clim covariates. Valid values are: \code{0.5,2.5,5,10}. Defaults to \code{0.5}.}
+
 \item{scale}{Should the spatial covariates be scaled. Defaults to \code{FALSE}.}
 
 \item{location}{Which area of Norway to model. Defaults to \code{'Norway'} which suggests a model for the entire county.}
 
 \item{boundary}{SpatialPolygons object of the study area. If \code{NULL} an object may be formed with \code{location}.}
 
-\item{return}{Object to return. Has to be one of \code{c('boundary' ,'species plot', 'mesh', 'mesh plot', 'model', 'predictions', 'predictions map')}.}
+\item{return}{Object to return. Has to be one of \code{c('boundary', 'species', 'species plot', 'mesh', 'mesh plot', 'model', 'predictions', 'predictions map')}.}
 
 \item{mesh}{An inla.mesh object to include in the model. Defaults to \code{NULL}.}
 
@@ -49,6 +56,8 @@ species_model(
 \item{limit}{Set the number of species downloaded. Defaults to \code{10000}.}
 
 \item{options}{A list of \code{INLA} and \code{inlabru} options. Defaults to \code{NULL}.}
+
+\item{...}{Additional arguments used in inlabruSDMs's bruSDM function.}
 }
 \description{
 Function to run an SDM on select species, location and environmental covariates.
