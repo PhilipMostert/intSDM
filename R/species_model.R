@@ -297,7 +297,7 @@ species_model <- function(speciesNames,
 
   message('Organizing the data:')
 
-  organized_data <- cSDMs::intModel(all_data, spatialCovariates = spatialCovariates, Coordinates = c('longitude', 'latitude'),
+  organized_data <- inlabruSDMS::intModel(all_data, spatialCovariates = spatialCovariates, Coordinates = c('longitude', 'latitude'),
                                         Mesh = mesh, responseCounts = responseCount, responsePA = responsePA,
                                         trialsPA = trialsPA, speciesName = 'species',
                                         Projection = projection, pointsField = spdeModel, ...)
@@ -310,7 +310,7 @@ species_model <- function(speciesNames,
   #                                    sharedspatial = TRUE, specieseffects = TRUE, spdemodel = spdeModel,
   #                                    options = options)
 
-  spatialModel <- cSDMs::runModel(organized_data, options = options)
+  spatialModel <- inlabruSDMs::runModel(organized_data, options = options)
 
   if (return == 'model') {
 
