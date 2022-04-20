@@ -169,9 +169,10 @@ species_model <- function(speciesNames,
 
     boundary <- as(boundary, 'SpatialPolygons')
     message('Making inla.mesh object:')
-    mesh <- PointedSDMs::MakeSpatialRegion(bdry = boundary, coords = c('longitude', 'latitude'),
-                                           meshpars = meshParameters)
-    mesh <- mesh$mesh
+    mesh <- INLA::inla.mesh.2d(boundary = inla.sp2segment(boundary), 
+                           cutoff = meshParameters$cutoff,
+                           max.edge = meshParameters$max.edge, 
+                           offset = meshParameters$offset)
     mesh$proj4string <- proj
     mesh$crs <- proj
 
