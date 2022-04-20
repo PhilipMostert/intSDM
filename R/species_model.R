@@ -166,7 +166,7 @@ species_model <- function(speciesNames,
 
   if (is.null(mesh)) {
     if (is.null(meshParameters)) stop('meshParameters cannot be NULL if mesh is NULL.')
-
+     if (any(!c("cutoff", "max.edge", "offset") %in% names(meshParameters))) stop("'cutoff', 'max.edge' and 'offset' need to be in meshParameters")
     boundary <- as(boundary, 'SpatialPolygons')
     message('Making inla.mesh object:')
     mesh <- INLA::inla.mesh.2d(boundary = inla.sp2segment(boundary), 
