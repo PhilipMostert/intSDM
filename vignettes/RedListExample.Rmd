@@ -24,7 +24,7 @@ In support of our manuscript, we developed an R package to help construct point-
 ```{r Install package, eval = FALSE}
 
 <<<<<<< HEAD:vignettes/RedListExample.Rmd
-devtools::install_github('PhilipMostert/NorwaySDMs')
+devtools::install_github('PhilipMostert/intSDM')
 =======
 devtools::install_github('PhilipMostert/intSDM')
 library(intSDM)
@@ -52,7 +52,6 @@ library(PointedSDMs)
 <<<<<<< HEAD:vignettes/RedListExample.Rmd
 library(cSDMs)
 =======
-library(inlabruSDMs)
 library(intSDM)
 >>>>>>> af8bb406532a0a88f07fc0f8f949161539cae188:vignettes/Package_example.Rmd
 library(spatstat)
