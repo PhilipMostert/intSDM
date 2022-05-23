@@ -298,11 +298,14 @@ species_model <- function(speciesNames,
 
   message('Organizing the data:')
 
+
   organized_data <- PointedSDMs::intModel(all_data, spatialCovariates = spatialCovariates, Coordinates = c('longitude', 'latitude'),
                                         Mesh = mesh, responseCounts = responseCount, responsePA = responsePA,
                                         trialsPA = trialsPA, speciesName = 'species',
-                                        Projection = projection, pointsField = spdeModel, ...)
+                                        Projection = projection, ...)
 
+
+  if (!is.null(spdeModel) && organized_data$.__enclos_env__$private$Spatial) organized_data$spatialFields$sharedField <- spdeModel
 
 
   message('Running model:')
