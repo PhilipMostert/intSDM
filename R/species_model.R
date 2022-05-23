@@ -166,12 +166,13 @@ species_model <- function(speciesNames,
 
   if (is.null(mesh)) {
     if (is.null(meshParameters)) stop('meshParameters cannot be NULL if mesh is NULL.')
-
+     if (any(!c("cutoff", "max.edge", "offset") %in% names(meshParameters))) stop("'cutoff', 'max.edge' and 'offset' need to be in meshParameters")
     boundary <- as(boundary, 'SpatialPolygons')
     message('Making inla.mesh object:')
-    mesh <- PointedSDMs::MakeSpatialRegion(bdry = boundary, coords = c('longitude', 'latitude'),
-                                           meshpars = meshParameters)
-    mesh <- mesh$mesh
+    mesh <- INLA::inla.mesh.2d(boundary = inla.sp2segment(boundary), 
+                           cutoff = meshParameters$cutoff,
+                           max.edge = meshParameters$max.edge, 
+                           offset = meshParameters$offset)
     mesh$proj4string <- proj
     mesh$crs <- proj
 
@@ -297,7 +298,7 @@ species_model <- function(speciesNames,
 
   message('Organizing the data:')
 
-  organized_data <- inlabruSDMS::intModel(all_data, spatialCovariates = spatialCovariates, Coordinates = c('longitude', 'latitude'),
+  organized_data <- PointedSDMs::intModel(all_data, spatialCovariates = spatialCovariates, Coordinates = c('longitude', 'latitude'),
                                         Mesh = mesh, responseCounts = responseCount, responsePA = responsePA,
                                         trialsPA = trialsPA, speciesName = 'species',
                                         Projection = projection, pointsField = spdeModel, ...)
@@ -306,11 +307,11 @@ species_model <- function(speciesNames,
 
   message('Running model:')
 
-  #spatialModel <- inlabruSDMs::bru_sdm(data = organized_data, spatialcovariates = spatialCovariates,
+  #spatialModel <- PointedSDMs::bru_sdm(data = organized_data, spatialcovariates = spatialCovariates,
   #                                    sharedspatial = TRUE, specieseffects = TRUE, spdemodel = spdeModel,
   #                                    options = options)
 
-  spatialModel <- inlabruSDMs::runModel(organized_data, options = options)
+  spatialModel <- PointedSDMs::runModel(organized_data, options = options)
 
   if (return == 'model') {
 
