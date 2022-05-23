@@ -126,7 +126,7 @@ species_model <- function(speciesNames,
 
     structuredData <- append(structuredData@dataPO, append(structuredData@dataPA, structuredData@dataCount))
 
-    if (coordinateNames != c('longitude', 'latitude')) {
+    if (any(coordinateNames != c('longitude', 'latitude'))) {
 
       structuredData <- lapply(structuredData, function(x) {
 
