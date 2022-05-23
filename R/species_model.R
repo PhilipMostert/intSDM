@@ -169,9 +169,9 @@ species_model <- function(speciesNames,
      if (any(!c("cutoff", "max.edge", "offset") %in% names(meshParameters))) stop("'cutoff', 'max.edge' and 'offset' need to be in meshParameters")
     boundary <- as(boundary, 'SpatialPolygons')
     message('Making inla.mesh object:')
-    mesh <- INLA::inla.mesh.2d(boundary = inla.sp2segment(boundary), 
+    mesh <- INLA::inla.mesh.2d(boundary = inla.sp2segment(boundary),
                            cutoff = meshParameters$cutoff,
-                           max.edge = meshParameters$max.edge, 
+                           max.edge = meshParameters$max.edge,
                            offset = meshParameters$offset)
     mesh$proj4string <- proj
     mesh$crs <- proj
@@ -239,8 +239,6 @@ species_model <- function(speciesNames,
   all_data <- all_data[boundary, ]
   all_data <- list(dataGBIF = all_data)
 
-
-  if (return == 'species') return(all_data)
   ###Things to do::
   ## so structured data is a list of sp objects -- possibly causing issues
   ## Create a list; all data with one element; all_data
@@ -260,6 +258,8 @@ species_model <- function(speciesNames,
 
   }
   else all_data <- structuredData
+
+  if (return == 'species') return(all_data)
 
   if (return == 'species plot') {
 
