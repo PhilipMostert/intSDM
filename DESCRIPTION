@@ -1,4 +1,4 @@
-Package: NorwaySDMs
+Package: intSDM
 Title: R package used to create reproducible species distribution models across Norway using INLA.
 Version: 0.0.0.9000
 Authors@R: 

@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of NorwaySDMs is to create reproducible species distribution models across Norway using INLA.
+The goal of intSDMs is to create reproducible species distribution models across Norway using INLA.
 
 ## Installation
 
