@@ -25,13 +25,6 @@ devtools::install_github('PhilipMostert/intSDM')
 library(intSDM)
 
 ```
-
-
-
-```{r setup}
-library(NorwaySDMs)
-```
-
 As well as any of the following packages required:
 
 ```{r Load packages, warning = FALSE, message = FALSE}
@@ -43,7 +36,6 @@ library(dplyr)
 library(ggmap) 
 library(maps)
 library(PointedSDMs)
-library(cSDMs)
 library(intSDM)
 library(spatstat)
 library(maptools)
