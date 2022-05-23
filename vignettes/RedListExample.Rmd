@@ -1,5 +1,4 @@
 ---
-<<<<<<< HEAD:vignettes/RedListExample.Rmd
 title: "RedListExample"
 output: rmarkdown::html_vignette
 vignette: >
@@ -9,7 +8,6 @@ vignette: >
 =======
 title: "intSDM: R package to produce species distribution models in a reporducible framework"
 output: html_notebook
->>>>>>> af8bb406532a0a88f07fc0f8f949161539cae188:vignettes/Package_example.Rmd
 ---
 
 ```{r, include = FALSE}
@@ -23,12 +21,8 @@ In support of our manuscript, we developed an R package to help construct point-
 
 ```{r Install package, eval = FALSE}
 
-<<<<<<< HEAD:vignettes/RedListExample.Rmd
-devtools::install_github('PhilipMostert/intSDM')
-=======
 devtools::install_github('PhilipMostert/intSDM')
 library(intSDM)
->>>>>>> af8bb406532a0a88f07fc0f8f949161539cae188:vignettes/Package_example.Rmd
 
 ```
 
@@ -49,11 +43,8 @@ library(dplyr)
 library(ggmap) 
 library(maps)
 library(PointedSDMs)
-<<<<<<< HEAD:vignettes/RedListExample.Rmd
 library(cSDMs)
-=======
 library(intSDM)
->>>>>>> af8bb406532a0a88f07fc0f8f949161539cae188:vignettes/Package_example.Rmd
 library(spatstat)
 library(maptools)
 library(INLA)
