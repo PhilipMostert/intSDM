@@ -18,6 +18,22 @@
 #' @param options A list of \code{INLA} and \code{inlabru} options. Defaults to \code{NULL}.
 #' @param ... Additional arguments used in cSDMs's intModel function.
 #'
+#' @import ggplot2
+#' @import sp
+#' @import methods
+#' @import stats
+#' @import inlabru
+#' @import PointedSDMs
+#' @importFrom raster getData
+#' @importFrom raster crop
+#' @importFrom raster merge
+#' @importFrom raster mask
+#' @importFrom maps map
+#' @importFrom spocc occ
+#' @importFrom dplyr bind_rows
+#' @importFrom maptools map2SpatialPolygons
+#' @importFrom INLA inla.mesh.2d
+#'
 #' @export
 
 # Additional data
@@ -264,7 +280,7 @@ species_model <- function(speciesNames,
   if (return == 'species plot') {
 
     data_to_plot <- lapply(all_data, function(x) x[, 'species'])
-    data_to_plot <- do.call(rbind.SpatialPointsDataFrame, data_to_plot)
+    data_to_plot <- do.call(sp::rbind.SpatialPointsDataFrame, data_to_plot)
 
     plot <- ggplot() + gg(boundary) + gg(data_to_plot, aes(colour = species))
     return(plot)

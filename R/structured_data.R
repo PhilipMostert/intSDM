@@ -8,6 +8,9 @@
 #' @param speciesName Name of the species variable name. Defaults to \code{'species'}.
 #' @param coordinateNames Name of the coordinates used in the model. Defaults to \code{c('longitude', 'latitude')}.
 #'
+#' @import methods
+#' @import sp
+#'
 #' @export
 
 structured_data <- function(..., datasetType = NULL, responsePA = NULL,
