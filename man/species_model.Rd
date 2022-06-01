@@ -57,7 +57,7 @@ species_model(
 
 \item{options}{A list of \code{INLA} and \code{inlabru} options. Defaults to \code{NULL}.}
 
-\item{...}{Additional arguments used in inlabruSDMs's bruSDM function.}
+\item{...}{Additional arguments used in cSDMs's intModel function.}
 }
 \description{
 Function to run an SDM on select species, location and environmental covariates.
