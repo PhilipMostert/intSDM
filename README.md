@@ -1,12 +1,14 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# intSDM
+# NorwaySDMs
 
 <!-- badges: start -->
+
+[![R-CMD-check](https://github.com/PhilipMostert/intSDM/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/PhilipMostert/intSDM/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-The goal of intSDM is to create reproducible species distribution
+The goal of intSDMs is to create reproducible species distribution
 models across Norway using INLA.
 
 ## Installation
@@ -16,5 +18,5 @@ You can install the development version of this package from
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("PhilipMostert/intSDM")
+devtools::install_github("PhilipMostert/NorwaySDMs")
 ```
