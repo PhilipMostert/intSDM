@@ -60,45 +60,28 @@ norway.poly <- map2SpatialPolygons(norwayfill, IDs = IDs,
 
 Before conducting any analysis, we explore and make some adjustments to the data which we will use later in our integrated model. The *Vascular Plant Field Notes* is a collection of observations provided by the Norwegian University of Science and Technology's University Museum and the University of Oslo, containing records of standardized cross-lists of most vascular plants found in Norway.
 
-```{r Read PA data, warning = FALSE, message = FALSE}
-
-norge_data <- read.csv('./data/VU.PA.data.Norge.txt', sep = ' ')
-
-olso_data <- read.csv('./data/VU.PA.data.Olso.txt', sep = ' ')
-olso_data <- olso_data[!(olso_data$decimalLongitude == 0),] 
-oslo_data <- olso_data[!(olso_data$decimalLatitude == 0),]
-
-PA_data <- rbind(norge_data, olso_data)
-
-```
-
 In this analysis, we chose the three most abundant species available in our dataset. This was done mainly to make the example more computationally friendly, but also because a significant proportion of the plants in the dataset only had a handful of observations (a possible consequence of working with red-listed data), making inference on those species difficult.
 
-```{r Select three species, warning = FALSE, message = FALSE}
 
-abundant <- PA_data %>% group_by(scientificName) %>%
-                        count() %>%
-                        arrange(desc(n)) %>%
-                        data.frame()
-abundant <- abundant[1:3, 'scientificName']
+```{r Read PA data, warning = FALSE, message = FALSE}
 
-PA_data <- PA_data[PA_data$scientificName%in%abundant,]
-
-PA_data <- sp::SpatialPointsDataFrame(coords = data.frame(PA_data$decimalLongitude,                                                PA_data$decimalLatitude),
-                     data = data.frame(scientificName = PA_data$scientificName, 
-                                      individualCount = PA_data$individualCount),
-                                      proj4string = Projection)
+data("PA_redlist")
 
 ```
 
-The three species selected for this analysis from the *Vascular Plant Field Notes* (*arnica montana, fraxinus excelsior* and *ulmus glabra)* have records predominantly spread across the southern and eastern part of Norway. However the species *ulmus glabra (*which has the largest spread of the three species selected), has some of the records approaching the middle and middle-upper parts of Norway.
+The three species selected for this analysis from the *Vascular Plant Field Notes* (*arnica montana, fraxinus excelsior* and *ulmus glabra)* have records predominantly spread across the southern and eastern part of Norway. However the species *ulmus glabra (*which has the largest spread of the three species selected), has some of the records approaching the middle and middle-upper parts of Norway. 
+
+We then create a plot of our detection/non-detection data in each gridded sampling region.
+
 
 ```{r Plot of PA, warning = FALSE, message = FALSE}
 
 ggplot() + 
   gg(norway.poly) + 
-  gg(PA_data) +
-  facet_grid(~scientificName) +
+  gg(PA_redlist, aes(col = factor(individualCount))) +
+  facet_grid(~species) +
+  labs(x = 'Longitude', y = 'Latitude', col = 'Grid Observation') +
+  scale_color_manual(labels = c('Absent', "Present"), values = c("#d11141", "#00aedb")) +
   ggtitle('Vascular Plant Field Notes') +
   theme_classic() +
   theme(legend.position="bottom",
@@ -109,118 +92,14 @@ ggplot() +
 
 We treated the *Vascular Plant Field Notes* as detection/non-detection data by creating a gridded map of sampling locations across our Norway polygon and noting which sampling locations contained which species of plants. That is, we treated these data as a Bernoulli random variable taking on unity if the species was detected in a given grid, otherwise taking on zero if it was not detected. To do this, we used a nearest neighbour classifier to assign each of the plant species' location to its nearest grid point.
 
-```{r Plot of grid, warning = FALSE, message = FALSE}
 
-grid <- makegrid(norway.poly, cellsize = 0.25, pretty = FALSE)
-grid <- SpatialPoints(grid, proj4string = Projection)
+#### *intSDMs*
 
-spgrdWithin <- SpatialPixels(grid[norway.poly,])
-spgrdWithin <- as(spgrdWithin, "SpatialPolygons")
-
-ggplot() + 
-  gg(spgrdWithin) +
-    ggtitle('Norway on a gridded map') +
-  theme_classic() +
-  theme(legend.position="bottom",
-        plot.title = element_text(hjust = 0.5))
-
-```
-
-```{r Assign species to nearest grid, warning = FALSE, message = FALSE}
-
-PA_data_frame <- as.data.frame(PA_data)
-closest <- RANN::nn2(data = grid@coords, query = PA_data_frame[,3:4], k = 1)
-grid$ID <- seq(nrow(grid@coords))
-
-closest_ind <- as.data.frame(closest) %>%
-  dplyr::rename(ID = nn.idx)
-
-closest_ind$scientificName <- PA_data_frame$scientificName
-closest_ind$individualCount <- PA_data_frame$individualCount
-
-joined <- dplyr::inner_join(closest_ind,as.data.frame(grid), by = 'ID') 
-
-grid_data <- sp::SpatialPointsDataFrame(coords = data.frame(joined$x1, joined$x2),
-                                        data = data.frame(scientificName = joined$scientificName, individualCount = joined$individualCount),
-                                        proj4string = Projection)
-colnames(grid_data@coords) <- c('x','y')
-
-#Remove the observations not in the boundary
-grid_data <- grid_data[!is.na(over(grid_data, norway.poly)),]
-
-```
-
-```{r Create grid index, warning = FALSE, message = FALSE}
-
-species <- unique(grid_data$scientificName)
-
-unique_grid <- as.data.frame(grid_data) %>%
-  group_by(x,y) %>%
-  slice(1) %>%
-  dplyr::select(x,y) %>%
-  data.frame()
-
-grid_index <- list()
-for (i in 1:nrow(unique_grid)) {
-  
-  x <- unique_grid[i,1]
-  y <- unique_grid[i,2]
-  
-  present <- grid_data[grid_data@coords[,1] == x & grid_data@coords[,2] == y,]
-  
-  not_in <- species[!species%in%present$scientificName]
-  
-  if (!identical(not_in, character(0))) {
-    
-    ind <- data.frame(scientificName = not_in, individualCount = 0)
-    
-    ind_coords <- data.frame(x,y) %>% slice(rep(1:n(), each = length(not_in)))
-    
-    absent <- sp::SpatialPointsDataFrame(coords = ind_coords, data = ind,
-                                         proj4string = Projection)
-    
-    grid_index[[i]] <- rbind.SpatialPointsDataFrame(present, absent)
-    
-  }
-  else grid_index[[i]] <- present
-  
-}
-
-```
-
-Finally, we create a plot of our detection/non-detection data in each gridded sampling region.
-
-```{r Plot of PA data in grid, warning = FALSE, message = FALSE}
-
-
-PA_data <- do.call(rbind.SpatialPointsDataFrame, grid_index)
-
-ggplot() + gg(PA_data, aes(col = factor(individualCount))) +
-  facet_grid(~scientificName) +
-  gg(norway.poly) +
-  gg(spgrdWithin) +
-  coord_equal() +
-  scale_fill_continuous(guide = guide_legend()) +
-  scale_color_manual(labels = c('Absent', "Present"), values = c("#d11141", "#00aedb")) +
-  labs(x = 'Longitude', y = 'Latitude', col = 'Grid Observation') +
-  ggtitle('Present absence data') +
-  theme_classic() +
-  theme(legend.position="bottom",
-        plot.title = element_text(hjust = 0.5))
-
-```
-
-#### NorwaySDMs
-
-*NorwaySDMs* essentially has two packages which assist in creating a reproducible SDM. The first of which is called `structured_data`, which aims to re-structure and and assign the relevant metadata to the structured datasets, to be used in the integrated model. The argument *dataType* may take on one of three values per dataset: "*PA"*, "*PO"* or "*count"*, which are used to define the underlying sampling process of the dataset. The rest of the arguments for the function (*responsePA*, *trialsPA, responseCount, speciesName, coordinateNames)* are merely used to specify the appropriate column names in the datasets for the relevant variables.
+*intSDMs* essentially has two packages which assist in creating a reproducible SDM. The first of which is called `structured_data`, which aims to re-structure and and assign the relevant metadata to the structured datasets, to be used in the integrated model. The argument *dataType* may take on one of three values per dataset: "*PA"*, "*PO"* or "*count"*, which are used to define the underlying sampling process of the dataset. The rest of the arguments for the function (*responsePA*, *trialsPA, responseCount, speciesName, coordinateNames)* are merely used to specify the appropriate column names in the datasets for the relevant variables.
 
 ```{r Structured data, warning = FALSE, message = FALSE}
 
-colnames(PA_data@coords) <- c('longitude','latitude')
-PA_data$scientificName <- gsub(' ','_',PA_data$scientificName)
-names(PA_data@data) <- c('species', 'individualCount')
-
-structured <- structured_data(PA_data, datasetType = 'PA',
+structured <- structured_data(PA_redlist, datasetType = 'PA',
                               speciesName = 'species',
                               responsePA = 'individualCount',
                               coordinateNames = colnames(PA_data@coords))
@@ -249,7 +128,7 @@ To include PO data from *GBIF*, we specify the names of the species we want with
 
 ```{r All species plot, warning = FALSE, message = FALSE}
 
-species_plot <- species_model(speciesNames = unique(structured@dataPA$PA_data$species),
+species_plot <- species_model(speciesNames = unique(structured@dataPA$PA_redlist$species),
                                structuredData = structured,
                                boundary = norway.poly,
                                return = 'species plot', limit = 5000, mesh = mesh)
@@ -265,8 +144,8 @@ Finally, by specifying *return = 'predictions map'*, we will run our SDM and sub
 
 ```{r Prediction maps, warning = FALSE, message = FALSE}
 
-prediction_maps <- species_model(speciesNames = unique(structured@dataPA$PA_data$species),
-                                 scale = TRUE, structuredData = structured,
+prediction_maps <- species_model(speciesNames = unique(structured@dataPA$PA_redlist$species),
+                               scale = TRUE, structuredData = structured,
                                worldclimCovariates = 'Annual Mean Temperature', 
                                boundary = norway.poly,
                                return = 'predictions map', limit = 5000,
