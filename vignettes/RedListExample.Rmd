@@ -1,15 +1,11 @@
 ---
-title: "RedListExample"
+title: "intSDM: R package to produce species distribution models in a reproducible framework"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{RedListExample}
+  %\VignetteIndexEntry{Example of PointedSDMs for the solitary tinamou}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
-=======
-title: "intSDM: R package to produce species distribution models in a reporducible framework"
-output: html_notebook
 ---
-
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -36,7 +32,6 @@ library(dplyr)
 library(ggmap) 
 library(maps)
 library(PointedSDMs)
-library(intSDM)
 library(spatstat)
 library(maptools)
 library(INLA)
