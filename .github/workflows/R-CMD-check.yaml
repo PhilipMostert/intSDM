@@ -46,6 +46,7 @@ jobs:
           
       - name: Install dependencies
         run: |
+          install('devtools')
           devtools::install_github("PhilipMostert/PointedSDMs")
         shell: Rscript {0}
 
