@@ -5,11 +5,10 @@
 setClassUnion("listorNULL", c('list','NULL'))
 
 #'bru_sdm_data class
-#'
-#' @exportS3Method
 #' @slot dataPO A list of the present only datasets.
 #' @slot dataPA A list of the present absence datasets.
 #' @slot dataCount A list of the count datasets.
+#' @exportS3Method
 
 setClass('structuredData',
          slots = c(dataPO = 'listorNULL',
