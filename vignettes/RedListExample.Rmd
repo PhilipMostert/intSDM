@@ -270,7 +270,8 @@ Finally, by specifying *return = 'predictions map'*, we will run our SDM and sub
 
 ```{r Prediction maps, warning = FALSE, message = FALSE}
 
-prediction_maps <- species_model(speciesNames = unique(structured@dataPA$PA_data$species),                                    scale = TRUE, structuredData = structured,
+prediction_maps <- species_model(speciesNames = unique(structured@dataPA$PA_data$species),
+                                 scale = TRUE, structuredData = structured,
                                worldclimCovariates = 'Annual Mean Temperature', 
                                boundary = norway.poly,
                                return = 'predictions map', limit = 5000,
