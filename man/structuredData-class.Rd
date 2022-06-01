@@ -7,3 +7,13 @@
 \description{
 bru_sdm_data class
 }
+\section{Slots}{
+
+\describe{
+\item{\code{dataPO}}{A list of the present only datasets.}
+
+\item{\code{dataPA}}{A list of the present absence datasets.}
+
+\item{\code{dataCount}}{A list of the count datasets.}
+}}
+
