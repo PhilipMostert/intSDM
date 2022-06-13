@@ -13,7 +13,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# NorwaySDMs
+# intSDMs
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/PhilipMostert/intSDM/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/PhilipMostert/intSDM/actions/workflows/R-CMD-check.yaml)
