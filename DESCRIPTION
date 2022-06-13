@@ -40,7 +40,7 @@ Suggests:
     fields,
     RANN,
     INLA (>= 21.08.31),
-    PointedSDMs
+    PointedSDMs,
     rgeos,
     viridis,
     RColorBrewer,
