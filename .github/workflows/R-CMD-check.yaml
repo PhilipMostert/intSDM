@@ -52,6 +52,11 @@ jobs:
           brew install proj@9
           brew install gdal
 
+      - name: Install PointedSDMs
+        run: |
+          Rscript -e "install.packages('remotes')"
+          Rscript -e "remotes::install_github('PhilipMostert/PointedSDMs')"
+
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
@@ -59,10 +64,6 @@ jobs:
           extra-packages: |
              rcmdcheck
              remotes
-
-      - name: Install PointedSDMs
-        run: |
-          Rscript -e "remotes::install_github('PhilipMostert/PointedSDMs')"
 
       - uses: r-lib/actions/check-r-package@v2
         env:
