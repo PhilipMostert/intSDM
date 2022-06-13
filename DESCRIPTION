@@ -26,7 +26,6 @@ Authors@R:
 Depends:
     R (>= 4.2),
     inlabru (>= 2.3.1),
-    PointedSDMs,
     ggplot2,
     sp (>= 1.4-5),
     stats,
@@ -41,6 +40,7 @@ Imports:
 Suggests:
     fields,
     RANN,
+    PointedSDMs
     rgeos,
     viridis,
     RColorBrewer,
