@@ -141,8 +141,9 @@ species_plot +
 ```
 
 Finally, by specifying *return = 'predictions map'*, we will run our SDM and subsequently produce a map of the log of the intensity function for the species across their studied map. We select the spatial covariates we want in the model using the *worldclimCovariates* argument, which may take on any of the nineteen names available from *worldclim* (see the following [link](https://www.worldclim.org/data/bioclim.html)). We furthermore scale these covariates using *scale*. In this example we only chose one covariate, related to the mean annual temperature.
+Due to the long time it requires to produce this map, inference is not made in this vignette. However the script is available below for the user to run the model themselves.
 
-```{r Prediction maps, warning = FALSE, message = FALSE}
+```{r Prediction maps, warning = FALSE, message = FALSE, eval = FALSE}
 
 prediction_maps <- species_model(speciesNames = unique(structured@dataPA$PA_redlist$species),
                                scale = TRUE, structuredData = structured,
