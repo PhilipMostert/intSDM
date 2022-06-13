@@ -24,7 +24,7 @@ Authors@R:
              role = c("aut"),
              email = "ellen.c.martin@ntnu.no"))
 Depends:
-    R (>= 4.2),
+    R (>= 3.5),
     inlabru (>= 2.3.1),
     ggplot2,
     sp (>= 1.4-5),
@@ -48,8 +48,6 @@ Suggests:
     rmarkdown,
     testthat (>= 3.0.0),
     sf
-Remotes:
-    PhilipMostert/PointedSDMs
 License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
