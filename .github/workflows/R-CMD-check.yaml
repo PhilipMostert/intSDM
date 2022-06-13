@@ -63,6 +63,7 @@ jobs:
           extra-packages: |
              rcmdcheck
              remotes::install_github('PhilipMostert/PointedSDMs)
+
       - uses: r-lib/actions/check-r-package@v2
         env:
           _R_CHECK_CRAN_INCOMING_REMOTE_: false
