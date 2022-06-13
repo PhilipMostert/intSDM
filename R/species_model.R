@@ -185,7 +185,7 @@ species_model <- function(speciesNames,
      if (any(!c("cutoff", "max.edge", "offset") %in% names(meshParameters))) stop("'cutoff', 'max.edge' and 'offset' need to be in meshParameters")
     boundary <- as(boundary, 'SpatialPolygons')
     message('Making inla.mesh object:')
-    mesh <- INLA::inla.mesh.2d(boundary = inla.sp2segment(boundary),
+    mesh <- INLA::inla.mesh.2d(boundary = INLA::inla.sp2segment(boundary),
                            cutoff = meshParameters$cutoff,
                            max.edge = meshParameters$max.edge,
                            offset = meshParameters$offset)
