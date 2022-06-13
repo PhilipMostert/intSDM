@@ -1,5 +1,5 @@
 testthat::test_that('Test that species_model can produce all of the returns correctly.', {
-
+  skip_on_cran()
   ##Create arbitrary data
   #Arbitrary projection
   projection <- CRS('+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs')
