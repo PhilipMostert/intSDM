@@ -1,4 +1,4 @@
 library(testthat)
-library(NorwaySDMs)
+library(intSDM)
 
-test_check("NorwaySDMs")
+test_check("intSDM")
