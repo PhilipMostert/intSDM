@@ -58,6 +58,7 @@ jobs:
           dependencies: '"all"'
           extra-packages: |
              rcmdcheck
+             remotes
 
       - name: Install PointedSDMs
         run: |

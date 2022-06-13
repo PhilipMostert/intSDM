@@ -31,7 +31,6 @@ Depends:
     stats,
     methods,
 Imports:
-    INLA (>= 21.08.31),
     dplyr,  
     spocc,
     raster,
@@ -40,6 +39,7 @@ Imports:
 Suggests:
     fields,
     RANN,
+    INLA (>= 21.08.31),
     PointedSDMs
     rgeos,
     viridis,
