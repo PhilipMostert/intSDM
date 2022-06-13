@@ -9,7 +9,8 @@ vignette: >
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  fig.width=8, fig.height=5
 )
 ```
 
@@ -17,8 +18,7 @@ In support of our manuscript, we developed an R package to help construct point-
 
 ```{r Install package, eval = FALSE}
 
-devtools::install_github('PhilipMostert/intSDM')
-library(intSDM)
+if (requireNamespace(intSDM)) devtools::install_github('PhilipMostert/intSDM')
 
 ```
 As well as any of the following packages required:
@@ -35,6 +35,7 @@ library(PointedSDMs)
 library(spatstat)
 library(maptools)
 library(INLA)
+library(intSDM)
 library(rgeos)
 library(fields)
 library(viridis)
@@ -102,7 +103,7 @@ We treated the *Vascular Plant Field Notes* as detection/non-detection data by c
 structured <- structured_data(PA_redlist, datasetType = 'PA',
                               speciesName = 'species',
                               responsePA = 'individualCount',
-                              coordinateNames = colnames(PA_data@coords))
+                              coordinateNames = colnames(PA_redlist@coords))
 
 ```
 
