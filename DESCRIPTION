@@ -24,7 +24,7 @@ Authors@R:
              role = c("aut"),
              email = "ellen.c.martin@ntnu.no"))
 Depends:
-    R (>= 3.5),
+    R (>= 4.2),
     inlabru (>= 2.3.1),
     PointedSDMs,
     ggplot2,
