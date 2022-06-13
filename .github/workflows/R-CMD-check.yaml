@@ -61,8 +61,8 @@ jobs:
              remotes
 
       - name: Install PointedSDMs
-          run: |
-            Rscript -e "remotes::install_github('PhilipMostert/PointedSDMs')"
+        run: |
+          Rscript -e "remotes::install_github('PhilipMostert/PointedSDMs')"
 
       - uses: r-lib/actions/check-r-package@v2
         env:
