@@ -56,6 +56,7 @@ jobs:
           dependencies: '"all"'
           extra-packages: |
              rcmdcheck
+             remotes
              remotes::install_github('PhilipMostert/PointedSDMs)
 
       - uses: r-lib/actions/check-r-package@v2
