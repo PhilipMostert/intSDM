@@ -29,7 +29,7 @@ Depends:
     ggplot2,
     sp (>= 1.4-5),
     stats,
-    methods,
+    methods
 Imports:
     dplyr,  
     spocc,
