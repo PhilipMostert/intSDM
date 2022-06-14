@@ -44,14 +44,6 @@ jobs:
           r-version: ${{ matrix.config.r }}
           extra-repositories: "https://inla.r-inla-download.org/R/testing"
 
-      - name: Install dependencies
-        run: |
-         remotes::install_deps(dependencies = TRUE)
-         remotes::install_cran("rcmdcheck")
-         remotes::install_cran("devtools")
-         devtools::install_github('PhilipMostert/PointedSDMs')
-     shell: Rscript {0}
-
       - name: Install system dependencies on MacOS (X11, gdal)
         if: runner.os == 'macOS'
         run: |
