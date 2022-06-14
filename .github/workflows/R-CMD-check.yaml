@@ -38,7 +38,11 @@ jobs:
           r-version: ${{ matrix.config.r }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
-      - run: |
+
+      -name: Install PointedSDMs
+        env:
+          GITHUB_PAT: ${{ secrets.GIT_TOKEN }}
+        run: |-
         Rscript -e "install.packages('remotes')"
         Rscript -e "install.packages('devtools')"
         Rscript -e "remotes::install_github('PhilipMostert/PointedSDMs')"
