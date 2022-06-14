@@ -43,8 +43,8 @@ jobs:
         with:
           r-version: ${{ matrix.config.r }}
           extra-repositories:
-          "https://inla.r-inla-download.org/R/testing"
-          "https://github.com/PhilipMostert/PointedSDMs"
+                           "https://inla.r-inla-download.org/R/testing"
+                           "https://github.com/PhilipMostert/PointedSDMs"
 
       - name: Install system dependencies on MacOS (X11, gdal)
         if: runner.os == 'macOS'
