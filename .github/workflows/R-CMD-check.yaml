@@ -59,10 +59,6 @@ jobs:
              rcmdcheck
              remotes
 
-      - name: Install PointedSDMs
-        run: |
-          Rscript -e "remotes::install_github('PhilipMostert/PointedSDMs')"
-
       - uses: r-lib/actions/check-r-package@v2
         env:
           _R_CHECK_CRAN_INCOMING_REMOTE_: false
