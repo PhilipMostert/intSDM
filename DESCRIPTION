@@ -29,6 +29,7 @@ Depends:
     ggplot2,
     sp (>= 1.4-5),
     stats,
+    PointedSDMs,
     methods
 Imports:
     dplyr,  
@@ -40,7 +41,6 @@ Suggests:
     fields,
     RANN,
     INLA (>= 21.08.31),
-    PointedSDMs,
     rgeos,
     viridis,
     ggpolypath,
@@ -53,7 +53,7 @@ Suggests:
     sf,
     covr
 Additional_repositories:
-    https://github.com/PhilipMostert/PointedSDMs
+    https://inla.r-inla-download.org/R/testing/
 License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
