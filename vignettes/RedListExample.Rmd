@@ -39,6 +39,7 @@ library(intSDM)
 library(rgeos)
 library(fields)
 library(viridis)
+library(ggpolypath)
 library(RColorBrewer)
 
 ```
