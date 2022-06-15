@@ -49,7 +49,8 @@ Suggests:
     knitr,
     rmarkdown,
     testthat (>= 3.0.0),
-    sf
+    sf,
+    covr
 Additional_repositories:
     https://github.com/PhilipMostert/PointedSDMs
 License: GPL (>= 3)
