@@ -44,6 +44,7 @@ Suggests:
     rgeos,
     viridis,
     ggmap,
+    spatstat,
     RColorBrewer,
     knitr,
     rmarkdown,
