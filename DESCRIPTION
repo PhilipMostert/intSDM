@@ -43,6 +43,7 @@ Suggests:
     PointedSDMs,
     rgeos,
     viridis,
+    ggmap,
     RColorBrewer,
     knitr,
     rmarkdown,
