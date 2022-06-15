@@ -43,6 +43,7 @@ Suggests:
     PointedSDMs,
     rgeos,
     viridis,
+    ggpolypath,
     ggmap,
     spatstat,
     RColorBrewer,
