@@ -71,7 +71,6 @@ testthat::test_that('Test that species_model can produce all of the returns corr
   #Check return = 'model'
   if (requireNamespace('INLA')) {
 
-  skip()
   covariate <- 'Annual Mean Temperature'
   model <- species_model(return = 'model',
                          boundary = boundary, speciesNames = species,
