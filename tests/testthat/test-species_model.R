@@ -25,7 +25,7 @@ testthat::test_that('Test that species_model can produce all of the returns corr
 
   #Check return = 'mesh'
   #make wide mesh
-
+  if (requireNamespace("INLA")) {
   mesh <- species_model(return = 'mesh', boundary = boundary,
                         meshParameters =  list(cutoff=0.08, max.edge=c(1, 3), offset=c(1,1)))
 
@@ -35,7 +35,7 @@ testthat::test_that('Test that species_model can produce all of the returns corr
                             meshParameters =  list(cutoff=1, max.edge=c(1, 3), offset=c(1,1)))
 
   expect_setequal(class(meshPlot), c('gg', 'ggplot'))
-
+  }
   ##Make species
 
   #Make random points
@@ -69,7 +69,7 @@ testthat::test_that('Test that species_model can produce all of the returns corr
   expect_setequal(class(speciesPlot), c('gg', 'ggplot'))
 
   #Check return = 'model'
-
+  if (requireNamespace('INLA')) {
   covariate <- 'Annual Mean Temperature'
   model <- species_model(return = 'model',
                          boundary = boundary, speciesNames = species,
@@ -93,7 +93,7 @@ testthat::test_that('Test that species_model can produce all of the returns corr
                                limit = 10, mesh = mesh, worldclimCovariates = covariate)
 
   expect_setequal(class(predictions), c('gg', 'ggplot'))
-
+ }
 
 
 
