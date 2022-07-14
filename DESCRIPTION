@@ -52,8 +52,7 @@ Suggests:
     testthat (>= 3.0.0),
     sf,
     covr
-Additional_repositories:
-    https://inla.r-inla-download.org/R/testing/
+Additional_repositories: https://inla.r-inla-download.org/R/testing/
 License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
