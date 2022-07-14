@@ -32,8 +32,6 @@
 #' @importFrom spocc occ
 #' @importFrom dplyr bind_rows
 #' @importFrom maptools map2SpatialPolygons
-#' @importFrom INLA inla.mesh.2d
-#' @importFrom INLA inla.sp2segment
 #'
 #' @export
 
