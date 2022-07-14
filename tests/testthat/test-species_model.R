@@ -22,20 +22,6 @@ testthat::test_that('Test that species_model can produce all of the returns corr
   expect_error(species_model(return = 'boundary', location = 'Sweden'),
                'At least one of the locations provided is not a valid county in Norway. NOTE: Trøndelag is given as Nord-Trøndelag and Sør-Trøndelag')
 
-
-  #Check return = 'mesh'
-  #make wide mesh
-  if (requireNamespace("INLA")) {
-  mesh <- species_model(return = 'mesh', boundary = boundary,
-                        meshParameters =  list(cutoff=0.08, max.edge=c(1, 3), offset=c(1,1)))
-
-  expect_true(class(mesh) == 'inla.mesh')
-
-  meshPlot <- species_model(return = 'mesh plot', boundary = boundary,
-                            meshParameters =  list(cutoff=1, max.edge=c(1, 3), offset=c(1,1)))
-
-  expect_setequal(class(meshPlot), c('gg', 'ggplot'))
-  }
   ##Make species
 
   #Make random points
