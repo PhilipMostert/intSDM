@@ -12,7 +12,7 @@ testthat::test_that('Test that species_model can produce all of the returns corr
   expect_true(class(boundary)[1] == 'SpatialPolygons')
 
 
-  if (requireNamespace(INLA)) {
+  if (requireNamespace('INLA')) {
 
     mesh <- INLA::inla.mesh.2d(boundary =INLA::inla.sp2segment(boundary),
                                cutoff=0.08, max.edge=c(1, 3), offset=c(1,1))
