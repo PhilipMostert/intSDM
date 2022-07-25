@@ -111,10 +111,10 @@ species_model <- function(speciesNames,
       #stop('TODO::Subset to get the separate counties through mapNO[[1]][1:11]. Make data.frame with index for all counties.')
 
       boundary <- raster::getData(name = 'GADM', country = 'NOR', level = 1)
-
-      if (!any(location%in%c("Akershus", "Ãstfold", "Aust-Agder", "Buskerud", "Finnmark", "Hedmark", "Hordaland",
-                              "Møre og Romsdal", "Nord-Trøndelag", "Nordland", "Oppland", "Oslo", "Rogaland", "Sogn og Fjordane",
-                              "Sør-Trøndelag", "Telemark", "Troms", "Vest-Agder", "Vestfold"))) stop('At least one of the locations provided is not a valid county in Norway. NOTE: Trøndelag is given as Nord-Trøndelag and Sør-Trøndelag"')
+#do paste('\uxxx)
+      if (!any(location%in%c("Akershus", paste0('\u00C3',"stfold"), "Aust-Agder", "Buskerud", "Finnmark", "Hedmark", "Hordaland",
+                              paste0("M", '\u00F8' ,"re og Romsdal"), paste0("Nord-Tr", '\u00F8',"ndelag"), "Nordland", "Oppland", "Oslo", "Rogaland", "Sogn og Fjordane",
+                              paste0("S", '\u00F8',"r-Trøndelag"), "Telemark", "Troms", "Vest-Agder", "Vestfold"))) stop(paste('At least one of the locations provided is not a valid county in Norway. NOTE:', paste0('Tr', '\u00F8', 'ndelag'), 'is given as', paste0('Nord-Tr', '\u00F8', 'ndelag'), 'and Sør-Trøndelag'))
 
       warning('Location is given as a region of Norway. Mesh creation may be slow.')
 
