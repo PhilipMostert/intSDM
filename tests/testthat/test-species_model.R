@@ -25,7 +25,7 @@ testthat::test_that('Test that species_model can produce all of the returns corr
   #Check an error
 
   expect_error(species_model(return = 'boundary', location = 'Sweden'),
-               paste('At least one of the locations provided is not a valid county in Norway. NOTE:', paste0('Tr', '\u00F8', 'ndelag'), 'is given as', paste0('Nord-Tr', '\u00F8', 'ndelag'), 'and ', paste0("S", '\u00F8',"r-Tr", '\u00F8',"ndelag")))
+               'At least one of the locations provided is not a valid county in Norway. NOTE: Trøndelag is given as Nord-Trøndelag and Sør-Trøndelag')
 
   ##Make species
 
