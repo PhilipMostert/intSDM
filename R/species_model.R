@@ -114,7 +114,7 @@ species_model <- function(speciesNames,
 #do paste('\uxxx)
       if (!any(location%in%c("Akershus", paste0('\u00C3',"stfold"), "Aust-Agder", "Buskerud", "Finnmark", "Hedmark", "Hordaland",
                               paste0("M", '\u00F8' ,"re og Romsdal"), paste0("Nord-Tr", '\u00F8',"ndelag"), "Nordland", "Oppland", "Oslo", "Rogaland", "Sogn og Fjordane",
-                              paste0("S", '\u00F8',"r-Trøndelag"), "Telemark", "Troms", "Vest-Agder", "Vestfold"))) stop(paste('At least one of the locations provided is not a valid county in Norway. NOTE:', paste0('Tr', '\u00F8', 'ndelag'), 'is given as', paste0('Nord-Tr', '\u00F8', 'ndelag'), 'and Sør-Trøndelag'))
+                              paste0("S", '\u00F8',"r-Tr", '\u00F8',"ndelag"), "Telemark", "Troms", "Vest-Agder", "Vestfold"))) stop(paste('At least one of the locations provided is not a valid county in Norway. NOTE:', paste0('Tr', '\u00F8', 'ndelag'), 'is given as', paste0('Nord-Tr', '\u00F8', 'ndelag'), 'and ', paste0("S", '\u00F8',"r-Tr", '\u00F8',"ndelag")))
 
       warning('Location is given as a region of Norway. Mesh creation may be slow.')
 
