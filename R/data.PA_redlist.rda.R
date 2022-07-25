@@ -3,3 +3,4 @@
 #' @docType data
 #' @keywords data
 #' @references \url{https://www.gbif.org}
+NULL
