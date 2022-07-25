@@ -6,6 +6,9 @@
 \usage{
 \S4method{show}{structuredData}(object)
 }
+\arguments{
+\item{object}{A "structedData" object.}
+}
 \description{
 Print methods for structuredData object
 }
