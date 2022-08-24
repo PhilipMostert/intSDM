@@ -8,10 +8,14 @@
 [![R-CMD-check](https://github.com/PhilipMostert/intSDM/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/PhilipMostert/intSDM/actions/workflows/R-CMD-check.yaml)
 [![Codecov test
 coverage](https://codecov.io/gh/PhilipMostert/intSDM/branch/main/graph/badge.svg)](https://app.codecov.io/gh/PhilipMostert/intSDM?branch=main)
+
 <!-- badges: end -->
 
-The goal of intSDMs is to create reproducible species distribution
-models across Norway using INLA.
+The goal of *intSDMs* is to assist users in creating a reproducible
+workflow for constructing integrated species distribution models across
+Norway using the
+[*INLA*](https://rss.onlinelibrary.wiley.com/doi/full/10.1111/j.1467-9868.2008.00700.x)
+methodology.
 
 ## Installation
 
