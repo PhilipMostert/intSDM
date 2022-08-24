@@ -36,7 +36,7 @@ structured_data <- function(..., datasetType = NULL, responsePA = NULL,
 
   checkCoords <- sapply(data, function(x) {
 
-    if (class(x) == 'data.frame') {
+    if (inherits(x, 'data.frame')) {
 
       all(coordinateNames%in%names(x))
 
@@ -55,7 +55,7 @@ structured_data <- function(..., datasetType = NULL, responsePA = NULL,
 
   checkSpecies <- sapply(data, function(x) {
 
-    if (class(x) == 'data.frame') {
+    if (inherits(x, 'data.frame')) {
 
       speciesName%in%names(x)
 
@@ -74,7 +74,7 @@ structured_data <- function(..., datasetType = NULL, responsePA = NULL,
 
   data <- lapply(data, function(data) {
 
-    if (class(data) == 'data.frame') {
+    if (inherits(data, 'data.frame')) {
 
       data[,speciesName] <- gsub(' ','_', data[,speciesName])
 
@@ -94,7 +94,7 @@ structured_data <- function(..., datasetType = NULL, responsePA = NULL,
 
   data <- sapply(data, function(data) {
 
-  if (class(data) == 'data.type') {
+  if (inherits(data, 'data.type')) {
 
     if (length(names(data)) > 2) { ## ie coordinate names ++
 

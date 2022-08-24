@@ -54,7 +54,7 @@ species_model <- function(speciesNames,
 
   if (!is.null(structuredData)) {
 
-    if (class(structuredData)[1] != 'structuredData') stop('Please run your additional data through the structured_data function.')
+    if (!inherits(structuredData, 'structuredData')) stop('Please run your additional data through the structured_data function.')
 
   }
 
@@ -83,7 +83,7 @@ species_model <- function(speciesNames,
 
   if (!is.null(spatialCovariates)) {
 
-    if (class(spatialCovariates) == 'data.frame') stop('data.frame spatial covariates are not permitted. Please convert these to a Raster* or Spatial* object.')
+    if (inherits(spatialCovariates, 'data.frame')) stop('data.frame spatial covariates are not permitted. Please convert these to a Raster* or Spatial* object.')
   }
 
   if (!is.null(worldclimCovariates)) {
@@ -280,8 +280,8 @@ species_model <- function(speciesNames,
 
     data_to_plot <- lapply(all_data, function(x) x[, 'species'])
     data_to_plot <- do.call(sp::rbind.SpatialPointsDataFrame, data_to_plot)
-
-    plot <- ggplot() + gg(boundary) + gg(data_to_plot, aes(colour = species))
+    species <- 'species'
+    plot <- ggplot() + gg(boundary)  + gg(data_to_plot, aes(colour = species))
     return(plot)
   }
 
