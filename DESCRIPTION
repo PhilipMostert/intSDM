@@ -1,5 +1,5 @@
 Package: intSDM
-Title: R package used to create reproducible species distribution models across Norway using INLA.
+Title: R package used to create reproducible species distribution models across Norway using INLA
 Description: The package facilitates the inference process of integrated species distribution models across Norway using both presence only and presence absence data.
 Version: 0.0.0.9000
 Authors@R: 
