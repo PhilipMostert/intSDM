@@ -1,4 +1,5 @@
-#' Function to convert a collection of datasets into an object which can be used in \code{speciesModel}.
+#' @title \emph{structured_data}: function to organize structured datasets.
+#' @description The function is used to convert a collection of structured datasets into an object which can be used in \code{speciesModel}. The three types of structured data allowed by this function are present absence (PA), present only (PO) and counts/abundance datasets, which are controlled using the \code{datasetType} argument. The other arguments of this function are used to specify the appropriate variable (such as response name, trial name, species name and coordinate name) names in these datasets.
 #'
 #' @param ... The datasets used in the model. May be either datasets or a SpatialPointsDataFrames.
 #' @param datasetType A vector which gives the type of dataset. Must be either \code{'count'}, \code{'PO'} or \code{'PA'}. Defaults to \code{NULL}.
@@ -10,6 +11,19 @@
 #'
 #' @import methods
 #' @import sp
+#'
+#' @example {
+#'
+#'  #Objects required for example
+#'  data("PA_redlist")
+#'  speciesNames <- c('Fraxinus excelsior', 'Ulmus glabra')
+#'
+#'  #Set up structured dataset
+#'    dataObj <- structured_data(PA_redlist, datasetType = c('PA'), responsePA = 'individualCount',
+#'                              speciesName = 'species',
+#'                              coordinateNames = c("longitude", "latitude" ))
+#'
+#' }
 #'
 #' @export
 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/structured_data.R
 \name{structured_data}
 \alias{structured_data}
-\title{Function to convert a collection of datasets into an object which can be used in \code{speciesModel}.}
+\title{\emph{structured_data}: function to organize structured datasets.}
 \usage{
 structured_data(
   ...,
@@ -30,5 +30,5 @@ structured_data(
 \item{coordinateNames}{Name of the coordinates used in the model. Defaults to \code{c('longitude', 'latitude')}.}
 }
 \description{
-Function to convert a collection of datasets into an object which can be used in \code{speciesModel}.
+The function is used to convert a collection of structured datasets into an object which can be used in \code{speciesModel}. The three types of structured data allowed by this function are present absence (PA), present only (PO) and counts/abundance datasets, which are controlled using the \code{datasetType} argument. The other arguments of this function are used to specify the appropriate variable (such as response name, trial name, species name and coordinate name) names in these datasets.
 }

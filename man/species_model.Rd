@@ -2,7 +2,7 @@
 % Please edit documentation in R/species_model.R
 \name{species_model}
 \alias{species_model}
-\title{Function to run an SDM on select species, location and environmental covariates.}
+\title{\emph{species_model}: function to construct an integrated species distribution model, as well as other useful outputs from the model.}
 \usage{
 species_model(
   speciesNames,
@@ -60,5 +60,5 @@ species_model(
 \item{...}{Additional arguments used in cSDMs's intModel function.}
 }
 \description{
-Function to run an SDM on select species, location and environmental covariates.
+This function is used to construct integrated species distribution models using data specified with \code{\link{structured_data}} as well as present only data obtained from the Global Biodiversity Information Facility (GBIF). The argument \code{return} specifies what the function's output should be, which could be one of: 'boundary' (boundary of the study area), 'species' (\code{data.frame} object of the species as well as their geographic coordinates), 'species plot' (a \code{ggplot} plot of the species across a map), 'mesh' (an \code{inla.mesh} object), 'mesh plot' \code{a plot of the \code{inla.mesh object}}, 'model' (the integrated model), 'predictions' (predictions from the integrated model) or'predictions map' (a map of the predictions across the boundary).
 }
