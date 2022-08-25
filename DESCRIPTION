@@ -1,5 +1,5 @@
 Package: intSDM
-Title: R package used to create reproducible integrated species distribution models across Norway using INLA
+Title: Reproducible Integrated Species Distribution Models Across Norway using 'INLA'
 Description: Integration of disperate datasets is needed in order to make efficient use of all available data and thereby address the issues currently threatening biodiversity.
    Data integration is a powerful modelinging framework which allows us to combine these disperate datasets together into a single model, yet retain the strengths of each individual dataset.
    We therefore introduce the package, 'intSDM': an R package designed to help ecologists develop a reproducible workflow of integrated species distribution models, using data both provided from the user as well as data obtained freely online.
@@ -56,7 +56,7 @@ Suggests:
     sf,
     covr
 Additional_repositories: https://inla.r-inla-download.org/R/testing/
-License: GPL (>= 3) + file LICENSE 
+License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
