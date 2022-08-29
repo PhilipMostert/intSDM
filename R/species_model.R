@@ -1,5 +1,5 @@
 #' @title \emph{species_model}: function to construct an integrated species distribution model, as well as other useful outputs from the model.
-#' @description This function is used to construct integrated species distribution models using data specified with \code{\link{structured_data}} as well as present only data obtained from the Global Biodiversity Information Facility (GBIF). The argument \code{return} specifies what the function's output should be, which could be one of: 'boundary' (boundary of the study area), 'species' (\code{data.frame} object of the species as well as their geographic coordinates), 'species plot' (a \code{ggplot} plot of the species across a map), 'mesh' (an \code{inla.mesh} object), 'mesh plot' (a plot of the \code{inla.mesh object}), 'model' (the integrated model), 'predictions' (predictions from the integrated model) or'predictions map' (a map of the predictions across the boundary).
+#' @description This function is used to construct integrated species distribution models using data specified with \code{\link{structured_data}} as well as present only data obtained from the Global Biodiversity Information Facility (GBIF).
 #'
 #' @param speciesNames A vector of species' names to collect from GBIF.
 #' @param date Vector of length two denoting the date range to select species from. Defaults to \code{NULL}.
@@ -17,7 +17,7 @@
 #' @param projection CRS projection to use. Defaults to \code{CRS('+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs')}.
 #' @param limit Set the number of species downloaded. Defaults to \code{10000}.
 #' @param options A list of \code{INLA} and \code{inlabru} options. Defaults to \code{NULL}.
-#' @param ... Additional arguments used in cSDMs's intModel function.
+#' @param ... Additional arguments used in PointedSDMs's intModel function.
 #'
 #' @import ggplot2
 #' @import sp
@@ -34,7 +34,7 @@
 #' @importFrom dplyr bind_rows
 #' @importFrom maptools map2SpatialPolygons
 #'
-#' @example {
+#' @examples {
 #'
 #'
 #' \dontrun{
@@ -46,20 +46,22 @@
 #'
 #'  #Set up structured dataset
 #'    dataObj <- structured_data(PA_redlist, datasetType = c('PA'), responsePA = 'individualCount',
-#'                              speciesName = 'species',
-#'                              coordinateNames = c("longitude", "latitude" ))
+#'    speciesName = 'species',
+#'    coordinateNames = c("longitude", "latitude" ))
 #'
-#'   #Get prediction map
-#'     predictions <- species_model(return = 'predictions map',
-#'                                  boundary = boundary, speciesNames = species,
-#'                                  limit = 10,
-#'                                  meshParameters = list(cutoff=0.08, max.edge=c(1, 3), offset=c(1,1)),
-#'                                  worldclimCovariates ='Annual Mean Temperature')
+#'   #Get species map
+#'     predictions <- species_model(return = 'species plot',
+#'     boundary = boundary, speciesNames = species,
+#'     limit = 10, structuredData = dataObj,
+#'     meshParameters = list(cutoff=0.08, max.edge=c(1, 3), offset=c(1,1)),
+#'     worldclimCovariates ='Annual Mean Temperature')
 #'   }
 #'
 #'   }
 #'
 #' }
+#'
+#' @return The return of the function is determined by the argument \code{return}. For the different values of return: \item{\code{boundary}}{A \code{SpatialPolygon} of the boundary used in the model,} \item{\code{species}}{A \code{data.frame} object of the species' coordinates used in the model,} \item{\code{species plot}}{a \code{ggplot} plot of the species across a map,} \item{\code{mesh}}{an \code{inla.mesh} object,} \item{\code{mesh plot}}{a plot of the \code{inla.mesh object},} \item{model}{the integrated model,} \item{\code{predictions}}{predictions from the integrated model (on the linear scale),} \item{\code{predictions map}}{A \code{ggplot} plot of the predictions across the boundary.}
 #'
 #' @export
 

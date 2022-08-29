@@ -4,6 +4,9 @@
 \name{structuredData-class}
 \alias{structuredData-class}
 \title{bru_sdm_data class}
+\value{
+An S4 object with three slots, which contain lists of the data for the three observation models allowed in the modelling framework.
+}
 \description{
 bru_sdm_data class
 }

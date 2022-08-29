@@ -9,6 +9,9 @@
 \arguments{
 \item{object}{A "structedData" object.}
 }
+\value{
+A print of the names of the datasets, as well as their lengths.
+}
 \description{
 Print methods for structuredData object
 }

@@ -12,7 +12,7 @@
 #' @import methods
 #' @import sp
 #'
-#' @example {
+#' @examples {
 #'
 #'  #Objects required for example
 #'  data("PA_redlist")
@@ -25,6 +25,7 @@
 #'
 #' }
 #'
+#' @return An S4 object of class \code{structuredData}, which contains three slots for the data of each observation model allowed in the framework.
 #' @export
 
 structured_data <- function(..., datasetType = NULL, responsePA = NULL,

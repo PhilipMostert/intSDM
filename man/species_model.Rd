@@ -57,8 +57,40 @@ species_model(
 
 \item{options}{A list of \code{INLA} and \code{inlabru} options. Defaults to \code{NULL}.}
 
-\item{...}{Additional arguments used in cSDMs's intModel function.}
+\item{...}{Additional arguments used in PointedSDMs's intModel function.}
+}
+\value{
+The return of the function is determined by the argument \code{return}. For the different values of return: \item{\code{boundary}}{A \code{SpatialPolygon} of the boundary used in the model,} \item{\code{species}}{A \code{data.frame} object of the species' coordinates used in the model,} \item{\code{species plot}}{a \code{ggplot} plot of the species across a map,} \item{\code{mesh}}{an \code{inla.mesh} object,} \item{\code{mesh plot}}{a plot of the \code{inla.mesh object},} \item{model}{the integrated model,} \item{\code{predictions}}{predictions from the integrated model (on the linear scale),} \item{\code{predictions map}}{A \code{ggplot} plot of the predictions across the boundary.}
 }
 \description{
-This function is used to construct integrated species distribution models using data specified with \code{\link{structured_data}} as well as present only data obtained from the Global Biodiversity Information Facility (GBIF). The argument \code{return} specifies what the function's output should be, which could be one of: 'boundary' (boundary of the study area), 'species' (\code{data.frame} object of the species as well as their geographic coordinates), 'species plot' (a \code{ggplot} plot of the species across a map), 'mesh' (an \code{inla.mesh} object), 'mesh plot' (a plot of the \code{inla.mesh object}), 'model' (the integrated model), 'predictions' (predictions from the integrated model) or'predictions map' (a map of the predictions across the boundary).
+This function is used to construct integrated species distribution models using data specified with \code{\link{structured_data}} as well as present only data obtained from the Global Biodiversity Information Facility (GBIF).
+}
+\examples{
+{
+
+
+\dontrun{
+ if(requireNamespace('INLA')) {
+
+ #Objects required for example
+ data("PA_redlist")
+ speciesNames <- c('Fraxinus excelsior', 'Ulmus glabra')
+
+ #Set up structured dataset
+   dataObj <- structured_data(PA_redlist, datasetType = c('PA'), responsePA = 'individualCount',
+   speciesName = 'species',
+   coordinateNames = c("longitude", "latitude" ))
+
+  #Get species map
+    predictions <- species_model(return = 'species plot',
+    boundary = boundary, speciesNames = species,
+    limit = 10, structuredData = dataObj,
+    meshParameters = list(cutoff=0.08, max.edge=c(1, 3), offset=c(1,1)),
+    worldclimCovariates ='Annual Mean Temperature')
+  }
+
+  }
+
+}
+
 }

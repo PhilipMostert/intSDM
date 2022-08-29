@@ -8,6 +8,8 @@ setClassUnion("listorNULL", c('list','NULL'))
 #' @slot dataPO A list of the present only datasets.
 #' @slot dataPA A list of the present absence datasets.
 #' @slot dataCount A list of the count datasets.
+#'
+#' @return An S4 object with three slots, which contain lists of the data for the three observation models allowed in the modelling framework.
 #' @exportS3Method
 
 setClass('structuredData',
@@ -20,6 +22,7 @@ setClass('structuredData',
 #' @param object A "structedData" object.
 #' @exportS3Method
 #'
+#' @return A print of the names of the datasets, as well as their lengths.
 
 setMethod('show', 'structuredData',
           function(object) {
