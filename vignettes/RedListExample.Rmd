@@ -15,14 +15,16 @@ knitr::opts_chunk$set(
 )
 ```
 
-In support of our manuscript, we developed an R package to help construct point-process species distribution models (SDMs) from disparate in a simple and reproducible framework. This *RMarkdown* document presents an illustration of the package by creating an SDM for red-listed plant species obtained via the *Vascular Plant Field Notes* in Norway, as well as citizen-science data obtained from *Global Biodiversity Information Facility* (*GBIF*). The first step in exploring this document is to download the package using the following script:
+In support of our manuscript, we developed an R package to help construct integrated species distribution models (ISDMs) from disparate datasets in a simple and reproducible framework. This *R Markdown* document presents an illustration of the package by creating an ISDM for red-listed plant species obtained via the *Vascular Plant Field Notes* survey program in Norway, as well as citizen-science data obtained from *Global Biodiversity Information Facility* (*GBIF*). The first step in exploring this document is to download the package using the following script:
 
 ```{r Install package, eval = FALSE}
 
-if (requireNamespace(intSDM)) devtools::install_github('PhilipMostert/intSDM')
+#Change to CRAN once on
+if (requireNamespace('intSDM')) devtools::install_github('PhilipMostert/intSDM')
 
 ```
-As well as any of the following packages required:
+
+As well as the following packages required for this vignette:
 
 ```{r Load packages, warning = FALSE, message = FALSE}
 
@@ -53,7 +55,9 @@ Projection <- CRS('+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_def
 
 norwayfill <- map("world", "norway", fill=TRUE, plot=FALSE, 
                   ylim=c(58,72), xlim=c(4,32))
+
 IDs <- sapply(strsplit(norwayfill$names, ":"), function(x) x[1])
+
 norway.poly <- map2SpatialPolygons(norwayfill, IDs = IDs, 
                                    proj4string = Projection)
 
@@ -61,9 +65,9 @@ norway.poly <- map2SpatialPolygons(norwayfill, IDs = IDs,
 
 #### Data wrangling
 
-Before conducting any analysis, we explore and make some adjustments to the data which we will use later in our integrated model. The *Vascular Plant Field Notes* is a collection of observations provided by the Norwegian University of Science and Technology's University Museum and the University of Oslo, containing records of standardized cross-lists of most vascular plants found in Norway.
+Before conducting any analysis, we explore and make some adjustments to the data which we will use later in our integrated model. The *Vascular Plant Field Notes* is a collection of observations provided by the Norwegian University of Science and Technology's (NTNU) University Museum and the University of Oslo (UiO), containing records of standardized cross-lists of most vascular plants found in Norway.
 
-In this analysis, we chose the three most abundant species available in our dataset. This was done mainly to make the example more computationally friendly, but also because a significant proportion of the plants in the dataset only had a handful of observations (a possible consequence of working with red-listed data), making inference on those species difficult.
+In this analysis, we chose the three most abundant species available in our dataset. This was done not only to make the example more computationally friendly, but also because a significant proportion of the plants in the dataset only had a handful of observations (a possible consequence of working with red-listed data), making inference on those species difficult.
 
 
 ```{r Read PA data, warning = FALSE, message = FALSE}
@@ -72,10 +76,9 @@ data("PA_redlist")
 
 ```
 
-The three species selected for this analysis from the *Vascular Plant Field Notes* (*arnica montana, fraxinus excelsior* and *ulmus glabra)* have records predominantly spread across the southern and eastern part of Norway. However the species *ulmus glabra (*which has the largest spread of the three species selected), has some of the records approaching the middle and middle-upper parts of Norway. 
+The three species selected for this analysis from the *Vascular Plant Field Notes* (*arnica montana, fraxinus excelsior* and *ulmus glabra)* have records predominantly spread across the southern and eastern part of Norway. However the species *ulmus glabra* (which has the largest spread of the three species selected), has some of the records approaching the middle and middle-upper parts of Norway. 
 
 We then create a plot of our detection/non-detection data in each gridded sampling region.
-
 
 ```{r Plot of PA, warning = FALSE, message = FALSE}
 
@@ -95,10 +98,9 @@ ggplot() +
 
 We treated the *Vascular Plant Field Notes* as detection/non-detection data by creating a gridded map of sampling locations across our Norway polygon and noting which sampling locations contained which species of plants. That is, we treated these data as a Bernoulli random variable taking on unity if the species was detected in a given grid, otherwise taking on zero if it was not detected. To do this, we used a nearest neighbour classifier to assign each of the plant species' location to its nearest grid point.
 
-
 #### *intSDMs*
 
-*intSDMs* essentially has two packages which assist in creating a reproducible SDM. The first of which is called `structured_data`, which aims to re-structure and and assign the relevant metadata to the structured datasets, to be used in the integrated model. The argument *dataType* may take on one of three values per dataset: "*PA"*, "*PO"* or "*count"*, which are used to define the underlying sampling process of the dataset. The rest of the arguments for the function (*responsePA*, *trialsPA, responseCount, speciesName, coordinateNames)* are merely used to specify the appropriate column names in the datasets for the relevant variables.
+*intSDMs* essentially has two functions which assist in creating a reproducible SDM. The first of which is called `structured_data`, which aims to re-structure and and assign the relevant metadata to the structured datasets, to be used in the integrated model. The argument *dataType* may take on one of three values per dataset: "*PA"*, "*PO"* or "*count"*, which are used to define the underlying sampling process of the dataset. The remainder of the arguments of the function (*responsePA*, *trialsPA*, *responseCount*, *speciesName*, *coordinateNames*) denote which columns in the datasets are associated with the relevant variables.
 
 ```{r Structured data, warning = FALSE, message = FALSE}
 
@@ -143,8 +145,8 @@ species_plot +
 
 ```
 
-Finally, by specifying *return = 'predictions map'*, we will run our SDM and subsequently produce a map of the log of the intensity function for the species across their studied map. We select the spatial covariates we want in the model using the *worldclimCovariates* argument, which may take on any of the nineteen names available from *worldclim* (see the following [link](https://www.worldclim.org/data/bioclim.html)). We furthermore scale these covariates using *scale*. In this example we only chose one covariate, related to the mean annual temperature.
-Due to the long time it requires to produce this map, inference is not made in this vignette. However the script is available below for the user to run the model themselves.
+Finally, by specifying *return = 'predictions map'*, `species_model` will run our ISDM and subsequently produce a map of the log of the intensity function for the species across their studied map. We select the spatial covariates we want in the model using the *worldclimCovariates* argument, which may take on any of the nineteen names available from *worldclim* (see the following [link](https://www.worldclim.org/data/bioclim.html)). We furthermore scale these covariates using *scale*. In this example we only chose one covariate, related to the mean annual temperature.
+Due to the lengthy time it requires to produce this map, inference is not made in this vignette. However the script is available below for the user to run the model themselves.
 
 ```{r Prediction maps, warning = FALSE, message = FALSE, eval = FALSE, fig.width=8, fig.height=5}
 
