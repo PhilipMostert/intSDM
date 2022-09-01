@@ -358,7 +358,7 @@ species_model <- function(speciesNames,
   #                                    sharedspatial = TRUE, specieseffects = TRUE, spdemodel = spdeModel,
   #                                    options = options)
 
-  spatialModel <- PointedSDMs::runModel(organized_data, options = options)
+  spatialModel <- PointedSDMs::fitISDM(organized_data, options = options)
 
   if (return == 'model') {
 
