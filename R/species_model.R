@@ -3,10 +3,11 @@
 #'
 #' @param speciesNames A vector of species' names to collect from GBIF.
 #' @param date Vector of length two denoting the date range to select species from. Defaults to \code{NULL}.
+#' @param gbifOpts A named list of additional options to filter the GBIF records. See \code{?rgbif::occ_search} for the filters which may be applied to the GBIF records. Defaults to \code{list(coordinateUncertaintyInMeters = '0,1000')} which specifies a desired range of coordinates uncertainty (in meters) between 0 and 1000.
 #' @param structuredData Additional datasets to integrate with the presence only GBIF data. See the \code{structured_data} function. Defaults to \code{NULL}.
 #' @param spatialCovariates Spatial covariates to include in the model. May be a \code{Raster} or \code{Spatial} object. Cannot be non-\code{NULL} if \code{worldclimCovariates} is non-\code{NULL}.
 #' @param worldclimCovariates Names of the covariates to extract from Worldclim. Defaults to \code{NULL}; cannot be non-\code{NULL} if \code{spatialCovariates} is non-\code{NULL}.
-#' @param res Resolution for the world clim covariates. Valid values are: \code{0.5,2.5,5,10}. Defaults to \code{0.5}.
+#' @param res Resolution for the Worldclim covariates. Valid values are: \code{0.5,2.5,5,10}. Defaults to \code{0.5}.
 #' @param scale Should the spatial covariates be scaled. Defaults to \code{FALSE}.
 #' @param location Which area of Norway to model. Defaults to \code{'Norway'} which suggests a model for the entire county.
 #' @param boundary SpatialPolygons object of the study area. If \code{NULL} an object may be formed with \code{location}.
@@ -67,6 +68,7 @@
 
 species_model <- function(speciesNames,
                           date = NULL,
+                          gbifOpts = list(coordinateUncertaintyInMeters = '0,1000'),
                           structuredData = NULL,
                           spatialCovariates = NULL,
                           worldclimCovariates = NULL,
@@ -253,12 +255,14 @@ species_model <- function(speciesNames,
 
     species_data <- spocc::occ(query = speciesNames,
                                limit = limit,
+                               gbifopts = gbifOpts,
                                geometry = boundary@bbox,
                                has_coords = TRUE)
 
   }
   else  species_data <- spocc::occ(query = speciesNames,
                              limit = limit,
+                             gbifopts = gbifOpts,
                              geometry = boundary@bbox,
                              has_coords = TRUE,
                              date = date)
