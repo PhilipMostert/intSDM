@@ -19,8 +19,7 @@ In support of our manuscript, we developed an R package to help construct integr
 
 ```{r Install package, eval = FALSE}
 
-#Change to CRAN once on
-if (requireNamespace('intSDM')) devtools::install_github('PhilipMostert/intSDM')
+if (requireNamespace('intSDM')) install.packages('intSDM')
 
 ```
 
@@ -35,7 +34,7 @@ library(dplyr)
 library(ggmap) 
 library(maps)
 library(PointedSDMs)
-library(spatstat)
+library(geodata)
 library(maptools)
 library(INLA)
 library(intSDM)
@@ -53,13 +52,11 @@ And finally by loading in some objects which will be required later on.
 
 Projection <- CRS('+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs')
 
-norwayfill <- map("world", "norway", fill=TRUE, plot=FALSE, 
-                  ylim=c(58,72), xlim=c(4,32))
+Norway <- geodata::gadm(country = 'Norway', path = '~/data-raw', resolution = 2)
 
-IDs <- sapply(strsplit(norwayfill$names, ":"), function(x) x[1])
+norway.poly <- as(Norway, 'Spatial')
 
-norway.poly <- map2SpatialPolygons(norwayfill, IDs = IDs, 
-                                   proj4string = Projection)
+proj4string(norway.poly) <- Projection
 
 ```
 
@@ -134,9 +131,10 @@ To include PO data from *GBIF*, we specify the names of the species we want with
 ```{r All species plot, warning = FALSE, message = FALSE}
 
 species_plot <- species_model(speciesNames = unique(structured@dataPA$PA_redlist$species),
-                               structuredData = structured,
-                               boundary = norway.poly,
-                               return = 'species plot', limit = 5000, mesh = mesh)
+                            structuredData = structured,
+                            boundary = norway.poly,
+                            gbifOpts = list(coordinateUncertaintyInMeters = c(0,50)),
+                            return = 'species plot', limit = 5000, mesh = mesh)
 species_plot +
       ggtitle('Plot of the species data') +
   theme_classic() +
@@ -148,14 +146,15 @@ species_plot +
 Finally, by specifying *return = 'predictions map'*, `species_model` will run our ISDM and subsequently produce a map of the log of the intensity function for the species across their studied map. We select the spatial covariates we want in the model using the *worldclimCovariates* argument, which may take on any of the nineteen names available from *worldclim* (see the following [link](https://www.worldclim.org/data/bioclim.html)). We furthermore scale these covariates using *scale*. In this example we only chose one covariate, related to the mean annual temperature.
 Due to the lengthy time it requires to produce this map, inference is not made in this vignette. However the script is available below for the user to run the model themselves.
 
-```{r Prediction maps, warning = FALSE, message = FALSE, eval = FALSE, fig.width=8, fig.height=5}
+```{r Prediction maps, warning = FALSE, message = FALSE, fig.width=8, fig.height=5}
 
 prediction_maps <- species_model(speciesNames = unique(structured@dataPA$PA_redlist$species),
-                               scale = TRUE, structuredData = structured,
-                               worldclimCovariates = 'Annual Mean Temperature', 
-                               boundary = norway.poly,
-                               return = 'predictions map', limit = 5000,
-                               mesh = mesh)
+                              scale = TRUE, structuredData = structured,
+                              worldclimCovariates = 'Annual Mean Temperature', 
+                              boundary = norway.poly,
+                              gbifOpts = list(coordinateUncertaintyInMeters = c(0,50)),
+                              return = 'predictions map', limit = 5000,
+                              mesh = mesh)
 
 prediction_maps
 

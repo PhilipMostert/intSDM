@@ -19,6 +19,8 @@ species_model(
   mesh = NULL,
   meshParameters = NULL,
   spdeModel = NULL,
+  biasField = FALSE,
+  biasModel = NULL,
   projection = CRS("+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs"),
   limit = 10000,
   options = list(),
@@ -38,7 +40,7 @@ species_model(
 
 \item{worldclimCovariates}{Names of the covariates to extract from Worldclim. Defaults to \code{NULL}; cannot be non-\code{NULL} if \code{spatialCovariates} is non-\code{NULL}.}
 
-\item{res}{Resolution for the Worldclim covariates. Valid values are: \code{0.5,2.5,5,10}. Defaults to \code{0.5}.}
+\item{res}{Resolution for the WorldClim covariates. Valid values are: \code{0.5,2.5,5,10}. Defaults to \code{0.5}.}
 
 \item{scale}{Should the spatial covariates be scaled. Defaults to \code{FALSE}.}
 
@@ -52,7 +54,11 @@ species_model(
 
 \item{meshParameters}{A list of inla.mesh arguments to create a mesh if \code{mesh = NULL}.}
 
-\item{spdeModel}{inla.spde model used in the model. May be a named list where the name of the spde object is the name of the associated dataset. Default NULL uses inla.spde2.matern.}
+\item{spdeModel}{\code{inla.spde} model used in the model. May be a named list where the name of the spde object is the name of the associated dataset. Default \code{NULL} uses \code{inla.spde2.matern}.}
+
+\item{biasField}{Should a second (bias) random field be added to the GBIF data. Defaults to \code{FALSE}.}
+
+\item{biasModel}{\code{inla.spde} model used for the bias field. Requires \code{biasModel} to be \code{TRUE}. Default \code{NULL} uses \code{inla.spde2.matern}.}
 
 \item{projection}{CRS projection to use. Defaults to \code{CRS('+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs')}.}
 

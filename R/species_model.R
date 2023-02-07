@@ -7,14 +7,16 @@
 #' @param structuredData Additional datasets to integrate with the presence only GBIF data. See the \code{structured_data} function. Defaults to \code{NULL}.
 #' @param spatialCovariates Spatial covariates to include in the model. May be a \code{Raster} or \code{Spatial} object. Cannot be non-\code{NULL} if \code{worldclimCovariates} is non-\code{NULL}.
 #' @param worldclimCovariates Names of the covariates to extract from Worldclim. Defaults to \code{NULL}; cannot be non-\code{NULL} if \code{spatialCovariates} is non-\code{NULL}.
-#' @param res Resolution for the Worldclim covariates. Valid values are: \code{0.5,2.5,5,10}. Defaults to \code{0.5}.
+#' @param res Resolution for the WorldClim covariates. Valid values are: \code{0.5,2.5,5,10}. Defaults to \code{0.5}.
 #' @param scale Should the spatial covariates be scaled. Defaults to \code{FALSE}.
 #' @param location Which area of Norway to model. Defaults to \code{'Norway'} which suggests a model for the entire county.
 #' @param boundary SpatialPolygons object of the study area. If \code{NULL} an object may be formed with \code{location}.
 #' @param return Object to return. Has to be one of \code{c('boundary', 'species', 'species plot', 'mesh', 'mesh plot', 'model', 'predictions', 'predictions map')}.
 #' @param mesh An inla.mesh object to include in the model. Defaults to \code{NULL}.
 #' @param meshParameters A list of inla.mesh arguments to create a mesh if \code{mesh = NULL}.
-#' @param spdeModel inla.spde model used in the model. May be a named list where the name of the spde object is the name of the associated dataset. Default NULL uses inla.spde2.matern.
+#' @param spdeModel \code{inla.spde} model used in the model. May be a named list where the name of the spde object is the name of the associated dataset. Default \code{NULL} uses \code{inla.spde2.matern}.
+#' @param biasField Should a second (bias) random field be added to the GBIF data. Defaults to \code{FALSE}.
+#' @param biasModel \code{inla.spde} model used for the bias field. Requires \code{biasModel} to be \code{TRUE}. Default \code{NULL} uses \code{inla.spde2.matern}.
 #' @param projection CRS projection to use. Defaults to \code{CRS('+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs')}.
 #' @param limit Set the number of species downloaded. Defaults to \code{10000}.
 #' @param options A list of \code{INLA} and \code{inlabru} options. Defaults to \code{NULL}.
@@ -30,10 +32,10 @@
 #' @importFrom raster crop
 #' @importFrom raster merge
 #' @importFrom raster mask
-#' @importFrom maps map
+#@importFrom maps map
 #' @importFrom spocc occ
 #' @importFrom dplyr bind_rows
-#' @importFrom maptools map2SpatialPolygons
+#@importFrom maptools map2SpatialPolygons
 #'
 #' @examples {
 #'
@@ -72,12 +74,11 @@ species_model <- function(speciesNames,
                           structuredData = NULL,
                           spatialCovariates = NULL,
                           worldclimCovariates = NULL,
-                          res = 0.5,
-                          scale = FALSE,
+                          res = 0.5, scale = FALSE,
                           location = 'Norway', boundary = NULL,
-                          return = 'predictions map',
-                          mesh = NULL, meshParameters = NULL,
-                          spdeModel = NULL,
+                          return = 'predictions map', mesh = NULL,
+                          meshParameters = NULL, spdeModel = NULL,
+                          biasField = FALSE, biasModel = NULL,
                           projection = CRS('+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs'),
                           limit = 10000, options = list(), ...) {
 
@@ -102,7 +103,7 @@ species_model <- function(speciesNames,
 
   if (length(return) > 1) stop('return must contain only one element.')
 
-  if (!return%in%c('boundary','species', 'species plot', 'mesh', 'mesh plot', 'model', 'predictions', 'predictions map')) stop('return is not one of: species plot, mesh plot, model, predictions, predictions map.')
+  if (!return%in%c('boundary','species', 'species plot', 'mesh', 'mesh plot', 'model', 'predictions', 'predictions map')) stop('return is not one of: boundary, species, species plot, mesh, mesh plot, model, predictions, predictions map.')
 
   #if (!is.null(boundary)) {
 
@@ -128,13 +129,18 @@ species_model <- function(speciesNames,
     ## probably better but super slow
     #boundary <- fhimaps::norway_nuts3_map_b2020_default_sf
     #boundary <- as(boundary,'Spatial')
-     if (location == 'Norway') {
+     if (location %in% c('Norway', 'norway')) {
 
-       norwayfill <- maps::map("world", "norway", fill=TRUE, plot=FALSE,
-                         ylim=c(58,72), xlim=c(4,32))
-       IDs <- sapply(strsplit(norwayfill$names, ":"), function(x) x[1])
-       boundary <- maptools::map2SpatialPolygons(norwayfill, IDs = IDs,
-                                          proj4string = projection)
+        if (file.exists('~/Data-raw')) norwayfill <- geodata::gadm(country = 'Norway', path = '~/Data-raw', resolution = 2)
+        else norwayfill <- geodata::gadm(country = 'Norway', path = getwd(), resolution = 2)
+
+        boundary <- as(norwayfill, 'Spatial')
+
+       #norwayfill <- maps::map("world", "norway", fill=TRUE, plot=FALSE,
+       #                   ylim=c(58,72), xlim=c(4,32))
+       #IDs <- sapply(strsplit(norwayfill$names, ":"), function(x) x[1])
+       #boundary <- maptools::map2SpatialPolygons(norwayfill, IDs = IDs,
+       #                                   proj4string = projection)
 
     }
     else {
@@ -250,7 +256,7 @@ species_model <- function(speciesNames,
   if (!missing(speciesNames)){
 
   message('Obtaining GBIF species data:')
-
+##Mighht be worth doing this as a R6 + adding argument related to occuranceStatus and individualCount (note NA)
   if (is.null(date)) {
 
     species_data <- spocc::occ(query = speciesNames,
@@ -352,9 +358,10 @@ species_model <- function(speciesNames,
                                         trialsPA = trialsPA, speciesName = 'species',
                                         Projection = projection, ...)
 
-
   if (!is.null(spdeModel) && organized_data$.__enclos_env__$private$Spatial) organized_data$spatialFields$sharedField <- spdeModel
 
+  if (biasField) organized_model$addBias(datasetName = dataGBIF, biasField = biasModel)
+  ##Print model components here? new argument called verbose or something?
 
   message('Running model:')
 
