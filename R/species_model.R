@@ -135,6 +135,7 @@ species_model <- function(speciesNames,
         else norwayfill <- geodata::gadm(country = 'Norway', path = getwd(), resolution = 2)
 
         boundary <- as(norwayfill, 'Spatial')
+        proj4string(boundary) <- projection
 
        #norwayfill <- maps::map("world", "norway", fill=TRUE, plot=FALSE,
        #                   ylim=c(58,72), xlim=c(4,32))

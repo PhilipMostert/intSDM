@@ -9,11 +9,11 @@ testthat::test_that('Test that species_model can produce all of the returns corr
 
   #Check return = 'boundary'
 
-  boundary <- species_model(return = 'boundary')
-  expect_true(class(boundary)[1] == 'SpatialPolygons')
+  boundary <- species_model(return = 'boundary', projection = projection)
+  expect_true(class(boundary)[1] == 'SpatialPolygonsDataFrame')
 
   mesh <- INLA::inla.mesh.2d(boundary = INLA::inla.sp2segment(boundary),
-                             cutoff=0.08, max.edge=c(1, 3), offset=c(1,1))
+                             cutoff=0.08, max.edge=c(1, 3), offset=c(1,1), crs = projection)
 
 
   #Check different boundary
