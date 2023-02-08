@@ -359,7 +359,11 @@ species_model <- function(speciesNames,
                                         trialsPA = trialsPA, speciesName = 'species',
                                         Projection = projection, ...)
 
-  if (!is.null(spdeModel) && organized_data$.__enclos_env__$private$Spatial) organized_data$spatialFields$sharedField <- spdeModel
+  if (!is.null(spdeModel)) {
+
+    if (organized_data$.__enclos_env__$private$Spatial) organized_data$spatialFields$sharedField <- spdeModel
+    else stop('spdeModel provided but no shared spatial effect included in the model.')
+  }
 
   if (biasField) organized_model$addBias(datasetName = dataGBIF, biasField = biasModel)
   ##Print model components here? new argument called verbose or something?
