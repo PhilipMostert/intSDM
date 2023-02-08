@@ -361,7 +361,7 @@ species_model <- function(speciesNames,
 
   if (!is.null(spdeModel)) {
 
-    if (!is.null(organized_data$.__enclos_env__$private$Spatial)) organized_data$spatialFields$sharedField[['sharedField']] <- spdeModel
+    if (!is.null(organized_data$.__enclos_env__$private$Spatial[['sharedField']])) organized_data$spatialFields$sharedField[['sharedField']] <- spdeModel
     else stop('spdeModel provided but no shared spatial effect included in the model.')
   }
 
