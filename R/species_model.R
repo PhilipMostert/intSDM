@@ -226,8 +226,8 @@ species_model <- function(speciesNames,
                            cutoff = meshParameters$cutoff,
                            max.edge = meshParameters$max.edge,
                            offset = meshParameters$offset)
-    mesh$proj4string <- proj
-    mesh$crs <- proj
+    mesh$proj4string <- projection
+    mesh$crs <- projection
 
     if (return == 'mesh') {
 
