@@ -56,12 +56,23 @@ And finally by loading in some objects which will be required later on.
 
 Projection <- CRS('+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs')
 
-Norway <- geodata::gadm(country = 'Norway',
+if (system.file(package = 'maptools') != '') {
+  
+  norwayfill <- maps::map("world", "norway", fill=TRUE, plot=FALSE,
+                   ylim=c(58,72), xlim=c(4,32))
+  IDs <- sapply(strsplit(norwayfill$names, ":"), function(x) x[1])
+  norway.poly <- maptools::map2SpatialPolygons(norwayfill, IDs = IDs)
+  
+} else {
+  
+ Norway <- geodata::gadm(country = 'Norway',
                         path = '~/data-raw', 
                         resolution = 2,
                         level = 0)
 
 norway.poly <- as(Norway, 'Spatial')
+
+}
 
 proj4string(norway.poly) <- Projection
 
@@ -121,8 +132,9 @@ One of the objects required for our model is an *inla.mesh* object, which we wil
 ```{r Mesh construction, warning = FALSE, message = FALSE}
 
 mesh <- species_model(boundary = norway.poly,
+                      projection = Projection,
                       return = 'mesh', limit = 5000, 
-                      meshParameters = list(cutoff=0.3, max.edge=c(2, 4), offset=c(1,3)))
+                      meshParameters = list(cutoff=0.08, max.edge=c(1, 3), offset=c(1,1)))
 
 ggplot() +
   gg(mesh) +
@@ -155,8 +167,8 @@ Finally, by specifying *return = 'predictions map'*, `species_model` will run ou
 ```{r Prediction maps, warning = FALSE, message = FALSE, fig.width=8, fig.height=5}
 
 pcprior <- inla.spde2.pcmatern(mesh = mesh, 
-                               prior.range = c(1, 0.5),
-                               prior.sigma = c(5, 0.05))
+                               prior.range = c(300, 0.05),
+                               prior.sigma = c(1, 0.5))
 
 prediction_maps <- species_model(speciesNames = unique(structured@dataPA$PA_redlist$species),
                               scale = TRUE, structuredData = structured,
