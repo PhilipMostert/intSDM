@@ -14,7 +14,7 @@ coverage](https://codecov.io/gh/PhilipMostert/intSDM/branch/main/graph/badge.svg
 The goal of *intSDMs* is to assist users in creating a reproducible
 workflow for constructing integrated species distribution models across
 Norway using the
-[*INLA*](https://rss.onlinelibrary.wiley.com/doi/full/10.1111/j.1467-9868.2008.00700.x)
+[*INLA*](https://rss.onlinelibrary.wiley.com/doi/abs/10.1111/j.1467-9868.2008.00700.x)
 methodology.
 
 ## Installation
