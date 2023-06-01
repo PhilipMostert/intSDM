@@ -1,92 +1,191 @@
-sdmWorkflow <- function(workflow = NULL,
-                        saveObjects = NULL,
-                        Report = FALSE) {
+#' @title \code{sdmWorkflow}: Function to compile the reproducible workflow.
+#' @description This function is used to compile the reproducible workflow from the \code{R6} object created with \code{startFunction}. Depending on what was specified before, this function will estimate the integrated species distribution model, perform cross-validation, create predictions from the model and plot these predictions.
+#' @param Workflow The \code{R6} object created from \code{startWorkflow}. This object should contain all the data and model information required to estimate and specify the model.
+#' @return The return of the function depends on the argument \code{Save} from the \code{startWorkflow} function. If this argument is \code{FALSE} then the objects will be saved to the specidfied directory. If this argument is \code{TRUE} then a list of different outcomes from the workflow will be returned.
+#' @export
 
-  if (is.null(workFlow$.__enclos_env__$private$Mesh)) stop('An inla.mesh object is required before any analysis is completed. Please add using the `.$addMesh` function.')
-  if (is.null(workflow$.__enclos_env__$private$Output)) stop('A model output needs to be specified before any analysis is completed. Please add using the `.$workflowOutput` function.')
+sdmWorkflow <- function(Workflow = NULL) {
 
-  Oputs <- workflow$.__enclos_env__$private$Output
+  modDirectory <- Workflow$.__enclos_env__$private$Directory
+  saveObjects <- Workflow$.__enclos_env__$private$Save
 
-  if (is.null(workflow$.__enclos_env__$private$CVMethod) && 'Cross-Validation' %in% workflow$.__enclos_env__$private$Output) stop('Cross-validation specified as model output but no method provided. Please specify cross-validation method using the `.$crossValidation` function.')
+  if (is.null(Workflow$.__enclos_env__$private$Mesh)) stop('An inla.mesh object is required before any analysis is completed. Please add using the `.$addMesh` function.')
+  if (is.null(Workflow$.__enclos_env__$private$Output)) stop('A model output needs to be specified before any analysis is completed. Please add using the `.$workflowOutput` function.')
 
-  dataUsed <- append(workflow$.__enclos_env__$private$dataGBIF,
-                     workflow$.__enclos_env__$private$dataStructured)
+  Oputs <- Workflow$.__enclos_env__$private$Output
+  outputList <-list()
 
-  if (length(dataUsed) == 0) stop('No data added to the model. Please add data using `.$addGBIF` or `.$addStructured`.')
+  if (is.null(Workflow$.__enclos_env__$private$CVMethod) && 'Cross-Validation' %in% Workflow$.__enclos_env__$private$Output) stop('Cross-validation specified as model output but no method provided. Please specify cross-validation method using the `.$crossValidation` function.')
 
-  if (length(workFlow$optionsISDM) > 1) {
+  ##Need to do it on a species by species basis:
 
-    ##Add options here
+  if (length(Workflow$.__enclos_env__$private$optionsISDM) > 0) {
+
+    if (!is.null(Workflow$.__enclos_env__$private$optionsISDM[['pointsSpatial']])) .__pointsSpatial.__ <- Workflow$.__enclos_env__$private$optionsISDM$pointsSpatial
+    else .__pointsSpatial.__ <- 'shared'
+
+    if (!is.null(Workflow$.__enclos_env__$private$optionsISDM[['copyModel']])) .__copyModel.__ <- eval(parse(text = Workflow$.__enclos_env__$private$optionsISDM['copyModel']))
+    else .__copyModel.__ <- eval(parse(text = 'list(beta = list(fixed = FALSE))'))
+
+    if (!is.null(Workflow$.__enclos_env$private$optionsISDM[['pointsIntercept']])) .__pointsIntercept.__ <- Workflow$.__enclos_env$private$optionsISDM$pointsIntercept
+    else .__pointsIntercept.__ <- TRUE
 
 
   } else {
 
-    ##Add default options here
+    .__pointsSpatial.__ <- 'shared'
+    .__copyModel.__ <- eval(parse(text = 'list(beta = list(fixed = FALSE))'))
+    .__pointsIntercept.__ <- TRUE
 
   }
 
-  initializeModel <- PointedSDMs::intModel()
+  .__mesh.__ <- Workflow$.__enclos_env__$private$Mesh
+  .__proj.__ <- Workflow$.__enclos_env__$private$Projection
+  .__coordinates.__ <- Workflow$.__enclos_env__$private$Coordinates
+  .__responsePA.__ <- Workflow$.__enclos_env__$private$responsePA
+  .__responseCounts.__ <- Workflow$.__enclos_env__$private$responseCounts
+  .__trialsName.__ <- Workflow$.__enclos_env__$private$trialsName
 
-  if ('Cross-validation' %in% Oputs && 'spatialBlock' %in%workflow$.__enclos_env__$private$CVMethod) {
+  for (species in unique(c(names(Workflow$.__enclos_env__$private$dataGBIF),
+                           names(Workflow$.__enclos_env__$private$dataStructured)))) {
 
-    ##Somehow add blockCV model nicely
+   speciesNameInd <- sub(' ', '_', species)
+   dir.create(path = paste0(modDirectory, '/', speciesNameInd))
+
+   message(paste('Starting model for', species))
+
+   speciesDataset <- append(Workflow$.__enclos_env__$private$dataGBIF[[species]],
+                            Workflow$.__enclos_env__$private$dataStructured[[species]])
+
+
+  if (length(speciesDataset) == 0) stop('No data added to the model. Please add data using `.$addGBIF` or `.$addStructured`.')
+
+  initializeModel <- PointedSDMs::intModel(speciesDataset, Mesh = .__mesh.__, Projection = sp::CRS(.__proj.__), Coordinates = .__coordinates.__,
+                                            responsePA = .__responsePA.__, responseCounts = .__responseCounts.__,
+                                            trialsPA = .__trialsName.__, pointsSpatial = .__pointsSpatial.__,
+                                            pointsIntercept = .__pointsIntercept.__ ,
+                                            copyModel = .__copyModel.__)
+
+  if (!is.null(Workflow$.__enclos_env__$private$sharedField)) initializeModel$spatialFields$sharedField$sharedField <- Workflow$.__enclos_env__$private$sharedField
+
+  if (!is.null(Workflow$.__enclos_env__$private$biasNames)) {
+
+    initializeModel$addBias(datasetNames = Workflow$.__enclos_env__$private$biasNames)
+
+    if (!is.null(Workflow$.__enclos_env__$private$biasFieldsSpecify)) {
+
+      for (biasName in names(Workflow$.__enclos_env__$private$biasFieldsSpecify)) {
+
+
+        initializeModel$spatialFields$biasFields[[biasName]] <- Workflow$.__enclos_env__$private$biasFieldsSpecify[[biasName]]
+
+        }
+
+
+    }
+
+
+
+  }
+
+  if ('Cross-validation' %in% Oputs && 'spatialBlock' %in%Workflow$.__enclos_env__$private$CVMethod) {
+
+    initializeModel$spatialBlock(k = Workflow$.__enclos_env__$private$blockOptions$k,
+                                 rows_cols = Workflow$.__enclos_env__$private$blockOptions$rows_cols,
+                                 seed = Workflow$.__enclos_env__$private$blockOptions$seed)
 
   }
 
   message('Estimating ISDM:\n\n')
 
   PSDMsMOdel <- PointedSDMs::fitISDM(initializeModel,
-                                     options = workflow$.__enclos_env$private$optionsINLA)
+                                     options = Workflow$.__enclos_env$private$optionsINLA)
 
   if ('Model' %in% Oputs) {
 
-    message('Saving Model object to:', '\n\n')
-    saveRDS(object = PSDMsMOdel)
+    if (saveObjects) {
 
+    message('Saving Model object to:', '\n\n')
+    saveRDS(object = PSDMsMOdel, file = paste0(modDirectory,'/', speciesNameInd, '/intModel.rds'))
+
+    } else outputList[[speciesNameInd]][['Model']] <- PSDMsMOdel
 
   }
 
   if ('Cross-validation' %in% Oputs) {
 
 
-    if ('spatialBlock' %in %workflow$.__enclos_env__$private$CVMethod) {
+    if ('spatialBlock' %in% Workflow$.__enclos_env__$private$CVMethod) {
 
-      message('Completing spatial block cross-validation:\n\n')
+      message('Estimating spatial block cross-validation:\n\n')
       spatialBlockCV <- PointedSDMs::blockedCV(initializeModel)
+
+      if (saveObjects) {
+
       message('Saving spatial blocked cross-validation object to:', '\n\n')
-      saveRDS(object = spatialBlockCV); rm(spatialBlockCV)
+      saveRDS(object = spatialBlockCV, file = paste0(modDirectory,'/', speciesNameInd, '/spatialBlock.rds'))
 
+      } else outputList[[speciesNameInd]][['spatialBlock']] <- spatialBlockCV
+
+      rm(spatialBlockCV)
     }
 
-    if ('Loo' %in% workflow$.__enclos_env__$private$CVMethod) {
+    if ('Loo' %in% Workflow$.__enclos_env__$private$CVMethod) {
 
-      message('Completing leave-one-out cross-validation:\n\n')
+      message('Estimating leave-one-out cross-validation:\n\n')
       LooCV <- PointedSDMs::datasetOut()
+
+      if (saveObjects) {
+
       message('Saving leave-one-out cross-validation object to:', '\n\n')
-      saveRDS(object = LooCV); rm(LooCV)
+      saveRDS(object = LooCV, file = paste0(modDirectory,'/', speciesNameInd, '/LooCV.rds'))
+
+      } else outputList[[speciesNameInd]][['LooCV']] <- LooCV
+
+      rm(LooCV)
 
     }
 
-    if ('Predictions' %in% Oputs) {
+  }
+
+    if (any(c('Predictions', 'Maps') %in% Oputs)) {
 
       message('Predicting model:\n\n')
-      Predictions <- predict(model, data = inlabru::pixels(mesh, mask), predictor = TRUE)
+      .__mask.__ <- as(Workflow$.__enclos_env__$private$Area, 'Spatial')
+      Predictions <- predict(PSDMsMOdel, data = inlabru::pixels(mesh = .__mesh.__,
+                                                                mask = .__mask.__),
+                             predictor = TRUE)
+
+      if (saveObjects) {
+
       message('Saving predictions object to:', '\n\n')
-      saveRDS(object = Predictions)
+      saveRDS(object = Predictions, file = paste0(modDirectory,'/', speciesNameInd, '/Predictions.rds'))
+
+      } else outputList[[speciesNameInd]][['Predictions']] <- Predictions
 
     }
 
     if ('Maps' %in% Oputs) {
 
       message("Plotting Maps:\n\n")
-      plot(Predictions)
-      #Save object here
+
+      if (saveObjects) {
+
+       message('Saving plots object to:', '\n\n')
+       plot(Predictions)
+       ggsave(filename = paste0(modDirectory,'/', speciesNameInd, '/Map.png'))
+
+      }
+      else outputList[[speciesNameInd]][['Maps']] <- plot(Predictions, plot = FALSE)
+
+      rm(Predictions)
+
 
     }
 
-    ##Some summary output here
-     #Should we delete all the objects after use?
-
   }
+
+  if (!saveObjects) return(outputList)
+
 
   }
