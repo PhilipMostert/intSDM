@@ -30,7 +30,10 @@ Depends:
     R (>= 3.5),
     inlabru (>= 2.3.1),
     ggplot2,
+    INLA (>= 21.08.31),
+    giscoR,
     sp (>= 1.4-5),
+    sf,
     stats,
     PointedSDMs,
     methods
@@ -38,13 +41,13 @@ Imports:
     dplyr,
     geodata,
     terra,
+    tidyterra,
     spocc,
     raster,
     maps
 Suggests:
     fields,
     RANN,
-    INLA (>= 21.08.31),
     rgeos,
     viridis,
     ggpolypath,
@@ -54,7 +57,6 @@ Suggests:
     knitr,
     rmarkdown,
     testthat (>= 3.0.0),
-    sf,
     covr
 Additional_repositories: https://inla.r-inla-download.org/R/testing/
 License: GPL (>= 3)
