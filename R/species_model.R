@@ -354,7 +354,7 @@ addGBIF = function(Species = 'All', datasetName = NULL,
    #Are we changing for Name or scientific name?
 
   for (speciesName in Species) {
-
+##Do something here which makes sure that no duplicates are found...
   private$dataGBIF[[sub(" ", '_', speciesName)]][[datasetName]] <- obtainGBIF(query = speciesName,
                                                 #datasetName = datasetName,
                                                 geometry = private$Area,
@@ -416,6 +416,8 @@ addGBIF = function(Species = 'All', datasetName = NULL,
     dir.create(covDirectory, showWarnings = FALSE)
     if (!dir.exists(covDirectory)) covDirectory <- getwd()#dir.create(covDirectory)
     message(paste('Saved covariate objects may be found in', covDirectory))
+
+    if (is.null(private$Countries)) stop('Please specify a country first before obtaining a covariate layer. This may be done using either startWorkflow or through `.$addArea`.')
 
     covRaster <- obtainCovariate(covariates = worldClim,
                                  countries = private$Countries,
@@ -511,7 +513,6 @@ addGBIF = function(Species = 'All', datasetName = NULL,
      if (is.null(blockOptions$k) || is.null(blockOptions$rows_cols)) stop('Please provide both k and rows_cols in blockOptions.')
      if (is.null(blockOptions$plot)) blockOptions$plot <- FALSE
 
-     private$CVMethod <- Method
      private$blockOptions <- blockOptions
 
      if (blockOptions$plot) {
@@ -557,6 +558,8 @@ addGBIF = function(Species = 'All', datasetName = NULL,
 
 
     }
+
+    private$CVMethod <- Method
 
   }
   ,
