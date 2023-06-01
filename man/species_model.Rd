@@ -2,104 +2,343 @@
 % Please edit documentation in R/species_model.R
 \name{species_model}
 \alias{species_model}
-\title{\emph{species_model}: function to construct an integrated species distribution model, as well as other useful outputs from the model.}
-\usage{
-species_model(
-  speciesNames,
-  date = NULL,
-  gbifOpts = list(coordinateUncertaintyInMeters = "0,1000"),
-  structuredData = NULL,
-  spatialCovariates = NULL,
-  worldclimCovariates = NULL,
-  res = 0.5,
-  scale = FALSE,
-  location = "Norway",
-  boundary = NULL,
-  return = "predictions map",
-  mesh = NULL,
-  meshParameters = NULL,
-  spdeModel = NULL,
-  biasField = FALSE,
-  biasModel = NULL,
-  projection = CRS("+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs"),
-  limit = 10000,
-  options = list(),
-  ...
-)
-}
-\arguments{
-\item{speciesNames}{A vector of species' names to collect from GBIF.}
-
-\item{date}{Vector of length two denoting the date range to select species from. Defaults to \code{NULL}.}
-
-\item{gbifOpts}{A named list of additional options to filter the GBIF records. See \code{?rgbif::occ_search} for the filters which may be applied to the GBIF records. Defaults to \code{list(coordinateUncertaintyInMeters = '0,1000')} which specifies a desired range of coordinates uncertainty (in meters) between 0 and 1000.}
-
-\item{structuredData}{Additional datasets to integrate with the presence only GBIF data. See the \code{structured_data} function. Defaults to \code{NULL}.}
-
-\item{spatialCovariates}{Spatial covariates to include in the model. May be a \code{Raster} or \code{Spatial} object. Cannot be non-\code{NULL} if \code{worldclimCovariates} is non-\code{NULL}.}
-
-\item{worldclimCovariates}{Names of the covariates to extract from Worldclim. Defaults to \code{NULL}; cannot be non-\code{NULL} if \code{spatialCovariates} is non-\code{NULL}.}
-
-\item{res}{Resolution for the WorldClim covariates. Valid values are: \code{0.5,2.5,5,10}. Defaults to \code{0.5}.}
-
-\item{scale}{Should the spatial covariates be scaled. Defaults to \code{FALSE}.}
-
-\item{location}{Which area of Norway to model. Defaults to \code{'Norway'} which suggests a model for the entire county.}
-
-\item{boundary}{SpatialPolygons object of the study area. If \code{NULL} an object may be formed with \code{location}.}
-
-\item{return}{Object to return. Has to be one of \code{c('boundary', 'species', 'species plot', 'mesh', 'mesh plot', 'model', 'predictions', 'predictions map')}.}
-
-\item{mesh}{An inla.mesh object to include in the model. Defaults to \code{NULL}.}
-
-\item{meshParameters}{A list of inla.mesh arguments to create a mesh if \code{mesh = NULL}.}
-
-\item{spdeModel}{\code{inla.spde} model used in the model. May be a named list where the name of the spde object is the name of the associated dataset. Default \code{NULL} uses \code{inla.spde2.matern}.}
-
-\item{biasField}{Should a second (bias) random field be added to the GBIF data. Defaults to \code{FALSE}.}
-
-\item{biasModel}{\code{inla.spde} model used for the bias field. Requires \code{biasModel} to be \code{TRUE}. Default \code{NULL} uses \code{inla.spde2.matern}.}
-
-\item{projection}{CRS projection to use. Defaults to \code{CRS('+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs')}.}
-
-\item{limit}{Set the number of species downloaded. Defaults to \code{10000}.}
-
-\item{options}{A list of \code{INLA} and \code{inlabru} options. Defaults to \code{NULL}.}
-
-\item{...}{Additional arguments used in PointedSDMs's intModel function.}
-}
-\value{
-The return of the function is determined by the argument \code{return}. For the different values of return: \item{\code{boundary}}{A \code{SpatialPolygon} of the boundary used in the model,} \item{\code{species}}{A \code{data.frame} object of the species' coordinates used in the model,} \item{\code{species plot}}{a \code{ggplot} plot of the species across a map,} \item{\code{mesh}}{an \code{inla.mesh} object,} \item{\code{mesh plot}}{a plot of the \code{inla.mesh object},} \item{model}{the integrated model,} \item{\code{predictions}}{predictions from the integrated model (on the linear scale),} \item{\code{predictions map}}{A \code{ggplot} plot of the predictions across the boundary.}
-}
+\title{R6 class for creating a \code{species_model} object.}
 \description{
-This function is used to construct integrated species distribution models using data specified with \code{\link{structured_data}} as well as present only data obtained from the Global Biodiversity Information Facility (GBIF).
+An object containing the data, covariates  and other relevant information to be used in the reproducible workflow. The function \code{\link{startWorkflow}} acts as a wrapper in creating one of these objects. This object has additional slot functions within, which allow for further specification and customization of the reproducible workflow.
 }
-\examples{
-{
-
-
-\dontrun{
- if(requireNamespace('INLA')) {
-
- #Objects required for example
- data("PA_redlist")
- speciesNames <- c('Fraxinus excelsior', 'Ulmus glabra')
-
- #Set up structured dataset
-   dataObj <- structured_data(PA_redlist, datasetType = c('PA'), responsePA = 'individualCount',
-   speciesName = 'species',
-   coordinateNames = c("longitude", "latitude" ))
-
-  #Get species map
-    predictions <- species_model(return = 'species plot',
-    boundary = boundary, speciesNames = species,
-    limit = 10, structuredData = dataObj,
-    meshParameters = list(cutoff=0.08, max.edge=c(1, 3), offset=c(1,1)),
-    worldclimCovariates ='Annual Mean Temperature')
-  }
-
-  }
-
+\section{Methods}{
+\subsection{Public methods}{
+\itemize{
+\item \href{#method-species_model-print}{\code{species_model$print()}}
+\item \href{#method-species_model-plot}{\code{species_model$plot()}}
+\item \href{#method-species_model-addStructured}{\code{species_model$addStructured()}}
+\item \href{#method-species_model-addMesh}{\code{species_model$addMesh()}}
+\item \href{#method-species_model-addGBIF}{\code{species_model$addGBIF()}}
+\item \href{#method-species_model-addCovariates}{\code{species_model$addCovariates()}}
+\item \href{#method-species_model-addArea}{\code{species_model$addArea()}}
+\item \href{#method-species_model-crossValidation}{\code{species_model$crossValidation()}}
+\item \href{#method-species_model-modelOptions}{\code{species_model$modelOptions()}}
+\item \href{#method-species_model-specifySpatial}{\code{species_model$specifySpatial()}}
+\item \href{#method-species_model-biasFields}{\code{species_model$biasFields()}}
+\item \href{#method-species_model-workflowOutput}{\code{species_model$workflowOutput()}}
+\item \href{#method-species_model-new}{\code{species_model$new()}}
+\item \href{#method-species_model-clone}{\code{species_model$clone()}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-species_model-print"></a>}}
+\if{latex}{\out{\hypertarget{method-species_model-print}{}}}
+\subsection{Method \code{print()}}{
+Prints the datasets, their data type and the number of observations, as well as the marks and their respective families.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{species_model$print(...)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{...}}{Not used.}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-species_model-plot"></a>}}
+\if{latex}{\out{\hypertarget{method-species_model-plot}{}}}
+\subsection{Method \code{plot()}}{
+Makes a plot of the features used in the integrated model.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{species_model$plot(
+  Mesh = FALSE,
+  Boundary = TRUE,
+  Species = FALSE,
+  Covariates = FALSE
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{Mesh}}{Add the mesh to the plot.}
+
+\item{\code{Boundary}}{Add the boundary to the plot.}
+
+\item{\code{Species}}{Add the species location data to the plot.}
+
+\item{\code{Covariates}}{Add the spatial covariates to the plot.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A ggplot object.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-species_model-addStructured"></a>}}
+\if{latex}{\out{\hypertarget{method-species_model-addStructured}{}}}
+\subsection{Method \code{addStructured()}}{
+The function is used to convert structured datasets into a framework which is usable by the model. The three types of structured data allowed by this function are present absence (PA), present only (PO) and counts/abundance datasets, which are controlled using the \code{datasetType} argument. The other arguments of this function are used to specify the appropriate variable (such as response name, trial name, species name and coordinate name) names in these datasets.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{species_model$addStructured(
+  dataStructured,
+  datasetType,
+  responseName,
+  trialsName,
+  speciesName,
+  coordinateNames
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{dataStructured}}{The dataset used in the model. May be either a \code{data.frame}, \code{sf} or \code{SpatialPoints*} object.}
+
+\item{\code{datasetType}}{A vector which gives the type of dataset. Must be either \code{'count'}, \code{'PO'} or \code{'PA'}.}
+
+\item{\code{responseName}}{Name of the response variable in the dataset. If \code{dataType} is \code{'PO'}, then this argument may be missing.}
+
+\item{\code{trialsName}}{Name of the trial name variable in the \code{PA} datasets.}
+
+\item{\code{speciesName}}{Name of the species variable name in the datasets.}
+
+\item{\code{coordinateNames}}{Names of the coordinate vector in the dataset.}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-species_model-addMesh"></a>}}
+\if{latex}{\out{\hypertarget{method-species_model-addMesh}{}}}
+\subsection{Method \code{addMesh()}}{
+Function to add an \code{inla.mesh} object to the workflow. The user may either add their own mesh to the workflow, or use the arguments of this function to help create one.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{species_model$addMesh(Object, ...)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{Object}}{An \code{inla.mesh} object to add to the workflow.}
+
+\item{\code{...}}{Additional arguments to pass to \code{INLA}'s \code{inla.mesh.2d}. Use \code{?inla.mesh.2d} to find out more about the different arguments.}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-species_model-addGBIF"></a>}}
+\if{latex}{\out{\hypertarget{method-species_model-addGBIF}{}}}
+\subsection{Method \code{addGBIF()}}{
+Function to add species occurrence records from GBIF (using the \link{spocc} package) to the reproducible workflow. The arguments for this function are used to either filter the GBIF records, or to specify the characteristics of the observation model.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{species_model$addGBIF(
+  Species = "All",
+  datasetName = NULL,
+  datasetType = "PO",
+  responseCounts = "individualCount",
+  responsePA = "occurrenceStatus",
+  assign2Global = FALSE,
+  ...
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{Species}}{The names of the species to include in the workflow (initially specified using \link{startWorkflow}). Defaults to \code{All}, which will find occurrence records for all specie specified in \link{startWorkflow}.}
+
+\item{\code{datasetName}}{The name to give the dataset obtained from GBIF. Cannot be \code{NULL}.}
+
+\item{\code{datasetType}}{The data type of the dataset. Defaults to \code{PO}, but may also be \code{PA} or \code{Counts}.}
+
+\item{\code{responseCounts}}{Name of the response variable for the counts data. Defaults to the standard Darwin core value \code{individualCounts}.}
+
+\item{\code{responsePA}}{Name of the response variable for the PA data. Defaults to the standard Darwin core value \code{occurrenceStatus}.}
+
+\item{\code{assign2Global}}{Assign the dataset to the global environment. The object will be assigned to an object specified using the \code{datasetName} object.}
+
+\item{\code{...}}{Additional arguments to specify the \link{occ_data} function from \code{rgbif}. See \code{?occ_data} for more details.}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-species_model-addCovariates"></a>}}
+\if{latex}{\out{\hypertarget{method-species_model-addCovariates}{}}}
+\subsection{Method \code{addCovariates()}}{
+Function to add spatial covariates to the workflow. The covariates may either be specified by the user, or they may come from worldClim obtained with the \link{geodata} package.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{species_model$addCovariates(
+  Object = NULL,
+  worldClim = NULL,
+  Months = "All",
+  Function = "mean",
+  ...
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{Object}}{A object of class: \code{spatRaster}, \code{SpatialPixelsDataFrame} or \code{raster} containing covariate information across the area. Note that this function will check if the covariates span the boundary area, so it may be preferable to add your own boundary using \link{addArea} if this argument is specified.}
+
+\item{\code{worldClim}}{Name of the worldClim to include in the model. See \code{?worldclim_country} from the \link{geodata} package for more information.}
+
+\item{\code{Months}}{The months to include the covariate for. Defaults to \code{All} which includes covariate layers for all months.}
+
+\item{\code{Function}}{The function to aggregate the temporal data into one layer. Defaults to \code{mean}.}
+
+\item{\code{...}}{Not used.}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-species_model-addArea"></a>}}
+\if{latex}{\out{\hypertarget{method-species_model-addArea}{}}}
+\subsection{Method \code{addArea()}}{
+Function to add a boundary around the study area. This function allows the user to either add their own boundary object, or obtain a country's boundary using \link{gisco_get_countries} from the \link{giscoR} package.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{species_model$addArea(Object = NULL, countryName = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{Object}}{A \code{sf} or \code{SpatialPolygons} object of the boundary surrounding the study area.}
+
+\item{\code{countryName}}{Name of the countries to obtain a boundary for. This argument will then use the \link{gisco_get_countries} function from the \link{giscoR} package to obtain a boundary.}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-species_model-crossValidation"></a>}}
+\if{latex}{\out{\hypertarget{method-species_model-crossValidation}{}}}
+\subsection{Method \code{crossValidation()}}{
+Function to add a spatial cross validation method to the workflow.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{species_model$crossValidation(
+  Method,
+  blockOptions = list(k = 5, rows_cols = c(4, 4), plot = FALSE, seed = NULL)
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{Method}}{The spatial cross-validation methods to use in the workflow. May be at least one of \code{spatialBlock} or \code{Loo} (leave-one-out). See the \link{PointedSDMs} for more details.}
+
+\item{\code{blockOptions}}{A list of options to specify the spatial block cross-validation. Must be a named list with arguments specified for: \code{k}, \code{rows_cols}, \code{plot}, \code{seed}. See \code{blockCV::cv_spatial} for more information.}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-species_model-modelOptions"></a>}}
+\if{latex}{\out{\hypertarget{method-species_model-modelOptions}{}}}
+\subsection{Method \code{modelOptions()}}{
+Function to specify model options for the \link{INLA} and \link{PointedSDMs} parts of the model.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{species_model$modelOptions(ISDM = list(), INLA = list())}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{ISDM}}{Arguments to specify in \link{intModel} from the \link{PointedSDMs} function. This argument needs to be a named list of the following options: \code{pointCovariates}, \code{pointsIntercept}, \code{pointsSpatial} or \code{copyModel}. See \code{?intModel} for more details.}
+
+\item{\code{INLA}}{Options to specify in \link{inla} from the \link{INLA} function. See \code{?inla} for more details.}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-species_model-specifySpatial"></a>}}
+\if{latex}{\out{\hypertarget{method-species_model-specifySpatial}{}}}
+\subsection{Method \code{specifySpatial()}}{
+Function to specify pc priors for the shared random field in the model. See \link{?INLA::inla.spde2.pcmatern} for more details.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{species_model$specifySpatial(...)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{...}}{Arguments passed on to \link{INLA::inla.spde2.pcmatern}.}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-species_model-biasFields"></a>}}
+\if{latex}{\out{\hypertarget{method-species_model-biasFields}{}}}
+\subsection{Method \code{biasFields()}}{
+Function to add bias fields to the model.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{species_model$biasFields(datasetName, ...)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{datasetName}}{Name of the dataset to add a bias field to.}
+
+\item{\code{...}}{Additional arguments passed on to \link{INLA::inla.spde2.pcmatern} to customize the priors for the pc matern for the bias fields.}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-species_model-workflowOutput"></a>}}
+\if{latex}{\out{\hypertarget{method-species_model-workflowOutput}{}}}
+\subsection{Method \code{workflowOutput()}}{
+Function to specify the workflow output from the model. This argument must be at least one of: \code{'Model'}, \code{'Prediction'}, \code{'Maps'} and \code{'Cross-validation'}.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{species_model$workflowOutput(Output)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{Output}}{The names of the outputs to give in the workflow. Must be at least one of: \code{'Model'}, \code{'Prediction'}, \code{'Maps'} and \code{'Cross-validation'}.}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-species_model-new"></a>}}
+\if{latex}{\out{\hypertarget{method-species_model-new}{}}}
+\subsection{Method \code{new()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{species_model$new(
+  Countries,
+  Species,
+  nameProject,
+  Save,
+  Directory,
+  Projection,
+  Quiet = TRUE
+)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-species_model-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-species_model-clone}{}}}
+\subsection{Method \code{clone()}}{
+The objects of this class are cloneable with this method.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{species_model$clone(deep = FALSE)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{deep}}{Whether to make a deep clone.}
+}
+\if{html}{\out{</div>}}
+}
+}
 }
