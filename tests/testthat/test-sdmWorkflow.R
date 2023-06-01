@@ -5,17 +5,18 @@ testthat::test_that('sdmWorkflow produces the correct output given different Wor
   ##Create different workflows here:
    #1. Just GBIF data
   proj <- '+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
-  species <- c('Fraxinus excelsior', 'Arnica montana')
+  species <- c('Fraxinus excelsior')
   workflow <- startWorkflow(Species = species,
                             saveOptions = list(projectName = 'testthatexample', projectDirectory = './tests'),
                             Projection = proj, Countries = 'Norway',
                             Quiet = TRUE, Save = TRUE)
 
-  workflow$addGBIF(datasetName = 'GBIF_data') #Get less species
+  workflow$addGBIF(datasetName = 'GBIF_data', limit = 50) #Get less species
+  workflow$addGBIF(datasetName = 'GBIF_data2', limit = 50, datasetType = 'PA')
   expect_error(sdmWorkflow(Workflow = workflow)) #Test no output given
   workflow$workflowOutput('Model')
   expect_error(sdmWorkflow(Workflow = workflow)) #Test no mesh provided
-  workflow$addMesh(max.edge = 200000)
+  workflow$addMesh(max.edge = 500000) #200000
   #Test something about CV-method -- none specified but given as output
   #Need to test a lot of the copy model; points spatial; points intercept parts
 
@@ -23,22 +24,46 @@ testthat::test_that('sdmWorkflow produces the correct output given different Wor
   expect_true(dir.exists('./tests/testthatexample/Covariates'))
 
   sdmWorkflow(Workflow = workflow)
-  expect_true(all(c(dir.exists('./tests/testthatexample/Fraxinus_excelsior'),
-                    dir.exists('./tests/testthatexample/Arnica_montana'))))
+  expect_true(all(c(dir.exists('./tests/testthatexample/Fraxinus_excelsior'))))
 
-  expect_true(all(c(file.exists('./tests/testthatexample/Fraxinus_excelsior/intModel.rds'),
-                    file.exists('./tests/testthatexample/Arnica_montana/intModel.rds'))))
+  expect_true(all(c(file.exists('./tests/testthatexample/Fraxinus_excelsior/intModel.rds'))))
 
   Fraxinus_excelsior <- readRDS(file = './tests/testthatexample/Fraxinus_excelsior/intModel.rds')
-  Fraxinus_excelsior
-  #Test no output provided
-  #Need to test that the model also saves all the outputs in a given directory, for multiple species.
+  expect_setequal(rownames(Fraxinus_excelsior$summary.fixed), c('tmax',  "GBIF_data_intercept", "GBIF_data2_intercept"))
+  expect_equal(as.character(Fraxinus_excelsior$componentsJoint)[2],
+               "-1 + shared_spatial(main = coordinates, model = shared_field) + tmax(main = tmax, model = \"linear\") + GBIF_data_intercept(1) + GBIF_data2_intercept(1)")
+  rm(Fraxinus_excelsior)
+
+  biasWorkflow <- startWorkflow(Species = species,
+                            saveOptions = list(projectName = 'testthatexample', projectDirectory = './tests'),
+                            Projection = proj, Countries = 'Norway',
+                            Quiet = TRUE, Save = FALSE)
+
+  biasWorkflow$addGBIF(datasetName = 'GBIF_data') #Get less species
+  biasWorkflow$addGBIF(datasetName = 'GBIF_data2', limit = 50, datasetType = 'PA')
+  biasWorkflow$workflowOutput('Model')
+  biasWorkflow$addMesh(max.edge = 500000) #200000
+  biasWorkflow$biasFields('GBIF_data')
+  biasMod <- sdmWorkflow(biasWorkflow)
+  expect_setequal(names(biasMod$Fraxinus_excelsior$Model$summary.random), c("shared_spatial", "GBIF_data_biasField"))
+  rm(biasWorkflow)
+
+  copyWorkflow <- startWorkflow(Species = species,
+                                saveOptions = list(projectName = 'testthatexample', projectDirectory = './tests'),
+                                Projection = proj, Countries = 'Norway',
+                                Quiet = TRUE, Save = FALSE)
+
+  copyWorkflow$addGBIF(datasetName = 'GBIF_data') #Get less species
+  copyWorkflow$addGBIF(datasetName = 'GBIF_data2', limit = 50, datasetType = 'PA')
+  copyWorkflow$workflowOutput('Model')
+  copyWorkflow$addMesh(max.edge = 500000) #200000
+  copyWorkflow$modelOptions(ISDM = list(pointsSpatial = 'copy', copyModel = list(beta = list(fixed = TRUE))))
+  copyMod <- sdmWorkflow(copyWorkflow)
+
+  expect_setequal(names(copyMod$Fraxinus_excelsior$Model$summary.random), c("GBIF_data_spatial", "GBIF_data2_spatial"))
+  expect_equal(as.character(copyMod$Fraxinus_excelsior$Model$componentsJoint)[2],
+               "-1 + GBIF_data_spatial(main = coordinates, model = GBIF_data_field) + GBIF_data2_spatial(main = coordinates, copy = \"GBIF_data_spatial\", hyper = list(beta = list(fixed = TRUE))) + GBIF_data_intercept(1) + GBIF_data2_intercept(1)")
 
 
-
-   #2. GBIF + PA + Counts data
-   #3. Change fields settings + other INLA options
-   #4. Bias fields
-   #5. Test all the different possible outcomes
 
 })
