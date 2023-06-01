@@ -46,6 +46,9 @@ sdmWorkflow <- function(Workflow = NULL) {
   .__responseCounts.__ <- Workflow$.__enclos_env__$private$responseCounts
   .__trialsName.__ <- Workflow$.__enclos_env__$private$trialsName
 
+  if (!is.null(Workflow$.__enclos_env__$private$Covariates)) spatCovs <- terra::rast(Workflow$.__enclos_env__$private$Covariates)
+  else spatCovs <- NULL
+
   for (species in unique(c(names(Workflow$.__enclos_env__$private$dataGBIF),
                            names(Workflow$.__enclos_env__$private$dataStructured)))) {
 
@@ -58,13 +61,15 @@ sdmWorkflow <- function(Workflow = NULL) {
                             Workflow$.__enclos_env__$private$dataStructured[[species]])
 
 
+
   if (length(speciesDataset) == 0) stop('No data added to the model. Please add data using `.$addGBIF` or `.$addStructured`.')
 
-  initializeModel <- PointedSDMs::intModel(speciesDataset, Mesh = .__mesh.__, Projection = sp::CRS(.__proj.__), Coordinates = .__coordinates.__,
+  initializeModel <<- PointedSDMs::intModel(speciesDataset, Mesh = .__mesh.__, Projection = sp::CRS(.__proj.__), Coordinates = .__coordinates.__,
                                             responsePA = .__responsePA.__, responseCounts = .__responseCounts.__,
                                             trialsPA = .__trialsName.__, pointsSpatial = .__pointsSpatial.__,
                                             pointsIntercept = .__pointsIntercept.__ ,
-                                            copyModel = .__copyModel.__)
+                                            copyModel = .__copyModel.__,
+                                            spatialCovariates = spatCovs)
 
   if (!is.null(Workflow$.__enclos_env__$private$sharedField)) initializeModel$spatialFields$sharedField$sharedField <- Workflow$.__enclos_env__$private$sharedField
 
@@ -105,7 +110,7 @@ sdmWorkflow <- function(Workflow = NULL) {
 
     if (saveObjects) {
 
-    message('Saving Model object to:', '\n\n')
+    message('Saving Model object:', '\n\n')
     saveRDS(object = PSDMsMOdel, file = paste0(modDirectory,'/', speciesNameInd, '/intModel.rds'))
 
     } else outputList[[speciesNameInd]][['Model']] <- PSDMsMOdel
@@ -122,7 +127,7 @@ sdmWorkflow <- function(Workflow = NULL) {
 
       if (saveObjects) {
 
-      message('Saving spatial blocked cross-validation object to:', '\n\n')
+      message('Saving spatial blocked cross-validation object:', '\n\n')
       saveRDS(object = spatialBlockCV, file = paste0(modDirectory,'/', speciesNameInd, '/spatialBlock.rds'))
 
       } else outputList[[speciesNameInd]][['spatialBlock']] <- spatialBlockCV
@@ -133,11 +138,11 @@ sdmWorkflow <- function(Workflow = NULL) {
     if ('Loo' %in% Workflow$.__enclos_env__$private$CVMethod) {
 
       message('Estimating leave-one-out cross-validation:\n\n')
-      LooCV <- PointedSDMs::datasetOut()
+      LooCV <- PointedSDMs::datasetOut(model = PSDMsMOdel)
 
       if (saveObjects) {
 
-      message('Saving leave-one-out cross-validation object to:', '\n\n')
+      message('Saving leave-one-out cross-validation object:', '\n\n')
       saveRDS(object = LooCV, file = paste0(modDirectory,'/', speciesNameInd, '/LooCV.rds'))
 
       } else outputList[[speciesNameInd]][['LooCV']] <- LooCV
@@ -158,7 +163,7 @@ sdmWorkflow <- function(Workflow = NULL) {
 
       if (saveObjects) {
 
-      message('Saving predictions object to:', '\n\n')
+      message('Saving predictions object:', '\n\n')
       saveRDS(object = Predictions, file = paste0(modDirectory,'/', speciesNameInd, '/Predictions.rds'))
 
       } else outputList[[speciesNameInd]][['Predictions']] <- Predictions
@@ -171,7 +176,7 @@ sdmWorkflow <- function(Workflow = NULL) {
 
       if (saveObjects) {
 
-       message('Saving plots object to:', '\n\n')
+       message('Saving plots object:', '\n\n')
        plot(Predictions)
        ggsave(filename = paste0(modDirectory,'/', speciesNameInd, '/Map.png'))
 
