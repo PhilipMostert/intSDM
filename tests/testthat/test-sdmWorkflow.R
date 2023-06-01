@@ -64,6 +64,6 @@ testthat::test_that('sdmWorkflow produces the correct output given different Wor
   expect_equal(as.character(copyMod$Fraxinus_excelsior$Model$componentsJoint)[2],
                "-1 + GBIF_data_spatial(main = coordinates, model = GBIF_data_field) + GBIF_data2_spatial(main = coordinates, copy = \"GBIF_data_spatial\", hyper = list(beta = list(fixed = TRUE))) + GBIF_data_intercept(1) + GBIF_data2_intercept(1)")
 
-
+  unlink('./tests/testthatexample', recursive = TRUE)
 
 })
