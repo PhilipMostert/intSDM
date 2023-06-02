@@ -36,15 +36,14 @@ Depends:
     methods
 Imports:
     R6,
-    dplyr,
     geodata,
     INLA (>= 21.08.31),
     inlabru (>= 2.3.1),
     giscoR,
+    blockCV,
+    rgbif,
     terra,
-    tidyterra,
-    spocc,
-    raster
+    tidyterra
 Suggests:
     viridis,
     ggpolypath,
