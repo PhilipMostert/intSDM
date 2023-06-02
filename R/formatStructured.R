@@ -1,12 +1,15 @@
+#' @title formatStructured: Function to add structured data into the workflow.
 #' @description
 #' Function used to format structure data into a coherent framework.
 #'
-#' @param dataOcc The species occurrence data. May be either a \code{SpatialPointsDataFrame}, \code{sf} or \code{data.frame} object.
+#' @param dataOCC The species occurrence data. May be either a \code{SpatialPointsDataFrame}, \code{sf} or \code{data.frame} object.
 #' @param type The type of observation model for the data. May be either: \code{PO}, \code{PA} or \code{Counts}.
 #' @param varsOld The names of the old variables in the model which need to be converted to something new.
 #' @param varsNew The name of the new variables in the model which will be used in the full model.
 #' @param projection The CRS object to add to the species occurrence data.
 #' @param boundary An sf object of the boundary of the study area, used to check if the data points are over the region.
+#'
+#' @import sf
 #'
 #' @return An \code{sf} object containing the locations of the species.
 
@@ -25,7 +28,7 @@ formatStructured <- function(dataOCC, type, varsOld, varsNew, projection, bounda
 
     colnames(dataOCC)[names(dataOCC) %in% varsOld$coordinates] <-  c('Longitude', 'Latitude')
 
-    dataOCC <- st_as_sf(x = dataOCC[, c('Longitude', 'Latitude', names(dataOCC)[names(dataOCC) %in% unlist(varsOld)])],
+    dataOCC <- sf::st_as_sf(x = dataOCC[, c('Longitude', 'Latitude', names(dataOCC)[names(dataOCC) %in% unlist(varsOld)])],
                     coords = c('Longitude', 'Latitude'),
                     crs = projection)
   }
@@ -33,7 +36,7 @@ formatStructured <- function(dataOCC, type, varsOld, varsNew, projection, bounda
   initRows <- nrow(dataOCC)
 
   st_geometry(dataOCC) <- 'geometry'
-  dataOCC <- st_transform(dataOCC, as.character(projection))
+  dataOCC <- sf::st_transform(dataOCC, as.character(projection))
 
   namesData <- colnames(dataOCC)[!colnames(dataOCC) %in% c('geometry', '.__PORESP.__')]
 
