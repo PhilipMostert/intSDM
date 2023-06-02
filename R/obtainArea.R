@@ -9,7 +9,7 @@
 #'
 obtainArea <- function(names, projection, ...) {
 
-  world <- gisco_get_countries(year = 2020, ...)
+  world <- giscoR::gisco_get_countries(year = 2020, ...)
 
   if (!all(names %in% world$NAME_ENGL)) stop('At least one name provided not a valid country.')
 
