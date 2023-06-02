@@ -24,7 +24,7 @@ testthat::test_that('formatStructured can correctly convert a dataset into the c
 
   dataStructured <- formatStructured(dataOCC = dataChange, type = model,
                                      varsOld = old, varsNew = new,
-                                     coordinates = coords, projection = proj, boundary = map)
+                                     projection = proj, boundary = map)
 
   ##Test that the function converts the data.frame of a counts dataset into an sf with the correct variable names.
   expect_setequal(class(dataStructured), c('sf', 'data.frame'))
@@ -45,8 +45,7 @@ testthat::test_that('formatStructured can correctly convert a dataset into the c
                speciesName = 'speciesName')
 
   dataStructured2 <- formatStructured(dataOCC = dataChange, type = model2,
-                                     varsOld = old2, varsNew = new2,
-                                     coordinates = coords, projection = proj, boundary = map)
+                                     varsOld = old2, varsNew = new2, projection = proj, boundary = map)
 
   expect_setequal(class(dataStructured2), c('sf', 'data.frame'))
   expect_true(all(names(dataStructured2) %in% c("occurrenceStatus", 'numTrials', "geometry")))
@@ -58,8 +57,7 @@ testthat::test_that('formatStructured can correctly convert a dataset into the c
                            num = rpois(n = 100, lambda = 5))
 
   expect_warning(formatStructured(dataOCC = dataChange2, type = model,
-                                      varsOld = old, varsNew = new,
-                                      coordinates = coords, projection = proj, boundary = map),
+                                      varsOld = old, varsNew = new, projection = proj, boundary = map),
                  'Some of the records provided are not over the boundary, and will therefore be removed.')
 
   #Test that if all points are not over the region, the function will give an error.
@@ -68,7 +66,7 @@ testthat::test_that('formatStructured can correctly convert a dataset into the c
                             num = rpois(n = 100, lambda = 5))
 
   expect_error(formatStructured(dataOCC = dataChange3, type = model,
-               varsOld = old, varsNew = new, coordinates = coords,
+               varsOld = old, varsNew = new,
                projection = proj, boundary = map), 'Dataset provided has no reccords over the boundary.')
 
 
