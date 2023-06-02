@@ -1,3 +1,4 @@
+#' @title obtainGBIF: Function to obtain occurrence data from GBIF.
 #' @description
 #' Function used to obtain species observations from _GBIF_.
 #'
@@ -5,7 +6,10 @@
 #' @param geometry An \code{sf} object surrounding the study area where observations need to be obtained.
 #' @param projection The coordinate reference system used for the observations and geometry.
 #' @param datasettype The type of dataset that is obtained from _GBIF_. Can be one of: \code{PO}, \code{PA}, \code{Counts}.
-#' @param ... Additional arguments to pass to \link{rgbif::occ_download}.
+#' @param ... Additional arguments to pass to \link[rgbif]{occ_download}.
+#'
+#' @import rgbif
+#' @import sf
 #'
 #' @return An \code{sf} object containing the locations and other relevant information of the species obtained from _GBIF_.
 
@@ -146,11 +150,11 @@ obtainGBIF <- function(query,
                                                              to = as.character(projection),
                                                              from = "+proj=longlat +ellps=WGS84")
 
-  speciesSF <- st_as_sf(x = speciesOCC,
+  speciesSF <- sf::st_as_sf(x = speciesOCC,
                         coords = c('decimalLongitude', 'decimalLatitude'),
                         crs = as.character(projection))
 
-  speciesSF <- st_transform(speciesSF, crs = as.character(projection))
+  speciesSF <- sf::st_transform(speciesSF, crs = as.character(projection))
 
   speciesIn <- speciesSF[unlist(st_intersects(geometry, speciesSF)),]
 
