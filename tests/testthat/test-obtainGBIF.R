@@ -1,4 +1,4 @@
-testthat::test_that('obtainGBIG can correctly obtain observations of species in the correct boundary, and transform it to the desired projection', {
+testthat::test_that('obtainGBIF can correctly obtain observations of species in the correct boundary, and transform it to the desired projection', {
 
   skip_on_cran()
 
@@ -12,7 +12,7 @@ testthat::test_that('obtainGBIG can correctly obtain observations of species in 
   expect_message(obtainGBIF(query = speciesIn, country = 'NO',
                             datasettype = 'PO', geometry = map, projection = proj), 'Finding GBIF observations for: Fraxinus excelsior')
 
-  species <- obtainGBIF(query = speciesIn, datasetName = 'dataset',
+  species <- obtainGBIF(query = speciesIn,
                         datasettype = 'PO', country = 'NO',
                         coordinateUncertaintyInMeters = 50,
                         geometry = map, projection = proj)
@@ -21,7 +21,7 @@ testthat::test_that('obtainGBIG can correctly obtain observations of species in 
   expect_true(all(species$coordinateUncertaintyInMeters <= 50))
   expect_identical(st_crs(species)[2], st_crs(proj)[2])
 
-  speciesPA <- obtainGBIF(query = speciesIn, datasetName = 'dataset',
+  speciesPA <- obtainGBIF(query = speciesIn,
                           datasettype = 'PA',country = 'NO',
                           geometry = map, projection = proj)
 
@@ -35,7 +35,7 @@ testthat::test_that('obtainGBIG can correctly obtain observations of species in 
 
   ##Multiple years
 
-  speciesTime <- obtainGBIF(query = speciesIn, datasetName = 'dataset',
+  speciesTime <- obtainGBIF(query = speciesIn,
                             datasettype = 'PO',country = 'NO',
                             geometry = map, projection = proj, year = 2010:2012)
 

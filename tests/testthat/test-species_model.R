@@ -193,7 +193,7 @@ testthat::test_that('addStructured can add the data correctly to the model', {
   expect_setequal(class(workflow$.__enclos_env__$private$dataStructured$Fraxinus_excelsior$dataFrame), c('sf', 'data.frame'))
 
   #Add data not in boundary
-  dataNotIn <- st_as_sf(st_sample(x = gisco_countries[gisco_countries$NAME_ENGL == 'Portugal',], size = 100))
+  dataNotIn <- st_as_sf(st_sample(x = giscoR::gisco_countries[giscoR::gisco_countries$NAME_ENGL == 'Portugal',], size = 100))
   dataNotIn$species <- species
   expect_error(workflow$addStructured(dataStructured = dataNotIn, datasetType = 'PO', speciesName = 'species'), 'Dataset provided has no reccords over the boundary.')
 

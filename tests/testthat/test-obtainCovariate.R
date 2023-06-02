@@ -5,7 +5,7 @@ testthat::test_that('obtainCovariate can correctly obtain the covariate layer, a
   #args
   covname <- "tavg"
   countries <- c('Norway', 'Sweden')
-  projection <- '+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
+  projection <- "+proj=lcc +lat_1=48 +lat_2=33 +lon_0=-100 +datum=WGS84"
   #path <- './tests/testthat'
   path <- 'cov_file'
   cov <- obtainCovariate(covname, countries,
