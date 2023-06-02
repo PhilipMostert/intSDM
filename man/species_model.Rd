@@ -200,7 +200,7 @@ Function to add spatial covariates to the workflow. The covariates may either be
 \subsection{Method \code{addArea()}}{
 Function to add a boundary around the study area. This function allows the user to either add their own boundary object, or obtain a country's boundary using \link{gisco_get_countries} from the \link{giscoR} package.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{species_model$addArea(Object = NULL, countryName = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{species_model$addArea(Object = NULL, countryName = NULL, ...)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -209,6 +209,8 @@ Function to add a boundary around the study area. This function allows the user 
 \item{\code{Object}}{A \code{sf} or \code{SpatialPolygons} object of the boundary surrounding the study area.}
 
 \item{\code{countryName}}{Name of the countries to obtain a boundary for. This argument will then use the \link{gisco_get_countries} function from the \link{giscoR} package to obtain a boundary.}
+
+\item{\code{...}}{Additional arguments passed to \link{giscoR::gisco_get_countries}.}
 }
 \if{html}{\out{</div>}}
 }

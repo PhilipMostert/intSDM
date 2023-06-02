@@ -4,12 +4,10 @@
 \alias{sdmWorkflow}
 \title{\code{sdmWorkflow}: Function to compile the reproducible workflow.}
 \usage{
-sdmWorkflow(Workflow = NULL, Report = FALSE)
+sdmWorkflow(Workflow = NULL)
 }
 \arguments{
 \item{Workflow}{The \code{R6} object created from \code{startWorkflow}. This object should contain all the data and model information required to estimate and specify the model.}
-
-\item{Report}{Unused argument for now. But in future might be a logical argument specifying if a .Rmd file should be created with the outputs of the workflow.}
 }
 \value{
 The return of the function depends on the argument \code{Save} from the \code{startWorkflow} function. If this argument is \code{FALSE} then the objects will be saved to the specidfied directory. If this argument is \code{TRUE} then a list of different outcomes from the workflow will be returned.
