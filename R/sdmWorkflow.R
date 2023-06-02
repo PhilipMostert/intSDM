@@ -1,6 +1,9 @@
 #' @title \code{sdmWorkflow}: Function to compile the reproducible workflow.
 #' @description This function is used to compile the reproducible workflow from the \code{R6} object created with \code{startFunction}. Depending on what was specified before, this function will estimate the integrated species distribution model, perform cross-validation, create predictions from the model and plot these predictions.
 #' @param Workflow The \code{R6} object created from \code{startWorkflow}. This object should contain all the data and model information required to estimate and specify the model.
+#'
+#' @import PointedSDMs
+#'
 #' @return The return of the function depends on the argument \code{Save} from the \code{startWorkflow} function. If this argument is \code{FALSE} then the objects will be saved to the specidfied directory. If this argument is \code{TRUE} then a list of different outcomes from the workflow will be returned.
 #' @export
 
@@ -64,7 +67,7 @@ sdmWorkflow <- function(Workflow = NULL) {
 
   if (length(speciesDataset) == 0) stop('No data added to the model. Please add data using `.$addGBIF` or `.$addStructured`.')
 
-  initializeModel <<- PointedSDMs::intModel(speciesDataset, Mesh = .__mesh.__, Projection = sp::CRS(.__proj.__), Coordinates = .__coordinates.__,
+  initializeModel <- PointedSDMs::intModel(speciesDataset, Mesh = .__mesh.__, Projection = sp::CRS(.__proj.__), Coordinates = .__coordinates.__,
                                             responsePA = .__responsePA.__, responseCounts = .__responseCounts.__,
                                             trialsPA = .__trialsName.__, pointsSpatial = .__pointsSpatial.__,
                                             pointsIntercept = .__pointsIntercept.__ ,
@@ -104,7 +107,7 @@ sdmWorkflow <- function(Workflow = NULL) {
   message('Estimating ISDM:\n\n')
 
   PSDMsMOdel <- PointedSDMs::fitISDM(initializeModel,
-                                     options = Workflow$.__enclos_env$private$optionsINLA)
+                                     options = Workflow$.__enclos_env__$private$optionsINLA)
 
   if ('Model' %in% Oputs) {
 
