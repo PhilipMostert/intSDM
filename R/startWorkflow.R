@@ -1,7 +1,9 @@
+#' @title \code{startWorkflow}: function to commence the integrated species distribution model workflow.
 #' @description
 #' Function to initialize the reproducible workflow using integrated species distribution models. The arguments for this function are used to specify which species and countries are to be studied, as well as how the results of the model should be saved (either as an R object or saved to some directory). This function outputs an \code{R6} object with additional slot functions to help further customize the model specification. See \code{?species_model} for more details on these functions.
 #' @param Countries A vector of country names to complete the analysis over. If missing, a boundary object (of class \code{Spatial} or \code{sf}) has to be added to the model using \code{.$addArea} before any analysis is completed.
 #' @param Species A vector of Species names (scientific) to include in the analysis. Names should be given carefully since the names provided will be used to obtain _GBIF_ observations.
+#' @param Projection The coordinate reference system used in the workflow.
 #' @param Save Logical argument indicating if the model objects and outputs should be saved as .rds files. Defaults to \code{TRUE}. If \code{FALSE} then the output of the workflow will be a list of objects at each step of the workflow.
 #' @param saveOptions A list containing two items: \code{projectDirectory} indicating where the objects should be saved (defaults to \code{getwd()}), and \code{projectName} which indicates the name for the folder in the relevant directory. The latter argument is required, regardless of the value given to \code{Save}.
 #' @param Quiet Logical argument indicating if the workflow should provide the user messages during the setup and estimation process. Defaults to \code{TRUE}.
