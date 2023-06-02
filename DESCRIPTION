@@ -28,27 +28,24 @@ Authors@R:
              email = "ellen.c.martin@ntnu.no"))
 Depends:
     R (>= 3.5),
-    inlabru (>= 2.3.1),
     ggplot2,
-    INLA (>= 21.08.31),
-    giscoR,
     sp (>= 1.4-5),
     sf,
     stats,
     PointedSDMs,
     methods
 Imports:
+    R6,
     dplyr,
     geodata,
+    INLA (>= 21.08.31),
+    inlabru (>= 2.3.1),
+    giscoR,
     terra,
     tidyterra,
     spocc,
-    raster,
-    maps
+    raster
 Suggests:
-    fields,
-    RANN,
-    rgeos,
     viridis,
     ggpolypath,
     ggmap,
@@ -56,8 +53,7 @@ Suggests:
     RColorBrewer,
     knitr,
     rmarkdown,
-    testthat (>= 3.0.0),
-    covr
+    testthat (>= 3.0.0)
 Additional_repositories: https://inla.r-inla-download.org/R/testing/
 License: GPL (>= 3)
 Encoding: UTF-8
