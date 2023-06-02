@@ -1,9 +1,42 @@
 #' @title R6 class for creating a \code{species_model} object.
-#' @description An object containing the data, covariates  and other relevant information to be used in the reproducible workflow. The function \code{\link{startWorkflow}} acts as a wrapper in creating one of these objects. This object has additional slot functions within, which allow for further specification and customization of the reproducible workflow.
+#' @description An object containing the data, covariates  and other relevant information to be used in the reproducible workflow. The function \link[intSDM]{startWorkflow} acts as a wrapper in creating one of these objects. This object has additional slot functions within, which allow for further specification and customization of the reproducible workflow.
 #' @export
 #' @importFrom R6 R6Class
 #'
 species_model <- R6::R6Class(classname = 'species_model', public = list(
+
+#' @description initialize the species_model object.
+#' @param Countries Name of the countries to include in the workflow.
+#' @param Species Name of the species to include in the workflow.
+#' @param nameProject Name of the project for the workflow.
+#' @param Save Logical argument indicating if the model outputs should be saved.
+#' @param Directory Directory where the model outputs should be saved.
+#' @param Projection The coordinate reference system used in the workflow.
+#' @param Quiet Logical variable indicating if the workflow should provide messages throughout the estimation procedure.
+#'
+
+  initialize = function(Countries, Species, nameProject, Save,
+                        Directory, Projection, Quiet = TRUE) {
+
+    private$Projection <- Projection
+    private$Quiet <- Quiet
+
+    if (!missing(Countries)) {
+
+      #private$Countries <- Countries
+      countryAdded <- self$addArea(countryName = Countries)
+
+    }
+
+    private$Species <- Species
+
+    private$Directory <- Directory
+    private$Project <- nameProject
+    private$Save <- Save
+
+
+
+  },
 
 #' @description Prints the datasets, their data type and the number of observations, as well as the marks and their respective families.
 #' @param ... Not used.
@@ -74,7 +107,10 @@ species_model <- R6::R6Class(classname = 'species_model', public = list(
 #' @param Species Add the species location data to the plot.
 #' @param Covariates Add the spatial covariates to the plot.
 #' @return A ggplot object.
+#'
 #' @import ggplot2
+#' @import inlabru
+#' @importFrom tidyterra geom_spatraster
 
   plot = function(Mesh = FALSE,
                   Boundary = TRUE,
@@ -87,7 +123,7 @@ species_model <- R6::R6Class(classname = 'species_model', public = list(
 
       if (is.null(private$Mesh)) stop('No mesh object provided. Please add one using `.$addMesh()`.')
 
-      meshComponent <- gg(private$Mesh)
+      meshComponent <- inlabru::gg(private$Mesh)
 
     } else meshComponent <- NULL
 
@@ -114,7 +150,7 @@ species_model <- R6::R6Class(classname = 'species_model', public = list(
         namesspeData <- names(speData)
         namesTimes <- rep(namesspeData, times = unlist(lapply(speData, length)))
 
-        spatData[[species]] <- st_as_sf(do.call(c, speData))
+        spatData[[species]] <- sf::st_as_sf(do.call(c, speData))
 
         spatData[[species]]$.__species_index_var <- species
         spatData[[species]]$.__names_index_var <- namesTimes
@@ -192,6 +228,7 @@ species_model <- R6::R6Class(classname = 'species_model', public = list(
 #'
 #' @import methods
 #' @import sp
+#' @import sf
 #'
   addStructured = function(dataStructured, datasetType,
                             responseName, trialsName,
@@ -297,7 +334,7 @@ species_model <- R6::R6Class(classname = 'species_model', public = list(
       if (length(meshArgs) == 0) stop('Please provide ... to specify the mesh construction. See ?inla.mesh.2d for more details.')
 
       meshObj <- INLA::inla.mesh.2d(boundary = INLA::inla.sp2segment(as(private$Area[1], 'Spatial')),
-                                         crs = private$Projection,
+                                    crs = private$Projection,
                                          ...
                                           )
 
@@ -317,14 +354,14 @@ species_model <- R6::R6Class(classname = 'species_model', public = list(
     }
   ,
 
-#' @description Function to add species occurrence records from GBIF (using the \link{spocc} package) to the reproducible workflow. The arguments for this function are used to either filter the GBIF records, or to specify the characteristics of the observation model.
-#' @param Species The names of the species to include in the workflow (initially specified using \link{startWorkflow}). Defaults to \code{All}, which will find occurrence records for all specie specified in \link{startWorkflow}.
+#' @description Function to add species occurrence records from GBIF (using the \code{rgbif} package) to the reproducible workflow. The arguments for this function are used to either filter the GBIF records, or to specify the characteristics of the observation model.
+#' @param Species The names of the species to include in the workflow (initially specified using \link[intSDM]{startWorkflow}). Defaults to \code{All}, which will find occurrence records for all specie specified in \link[intSDM]{startWorkflow}.
 #' @param datasetName The name to give the dataset obtained from GBIF. Cannot be \code{NULL}.
 #' @param datasetType The data type of the dataset. Defaults to \code{PO}, but may also be \code{PA} or \code{Counts}.
 #' @param responseCounts Name of the response variable for the counts data. Defaults to the standard Darwin core value \code{individualCounts}.
 #' @param responsePA Name of the response variable for the PA data. Defaults to the standard Darwin core value \code{occurrenceStatus}.
 #' @param assign2Global Assign the dataset to the global environment. The object will be assigned to an object specified using the \code{datasetName} object.
-#' @param ... Additional arguments to specify the \link{occ_data} function from \code{rgbif}. See \code{?occ_data} for more details.
+#' @param ... Additional arguments to specify the \link[rgibf]{occ_data} function from \code{rgbif}. See \code{?occ_data} for more details.
 
 addGBIF = function(Species = 'All', datasetName = NULL,
                    datasetType = 'PO',
@@ -375,12 +412,14 @@ addGBIF = function(Species = 'All', datasetName = NULL,
   }
   ,
 
-#' @description Function to add spatial covariates to the workflow. The covariates may either be specified by the user, or they may come from worldClim obtained with the \link{geodata} package.
-#' @param Object A object of class: \code{spatRaster}, \code{SpatialPixelsDataFrame} or \code{raster} containing covariate information across the area. Note that this function will check if the covariates span the boundary area, so it may be preferable to add your own boundary using \link{addArea} if this argument is specified.
-#' @param worldClim Name of the worldClim to include in the model. See \code{?worldclim_country} from the \link{geodata} package for more information.
+#' @description Function to add spatial covariates to the workflow. The covariates may either be specified by the user, or they may come from worldClim obtained with the \code{geodata} package.
+#' @param Object A object of class: \code{spatRaster}, \code{SpatialPixelsDataFrame} or \code{raster} containing covariate information across the area. Note that this function will check if the covariates span the boundary area, so it may be preferable to add your own boundary using \code{`.$addArea`} if this argument is specified.
+#' @param worldClim Name of the worldClim to include in the model. See \code{?worldclim_country} from the \code{geodata} package for more information.
 #' @param Months The months to include the covariate for. Defaults to \code{All} which includes covariate layers for all months.
 #' @param Function The function to aggregate the temporal data into one layer. Defaults to \code{mean}.
 #' @param ... Not used.
+#'
+#' @import terra
 #'
   addCovariates = function(Object = NULL,
                            worldClim = NULL,
@@ -456,10 +495,12 @@ addGBIF = function(Species = 'All', datasetName = NULL,
     }
   ,
 
-#' @description Function to add a boundary around the study area. This function allows the user to either add their own boundary object, or obtain a country's boundary using \link{gisco_get_countries} from the \link{giscoR} package.
+#' @description Function to add a boundary around the study area. This function allows the user to either add their own boundary object, or obtain a country's boundary using \link[giscoR]{gisco_get_countries} from the \code{giscoR} package.
 #' @param Object A \code{sf} or \code{SpatialPolygons} object of the boundary surrounding the study area.
-#' @param countryName Name of the countries to obtain a boundary for. This argument will then use the \link{gisco_get_countries} function from the \link{giscoR} package to obtain a boundary.
-#' @param ... Additional arguments passed to \link{giscoR::gisco_get_countries}.
+#' @param countryName Name of the countries to obtain a boundary for. This argument will then use the \link[giscoR]{gisco_get_countries} function from the \code{giscoR} package to obtain a boundary.
+#' @param ... Additional arguments passed to \link[giscoR]{gisco_get_countries}.
+#'
+#' @import sf
 #'
   addArea = function(Object = NULL,
                      countryName = NULL,
@@ -488,7 +529,7 @@ addGBIF = function(Species = 'All', datasetName = NULL,
       if (!inherits(Object, 'Spatial') && !inherits(Object, 'sf')) stop('Object needs to be a sp or sf object.')
       if (inherits(Object, 'Spatial')) Object <- as(Object, 'sf')
 
-      Object <- st_transform(Object, as.character(private$Projection))
+      Object <- sf::st_transform(Object, as.character(private$Projection))
 
       private$Area <- Object
 
@@ -498,8 +539,10 @@ addGBIF = function(Species = 'All', datasetName = NULL,
   ,
 
 #' @description Function to add a spatial cross validation method to the workflow.
-#' @param Method The spatial cross-validation methods to use in the workflow. May be at least one of \code{spatialBlock} or \code{Loo} (leave-one-out). See the \link{PointedSDMs} for more details.
+#' @param Method The spatial cross-validation methods to use in the workflow. May be at least one of \code{spatialBlock} or \code{Loo} (leave-one-out). See the \code{PointedSDMs} package for more details.
 #' @param blockOptions A list of options to specify the spatial block cross-validation. Must be a named list with arguments specified for: \code{k}, \code{rows_cols}, \code{plot}, \code{seed}. See \code{blockCV::cv_spatial} for more information.
+#'
+#' @import blockCV
 #'
   crossValidation = function(Method, blockOptions = list(k = 5, rows_cols = c(4,4), plot = FALSE, seed = NULL)) {
 
@@ -564,9 +607,9 @@ addGBIF = function(Species = 'All', datasetName = NULL,
   }
   ,
 
-#' @description Function to specify model options for the \link{INLA} and \link{PointedSDMs} parts of the model.
-#' @param ISDM Arguments to specify in \link{intModel} from the \link{PointedSDMs} function. This argument needs to be a named list of the following options: \code{pointCovariates}, \code{pointsIntercept}, \code{pointsSpatial} or \code{copyModel}. See \code{?intModel} for more details.
-#' @param INLA Options to specify in \link{inla} from the \link{INLA} function. See \code{?inla} for more details.
+#' @description Function to specify model options for the \code{INLA} and \code{PointedSDMs} parts of the model.
+#' @param ISDM Arguments to specify in \link[PointedSDMs]{intModel} from the \code{PointedSDMs} function. This argument needs to be a named list of the following options: \code{pointCovariates}, \code{pointsIntercept}, \code{pointsSpatial} or \code{copyModel}. See \code{?intModel} for more details.
+#' @param INLA Options to specify in \link[INLA]{inla} from the \code{INLA} function. See \code{?inla} for more details.
 #'
   modelOptions = function(ISDM = list(),
                           INLA = list()) {
@@ -584,9 +627,10 @@ addGBIF = function(Species = 'All', datasetName = NULL,
   }
   ,
 
-#' @description Function to specify pc priors for the shared random field in the model. See \link{?INLA::inla.spde2.pcmatern} for more details.
-#' @param ... Arguments passed on to \link{INLA::inla.spde2.pcmatern}.
+#' @description Function to specify pc priors for the shared random field in the model. See \code{?INLA::inla.spde2.pcmatern} for more details.
+#' @param ... Arguments passed on to \link[INLA]{inla.spde2.pcmatern}.
 #'
+#' @import INLA
   specifySpatial = function(...) {
 
 
@@ -602,7 +646,9 @@ addGBIF = function(Species = 'All', datasetName = NULL,
 
 #' @description Function to add bias fields to the model.
 #' @param datasetName Name of the dataset to add a bias field to.
-#' @param ... Additional arguments passed on to \link{INLA::inla.spde2.pcmatern} to customize the priors for the pc matern for the bias fields.
+#' @param ... Additional arguments passed on to \link[INLA]{inla.spde2.pcmatern} to customize the priors for the pc matern for the bias fields.
+#'
+#' @import INLA
 
   biasFields = function(datasetName, ...) {
 
@@ -677,27 +723,3 @@ species_model$set('private', 'responsePA', 'occurrenceStatus')
 species_model$set('private', 'trialsName', 'numTrials')
 species_model$set('private', 'speciesName', 'speciesName')
 
-species_model$set('public', 'initialize', function(Countries, Species, nameProject, Save,
-                                                   Directory, Projection, Quiet = TRUE) {
-
-  private$Projection <- Projection
-  private$Quiet <- Quiet
-
-  if (!missing(Countries)) {
-
-    #private$Countries <- Countries
-    countryAdded <- self$addArea(countryName = Countries)
-
-  }
-
-  private$Species <- Species
-
-  private$Directory <- Directory
-  private$Project <- nameProject
-  private$Save <- Save
-
-
-
-
-
-})
