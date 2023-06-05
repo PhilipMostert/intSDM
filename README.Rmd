@@ -21,7 +21,7 @@ knitr::opts_chunk$set(
 
 <!-- badges: end -->
 
-The goal of *intSDMs* is to assist users in creating a reproducible workflow for constructing integrated species distribution models across Norway using the [*INLA*](https://rss.onlinelibrary.wiley.com/doi/full/10.1111/j.1467-9868.2008.00700.x) methodology.
+The goal of *intSDM* is to assist users in creating a reproducible workflow for integrated species distribution models using the [*INLA*](https://rss.onlinelibrary.wiley.com/doi/full/10.1111/j.1467-9868.2008.00700.x) methodology.
 
 ## Installation
 
