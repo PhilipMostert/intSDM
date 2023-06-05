@@ -55,6 +55,9 @@ jobs:
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           dependencies: '"all"'
+          run: |
+           devtools::install_github('PhilipMostert/PointedSDMs')
+          shell: Rscript {0}
           extra-packages: |
              rcmdcheck
 
@@ -63,7 +66,6 @@ jobs:
           options(width = 100)
           pkgs <- installed.packages()[, "Package"]
           sessioninfo::session_info(pkgs, include_base = TRUE)
-          devtools::install_github('PhilipMostert/PointedSDMs')
         shell: Rscript {0}
 
       - name: Test coverage
