@@ -71,7 +71,7 @@ testthat::test_that('Test that addGBIF correctly adds the correct data to the mo
 })
 
 testthat::test_that('Test that addCovariate correctly adds the desired covariate to the model', {
-
+  skip(message = 'geodata is down for now')
   expect_error(workflow$addCovariates(), 'One of object or worldClim is required.')
 
   covariateWorkflow <- startWorkflow(Species = species,

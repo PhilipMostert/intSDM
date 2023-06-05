@@ -28,13 +28,14 @@ testthat::test_that('startWorkflow can correctly create a species_model object, 
   workflow <- startWorkflow(Countries = countries,
                             Species = species,
                             saveOptions = list(projectName = 'testthatexample',
-                                               projectDirectory = './tests'),
+                                               projectDirectory = './'),
                             Projection = proj,
                             Quiet = TRUE)
 
   expect_setequal(class(workflow), c("species_model", "R6"))
-  expect_true(dir.exists('./tests/testthatexample'))
-  unlink('./tests/testthatexample', recursive = TRUE)
+  expect_true(dir.exists('./testthatexample'))
+
+  unlink('./testthatexample', recursive = TRUE)
 
 
   })
