@@ -195,7 +195,7 @@ Function to add species occurrence records from GBIF (using the \code{rgbif} pac
 
 \item{\code{assign2Global}}{Assign the dataset to the global environment. The object will be assigned to an object specified using the \code{datasetName} object.}
 
-\item{\code{...}}{Additional arguments to specify the \link[rgibf]{occ_data} function from \code{rgbif}. See \code{?occ_data} for more details.}
+\item{\code{...}}{Additional arguments to specify the \link[rgbif]{occ_data} function from \code{rgbif}. See \code{?occ_data} for more details.}
 }
 \if{html}{\out{</div>}}
 }
