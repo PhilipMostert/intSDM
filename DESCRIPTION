@@ -39,6 +39,7 @@ Imports:
     geodata,
     INLA (>= 21.08.31),
     inlabru (>= 2.3.1),
+    R.utils,
     giscoR,
     blockCV,
     rgbif,
