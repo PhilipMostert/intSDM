@@ -55,9 +55,6 @@ jobs:
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           dependencies: '"all"'
-          run: |
-           devtools::install_github('PhilipMostert/PointedSDMs')
-          shell: Rscript {0}
           extra-packages: |
              rcmdcheck
 
