@@ -361,7 +361,7 @@ species_model <- R6::R6Class(classname = 'species_model', public = list(
 #' @param responseCounts Name of the response variable for the counts data. Defaults to the standard Darwin core value \code{individualCounts}.
 #' @param responsePA Name of the response variable for the PA data. Defaults to the standard Darwin core value \code{occurrenceStatus}.
 #' @param assign2Global Assign the dataset to the global environment. The object will be assigned to an object specified using the \code{datasetName} object.
-#' @param ... Additional arguments to specify the \link[rgibf]{occ_data} function from \code{rgbif}. See \code{?occ_data} for more details.
+#' @param ... Additional arguments to specify the \link[rgbif]{occ_data} function from \code{rgbif}. See \code{?occ_data} for more details.
 
 addGBIF = function(Species = 'All', datasetName = NULL,
                    datasetType = 'PO',
