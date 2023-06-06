@@ -1,0 +1,129 @@
+---
+title: "intSDM: R package to produce species distribution models in a reproducible framework"
+output: rmarkdown::html_vignette
+date: "`r Sys.Date()`"
+bibliography: '`r system.file("References.bib", package="intSDM")`'
+biblio-style: authoryear
+vignette: >
+  %\VignetteIndexEntry{Example creating a reproducible workflow for red listed vascular plants}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = TRUE,
+  fig.width=8, 
+  fig.height=5,
+  warning = FALSE,
+  message = FALSE)
+```
+
+# Introduction
+
+```{r load packages}
+
+library(intSDM)
+
+
+```
+
+## Load data
+
+```{r, load PA data}
+
+data("PA_redlist")
+
+PA_redlist
+
+```
+
+## Workflow setup
+
+```{r initialize workflow}
+
+workflow <- startWorkflow(
+        Projection = '+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs',
+        Species = c("Fraxinus_excelsior", "Ulmus_glabra", "Arnica_montana"),
+        saveOptions = list(projectName =  'Vascular'), Save = FALSE
+        )
+
+```
+
+### Select area
+
+```{r addArea}
+
+workflow$addArea(countryName = 'Norway', resolution = '60')
+workflow$plot()
+
+```
+
+### Adding occurrence data
+
+```{r addGBIF}
+
+workflow$addStructured(dataStructured = PA_redlist, 
+                       datasetType = 'PA', 
+                       responseName = 'individualCount',
+                       speciesName = 'species')
+
+workflow$addGBIF(datasetName = 'speciesGBIF', limit = 5000)
+
+workflow$plot(Species = TRUE)
+
+```
+
+### Adding covariate data
+
+```{r addCovariate, eval = FALSE}
+
+load('~/Downloads/MeanSpringSummerTemp.rda')
+#Prec <- scale(MeanSpringSummerPrec)
+Temp <- scale(MeanSpringSummerTemp)
+workflow$addCovariates(Object = Temp)
+workflow$plot(Covariates = TRUE)
+
+```
+
+### Creating an `INLA` mesh object
+
+```{r INLA}
+
+workflow$addMesh(cutoff= 2000, max.edge=c(50000, 80000), offset= 100000)
+workflow$plot(Mesh = TRUE)
+
+```
+
+### Specify priors
+
+```{r Priors}
+
+workflow$specifySpatial(prior.range = c(300000, 0.05),
+                        prior.sigma = c(500, 0.2)) #100
+
+```
+
+### Model options
+
+```{r options}
+
+workflow$workflowOutput('Maps')
+workflow$modelOptions(INLA = list(control.inla=list(int.strategy = 'eb'),
+                                  safe = TRUE))
+workflow$biasFields('speciesGBIF')
+
+```
+
+## Running workflow
+
+```{r Maps}
+
+Maps <- sdmWorkflow(workflow)
+Maps$Fraxinus_excelsior$Maps
+Maps$Ulmus_glabra$Maps
+Maps$Arnica_montana$Maps
+
+```
