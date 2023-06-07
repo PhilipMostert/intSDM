@@ -54,10 +54,10 @@ testthat::test_that('Test that addGBIF correctly adds the correct data to the mo
 
   expect_equal(workflow$.__enclos_env__$private$classGBIF$Fraxinus_excelsior$GBIFTEST2, 'PA')
   expect_setequal(class(workflow$.__enclos_env__$private$dataGBIF$Fraxinus_excelsior$GBIFTEST2), c('sf', 'data.frame'))
-  expect_setequal(unique(workflow$.__enclos_env__$private$dataGBIF$Fraxinus_excelsior$GBIFTEST2$occurrenceStatus), 0:1)
+  expect_true(unique(workflow$.__enclos_env__$private$dataGBIF$Fraxinus_excelsior$GBIFTEST2$occurrenceStatus) %in% c(0,1))
 
   ##Change to Counts and check that NAs are removed.
-  expect_warning(workflow$addGBIF(datasetName = 'GBIFTEST3', datasetType = 'Counts'), 'Removing reccords with NA individualCount values')
+  expect_warning(workflow$addGBIF(datasetName = 'GBIFTEST3', datasetType = 'Counts', limit = 10000), 'Removing reccords with NA individualCount values')
   expect_setequal(class(workflow$.__enclos_env__$private$dataGBIF$Fraxinus_excelsior$GBIFTEST3), c('sf', 'data.frame'))
   expect_true(sum(is.na(workflow$.__enclos_env__$private$dataGBIF$GBIFTEST3$individualCount)) == 0)
 
@@ -208,7 +208,9 @@ testthat::test_that('addMesh correctly adds the mesh to the model', {
   expect_error(workflow$addMesh())
 
   meshObject <<- inla.mesh.2d(boundary = INLA::inla.sp2segment(as(countries, 'Spatial')),
-                             max.edge = 2, crs = proj)
+                             max.edge = 2,
+                             offset = 10,
+                             crs = proj)
 
   workflow$addMesh(Object = meshObject)
   expect_equal(class(workflow$.__enclos_env__$private$Mesh), 'inla.mesh')

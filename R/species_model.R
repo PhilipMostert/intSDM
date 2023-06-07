@@ -391,19 +391,44 @@ addGBIF = function(Species = 'All', datasetName = NULL,
    #Are we changing for Name or scientific name?
 
   for (speciesName in Species) {
-##Do something here which makes sure that no duplicates are found...
-  private$dataGBIF[[sub(" ", '_', speciesName)]][[datasetName]] <- obtainGBIF(query = speciesName,
+
+  GBIFspecies <- obtainGBIF(query = speciesName,
                                                 #datasetName = datasetName,
-                                                geometry = private$Area,
+                            geometry = private$Area,
                                                 #country = private$Countries,
-                                                projection = private$Projection,
+                            projection = private$Projection,
                                                 #varsKeep = c(responseCounts, responsePA),
-                                                datasettype = datasetType,
-                                                ...)
+                            datasettype = datasetType,
+                            ...)
 
-  private$classGBIF[[sub(" ", '_', speciesName)]][[datasetName]] <- datasetType
+  if (length(private$dataGBIF[[sub(" ", '_', speciesName)]]) > 0) {
 
-  if (assign2Global) assign(datasetName,  private$dataGBIF[[speciesName]][[datasetName]], envir = globalenv())
+    anySame <- st_equals_exact(do.call(c, lapply(private$dataGBIF[[sub(" ", '_', speciesName)]], function(x) st_geometry(x))),
+                               GBIFspecies,
+                               par = 1e-3)
+
+    if (!identical(unlist(anySame), 'integer(0)')) {
+
+      warning('Removing duplicate observations obtained from previous calls of `.$addGBIF`')
+
+      GBIFspecies <- GBIFspecies[-c(unlist(anySame)),]
+
+
+    }
+
+
+  }
+
+  if (!assign2Global) {
+
+  if (nrow(GBIFspecies) == 0) warning('All species observations were removed due to duplicates')
+  else {
+
+    private$dataGBIF[[sub(" ", '_', speciesName)]][[datasetName]] <- GBIFspecies
+    private$classGBIF[[sub(" ", '_', speciesName)]][[datasetName]] <- datasetType
+
+  }
+  } else assign(datasetName,  private$dataGBIF[[speciesName]][[datasetName]], envir = globalenv())
 
   }
 
