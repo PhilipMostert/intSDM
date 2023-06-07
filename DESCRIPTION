@@ -30,6 +30,7 @@ Depends:
     R (>= 3.5),
     ggplot2,
     sp (>= 1.4-5),
+    terra,
     sf,
     stats,
     PointedSDMs,
@@ -43,7 +44,6 @@ Imports:
     giscoR,
     blockCV,
     rgbif,
-    terra,
     tidyterra
 Suggests:
     viridis,
