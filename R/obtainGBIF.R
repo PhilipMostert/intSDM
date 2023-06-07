@@ -22,7 +22,7 @@ obtainGBIF <- function(query,
 
   if (!inherits(geometry, 'sf')) geometry <- as(geometry, 'sf')
 
-  boundaryCheck <- sf::st_transform(geometry, crs = CRS("+proj=longlat +ellps=WGS84"))
+  boundaryCheck <- sf::st_transform(geometry, crs = "+proj=longlat +ellps=WGS84")
 
   speciesList <- vector(mode = 'list', length = length(query))
   names(speciesList) <- query
