@@ -219,8 +219,9 @@ species_model <- R6::R6Class(classname = 'species_model', public = list(
 
 #' @description The function is used to convert structured datasets into a framework which is usable by the model. The three types of structured data allowed by this function are present absence (PA), present only (PO) and counts/abundance datasets, which are controlled using the \code{datasetType} argument. The other arguments of this function are used to specify the appropriate variable (such as response name, trial name, species name and coordinate name) names in these datasets.
 #'
-#' @param dataStructured The dataset used in the model. May be either a \code{data.frame}, \code{sf} or \code{SpatialPoints*} object.
+#' @param dataStructured The dataset used in the model. Must be either a \code{data.frame}, \code{sf} or \code{SpatialPoints*} object, or a \code{list} containing multiples of these classes.
 #' @param datasetType A vector which gives the type of dataset. Must be either \code{'count'}, \code{'PO'} or \code{'PA'}.
+#' @param datasetName An optional argument to create a new name for the dataset. Must be the same length as \code{dataStructured} if that is provided as a \list{list}.
 #' @param responseName Name of the response variable in the dataset. If \code{dataType} is \code{'PO'}, then this argument may be missing.
 #' @param trialsName Name of the trial name variable in the \code{PA} datasets.
 #' @param speciesName Name of the species variable name in the datasets.
@@ -231,32 +232,62 @@ species_model <- R6::R6Class(classname = 'species_model', public = list(
 #' @import sf
 #'
   addStructured = function(dataStructured, datasetType,
-                            responseName, trialsName,
-                            speciesName, coordinateNames) {
+                           responseName, trialsName,
+                           datasetName = NULL,
+                           speciesName, coordinateNames) {
 
     if (missing(dataStructured)) stop('dataStructured needs to be provided')
 
-    datasetName <- as.character(as.list(match.call())$dataStructured)
+    if (!is.null(datasetName)) {
 
-    if (!private$Quiet) message(paste('Adding dataset', datasetName, 'to the model.'))
+      if (inherits(dataStructured, 'list') && length(dataStructured) != length(datasetName)) stop('datasetName needs to be the same length as dataStructured.')
+      else if (length(datasetName) > 1) stop ('datasetName needs to contain only one name')
 
-    if (datasetName %in% names(private$dataStructured)) {
+      dataStructured <- list(dataStructured)
+      names(dataStructured) <- datasetName
+
+
+    } else if (inherits(dataStructured, 'list')) {
+
+      if (!is.null(names(dataList))) datasetName <- names(dataList)
+      else {
+
+        objectName <- as.character(as.list(match.call())$dataStructured)
+        datasetName <- paste0(objectName, seq(1, length(dataStructured)))
+        names(dataStructured) <- datasetName
+
+        }
+
+    } else {
+
+
+      datasetName <- as.character(as.list(match.call())$dataStructured)
+      dataStructured <- list(dataStructured)
+      names(dataStructured) <- datasetName
+
+    }
+
+    for (dataAdd in datasetName) {
+
+    if (!private$Quiet) message(paste('Adding dataset', dataAdd, 'to the model.'))
+
+    if (dataAdd %in% names(private$dataStructured)) {
 
       warning('Dataset object already added to the model. Removing the previous version.')
-      private$dataStructured[[datasetName]] <- NULL
+      private$dataStructured[[dataAdd]] <- NULL
 
       }
 
-    if (!inherits(dataStructured,c('Spatial',
+    if (!inherits(dataStructured[[dataAdd]],c('Spatial',
                   'data.frame','sf'))) stop('dataStructured needs to be either a SpatialPoints*, data.frame or sf object')
 
     if (missing(speciesName)) stop('speciesName cannot be missing.')
 
-    if (missing(coordinateNames) && all(class(dataStructured) == 'data.frame')) stop('coordinateNames cannot be missing if dataStructured is a data.frame object.')
+    if (missing(coordinateNames) && all(class(dataStructured[[dataAdd]]) == 'data.frame')) stop('coordinateNames cannot be missing if dataStructured is a data.frame object.')
     else {
 
-      if (inherits(dataStructured, 'Spatial')) coordinateNames <- colnames(dataStructured@coords)
-      if (inherits(dataStructured, 'sf')) coordinateNames <- colnames(st_coordinates(dataStructured))
+      if (inherits(dataStructured[[dataAdd]], 'Spatial')) coordinateNames <- colnames(dataStructured[[dataAdd]]@coords)
+      if (inherits(dataStructured[[dataAdd]], 'sf')) coordinateNames <- colnames(st_coordinates(dataStructured[[dataAdd]]))
 
     }
 
@@ -274,19 +305,19 @@ species_model <- R6::R6Class(classname = 'species_model', public = list(
     if (missing(responseName)) responseName <- NULL
     #if (missing(speciesName)) speciesName <- NULL
 
-    dataStructured[[speciesName]] <- sub(" ", "_", dataStructured[[speciesName]])
+    dataStructured[[dataAdd]][[speciesName]] <- sub(" ", "_", dataStructured[[dataAdd]][[speciesName]])
 
-    uniqueSpecies <- unique(dataStructured[[speciesName]])
+    uniqueSpecies <- unique(dataStructured[[dataAdd]][[speciesName]])
 
     if (!all(uniqueSpecies %in% sub(" ", "_", private$Species))) {
 
       warning('Species found in dataset not specified in the original startWorkflow call. Removing observations for those species.')
 
-      dataStructured <- dataStructured[dataStructured[[speciesName]] %in% sub(" ", "_", private$Species), ]
+      dataStructured[[dataAdd]] <- dataStructured[[dataAdd]][dataStructured[[dataAdd]][[speciesName]] %in% sub(" ", "_", private$Species), ]
 
-      uniqueSpecies <- unique(dataStructured[[speciesName]])
+      uniqueSpecies <- unique(dataStructured[[dataAdd]][[speciesName]])
 
-      if (nrow(dataStructured) == 0) stop('All species removed from this dataset. Please specify all the species name using the "Species" argument in startWorkflow.')
+      if (nrow(dataStructured[[dataAdd]]) == 0) stop('All species removed from this dataset. Please specify all the species name using the "Species" argument in startWorkflow.')
 
     }
 
@@ -294,9 +325,9 @@ species_model <- R6::R6Class(classname = 'species_model', public = list(
   for (species in uniqueSpecies) {
 
 
-    private$dataStructured[[species]][[datasetName]] <- formatStructured(data = dataStructured,
-                                               type =  datasetType,
-                                               varsOld = list(trials = trialsName,
+    private$dataStructured[[species]][[dataAdd]] <- formatStructured(data = dataStructured[[dataAdd]],
+                                                                     type =  datasetType,
+                                                                     varsOld = list(trials = trialsName,
                                                               response = responseName,
                                                               species = speciesName,
                                                               coordinates = coordinateNames),
@@ -309,7 +340,10 @@ species_model <- R6::R6Class(classname = 'species_model', public = list(
 
   }
 
-  private$datasetName <- c(datasetName, private$datasetName)
+    }
+
+    private$datasetName <- c(datasetName, private$datasetName)
+
 
 
   }

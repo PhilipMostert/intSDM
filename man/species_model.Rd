@@ -121,6 +121,7 @@ The function is used to convert structured datasets into a framework which is us
   datasetType,
   responseName,
   trialsName,
+  datasetName = NULL,
   speciesName,
   coordinateNames
 )}\if{html}{\out{</div>}}
@@ -129,13 +130,15 @@ The function is used to convert structured datasets into a framework which is us
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{dataStructured}}{The dataset used in the model. May be either a \code{data.frame}, \code{sf} or \code{SpatialPoints*} object.}
+\item{\code{dataStructured}}{The dataset used in the model. Must be either a \code{data.frame}, \code{sf} or \code{SpatialPoints*} object, or a \code{list} containing multiples of these classes.}
 
 \item{\code{datasetType}}{A vector which gives the type of dataset. Must be either \code{'count'}, \code{'PO'} or \code{'PA'}.}
 
 \item{\code{responseName}}{Name of the response variable in the dataset. If \code{dataType} is \code{'PO'}, then this argument may be missing.}
 
 \item{\code{trialsName}}{Name of the trial name variable in the \code{PA} datasets.}
+
+\item{\code{datasetName}}{An optional argument to change the name of the dataset in the model. Must be the same length as \code{dataStructured} if that is provided as a \list{list}.}
 
 \item{\code{speciesName}}{Name of the species variable name in the datasets.}
 
