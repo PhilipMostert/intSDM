@@ -238,7 +238,7 @@ species_model <- R6::R6Class(classname = 'species_model', public = list(
 
     datasetName <- as.character(as.list(match.call())$dataStructured)
 
-    message(paste('Adding dataset', datasetName, 'to the model.'))
+    if (!private$Quiet) message(paste('Adding dataset', datasetName, 'to the model.'))
 
     if (datasetName %in% names(private$dataStructured)) {
 
@@ -349,7 +349,7 @@ species_model <- R6::R6Class(classname = 'species_model', public = list(
 
     }
 
-    message('INLA mesh added successfully.')
+    if (!private$Quiet) message('INLA mesh added successfully.')
 
     }
   ,
@@ -391,6 +391,8 @@ addGBIF = function(Species = 'All', datasetName = NULL,
    #Are we changing for Name or scientific name?
 
   for (speciesName in Species) {
+
+  if (!private$Quiet) message(paste('Finding GBIF observations for:', speciesName,'\n'))
 
   GBIFspecies <- obtainGBIF(query = speciesName,
                                                 #datasetName = datasetName,
@@ -479,7 +481,7 @@ addGBIF = function(Species = 'All', datasetName = NULL,
     covDirectory <- paste0(private$Directory, '/Covariates')
     dir.create(covDirectory, showWarnings = FALSE)
     if (!dir.exists(covDirectory)) covDirectory <- getwd()#dir.create(covDirectory)
-    message(paste('Saved covariate objects may be found in', covDirectory))
+    if (!private$Quiet) message(paste('Saved covariate objects may be found in', covDirectory))
 
     if (is.null(private$Countries)) stop('Please specify a country first before obtaining a covariate layer. This may be done using either startWorkflow or through `.$addArea`.')
 
@@ -558,7 +560,9 @@ addGBIF = function(Species = 'All', datasetName = NULL,
 
       private$Area <- Object
 
-}
+    }
+
+    if (!private$Quiet) message('Boundry object added successfully.')
 
   }
   ,

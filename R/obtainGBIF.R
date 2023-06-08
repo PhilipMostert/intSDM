@@ -36,8 +36,6 @@ obtainGBIF <- function(query,
 
   for (species in query) {
 
-  message(paste('Finding GBIF observations for:', species,'\n'))
-
   #speciesOCC <- spocc::occ(query = species,
   #                      geometry = boundaryCheck,
   #                      gbifopts = gbifopts,

@@ -9,9 +9,6 @@ testthat::test_that('obtainGBIF can correctly obtain observations of species in 
 
   map <- obtainArea(names = c('Norway'), projection = proj)
 
-  expect_message(obtainGBIF(query = speciesIn, country = 'NO',
-                            datasettype = 'PO', geometry = map, projection = proj), 'Finding GBIF observations for: Fraxinus excelsior')
-
   species <- obtainGBIF(query = speciesIn,
                         datasettype = 'PO', country = 'NO',
                         coordinateUncertaintyInMeters = 50,
