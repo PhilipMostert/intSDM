@@ -2,7 +2,7 @@
 #' @description
 #' Function to obtain covariate layers from _WorldClim_ around a specified area.
 #' @param covariates A vector of covariate names to obtain.
-#' @param countries A vector of country names to obtain covariates for.
+#' @param res Resolution of the worldclim variable. Valid options are: \code{10}, \code{5}, \code{2.5} or \code{0.5} (minutes of a degree).
 #' @param projection Coordinate reference system to use in analysis.
 #' @param path The path where the covariate will be saved.
 #'
@@ -11,14 +11,14 @@
 #'
 #' @return A \code{spatialRaster} object of the covariates across the specified area.
 
-obtainCovariate <- function(covariates, countries,
-                            projection, path) {
+obtainCovariate <- function(covariates,
+                            res, projection, path) {
 
   ##Do for other covariate layers
 
-  covariateLayers <- geodata::worldclim_country(country = countries,
-                                                var = covariates,
-                                                path = path)
+  covariateLayers <- geodata::worldclim_global(res = res,
+                                               var = covariates,
+                                               path = path)
 
   covariateLayers <- terra::project(covariateLayers, projection)
 

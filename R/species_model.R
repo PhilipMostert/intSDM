@@ -477,6 +477,7 @@ addGBIF = function(Species = 'All', datasetName = NULL,
 #' @param Object A object of class: \code{spatRaster}, \code{SpatialPixelsDataFrame} or \code{raster} containing covariate information across the area. Note that this function will check if the covariates span the boundary area, so it may be preferable to add your own boundary using \code{`.$addArea`} if this argument is specified.
 #' @param worldClim Name of the worldClim to include in the model. See \code{?worldclim_country} from the \code{geodata} package for more information.
 #' @param Months The months to include the covariate for. Defaults to \code{All} which includes covariate layers for all months.
+#' @param res Resolution of the worldclim variable. Valid options are: \code{10}, \code{5}, \code{2.5} or \code{0.5} (minutes of a degree).
 #' @param Function The function to aggregate the temporal data into one layer. Defaults to \code{mean}.
 #' @param ... Not used.
 #'
@@ -484,6 +485,7 @@ addGBIF = function(Species = 'All', datasetName = NULL,
 #'
   addCovariates = function(Object = NULL,
                            worldClim = NULL,
+                           res = 2.5,
                            Months = 'All',
                            Function = 'mean', ...) {
 
@@ -520,11 +522,11 @@ addGBIF = function(Species = 'All', datasetName = NULL,
     if (is.null(private$Countries)) stop('Please specify a country first before obtaining a covariate layer. This may be done using either startWorkflow or through `.$addArea`.')
 
     covRaster <- obtainCovariate(covariates = worldClim,
-                                 countries = private$Countries,
+                                 res = res,
                                  as.character(private$Projection),
                                  path = covDirectory)
 
-    covRaster <- terra::mask(covRaster, private$Area)
+    covRaster <- terra::mask(terra::crop(covRaster, private$Area), private$Area)
 
     covRaster <- terra::app(covRaster[[covIndex]], fun = Function)
     names(covRaster) <- worldClim
