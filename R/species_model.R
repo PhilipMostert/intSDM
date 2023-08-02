@@ -324,8 +324,7 @@ species_model <- R6::R6Class(classname = 'species_model', public = list(
 
   for (species in uniqueSpecies) {
 
-
-    private$dataStructured[[species]][[dataAdd]] <- formatStructured(data = dataStructured[[dataAdd]],
+    private$dataStructured[[species]][[dataAdd]] <- formatStructured(data = dataStructured[[dataAdd]][data.frame(dataStructured[[dataAdd]])[speciesName] == species,],
                                                                      type =  datasetType,
                                                                      varsOld = list(trials = trialsName,
                                                               response = responseName,
@@ -367,8 +366,8 @@ species_model <- R6::R6Class(classname = 'species_model', public = list(
       meshArgs <- list(...)
       if (length(meshArgs) == 0) stop('Please provide ... to specify the mesh construction. See ?inla.mesh.2d for more details.')
 
-      meshObj <- INLA::inla.mesh.2d(boundary = INLA::inla.sp2segment(as(private$Area[1], 'Spatial')),
-                                    crs = private$Projection,
+      meshObj <- INLA::inla.mesh.2d(boundary = inlabru::fm_as_inla_mesh_segment(private$Area[1]),
+                                    crs = inlabru::fm_crs(private$Projection),
                                          ...
                                           )
 
