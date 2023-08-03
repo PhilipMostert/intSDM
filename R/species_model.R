@@ -226,6 +226,7 @@ species_model <- R6::R6Class(classname = 'species_model', public = list(
 #' @param trialsName Name of the trial name variable in the \code{PA} datasets.
 #' @param speciesName Name of the species variable name in the datasets.
 #' @param coordinateNames Names of the coordinate vector in the dataset.
+#' @param generateAbsences Generates absences for \code{'PA'} data. This is done by combining all the sampling locations for all the species, and creating an absence where a given species does not occur.
 #'
 #' @import methods
 #' @import sp
@@ -233,8 +234,8 @@ species_model <- R6::R6Class(classname = 'species_model', public = list(
 #'
   addStructured = function(dataStructured, datasetType,
                            responseName, trialsName,
-                           datasetName = NULL,
-                           speciesName, coordinateNames) {
+                           datasetName = NULL, speciesName,
+                           coordinateNames, generateAbsences = FALSE) {
 
     if (missing(dataStructured)) stop('dataStructured needs to be provided')
 
@@ -322,6 +323,7 @@ species_model <- R6::R6Class(classname = 'species_model', public = list(
     }
 
 
+
   for (species in uniqueSpecies) {
 
     private$dataStructured[[species]][[dataAdd]] <- formatStructured(data = dataStructured[[dataAdd]][data.frame(dataStructured[[dataAdd]])[speciesName] == species,],
@@ -337,6 +339,16 @@ species_model <- R6::R6Class(classname = 'species_model', public = list(
                                                projection = private$Projection,
                                                boundary = private$Area)
 
+  }
+
+    if (datasetType == 'PA') {
+
+    if (generateAbsences) {
+
+      private$dataStructured <- generateAbsences(dataList = private$dataStructured, speciesName = speciesName, datasetName = dataAdd, responseName = responseName)
+
+
+    }
   }
 
     }
@@ -394,12 +406,14 @@ species_model <- R6::R6Class(classname = 'species_model', public = list(
 #' @param responseCounts Name of the response variable for the counts data. Defaults to the standard Darwin core value \code{individualCounts}.
 #' @param responsePA Name of the response variable for the PA data. Defaults to the standard Darwin core value \code{occurrenceStatus}.
 #' @param assign2Global Assign the dataset to the global environment. The object will be assigned to an object specified using the \code{datasetName} object.
+#' @param generateAbsences Generates absences for \code{'PA'} data. This is done by combining all the sampling locations for all the species, and creating an absence where a given species does not occur.
 #' @param ... Additional arguments to specify the \link[rgbif]{occ_data} function from \code{rgbif}. See \code{?occ_data} for more details.
 
 addGBIF = function(Species = 'All', datasetName = NULL,
                    datasetType = 'PO',
                    responseCounts = 'individualCount', responsePA = 'occurrenceStatus',
-                   assign2Global = FALSE, ...) {
+                   assign2Global = FALSE,
+                   generateAbsences = FALSE, ...) {
 
   if (is.null(private$Area)) stop('An area needs to be provided before adding species. This may be done with the `.$addArea` function.')
 
@@ -454,6 +468,7 @@ addGBIF = function(Species = 'All', datasetName = NULL,
 
   }
 
+
   if (!assign2Global) {
 
   if (nrow(GBIFspecies) == 0) warning('All species observations were removed due to duplicates')
@@ -465,6 +480,17 @@ addGBIF = function(Species = 'All', datasetName = NULL,
   }
   } else assign(datasetName,  private$dataGBIF[[speciesName]][[datasetName]], envir = globalenv())
 
+  }
+
+  if (datasetType == 'PA') {
+
+    if (generateAbsences) {
+
+
+      private$dataGBIF <- generateAbsences(dataList = private$dataGBIF, speciesName = 'species', datasetName = datasetName, responseName = responsePA)
+
+
+    }
   }
 
   private$datasetName <- c(datasetName, private$datasetName)
