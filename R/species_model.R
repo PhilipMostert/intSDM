@@ -454,9 +454,11 @@ addGBIF = function(Species = 'All', datasetName = NULL,
 
     anySame <- st_equals_exact(do.call(c, lapply(private$dataGBIF[[sub(" ", '_', speciesName)]], function(x) st_geometry(x))),
                                GBIFspecies,
-                               par = 1e-3)
+                               par = 0)
 
-    if (!identical(unlist(anySame), 'integer(0)')) {
+    #anySame <- GBIFspecies$key %in% unique(lapply(private$dataGBIF[[sub(" ", '_', speciesName)]], function(x) x$key))
+    #if (sum(anySame > 0)) {
+    if (!identical(unlist(anySame), integer(0))) {
 
       warning('Removing duplicate observations obtained from previous calls of `.$addGBIF`')
 
