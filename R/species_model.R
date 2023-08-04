@@ -345,6 +345,9 @@ species_model <- R6::R6Class(classname = 'species_model', public = list(
 
     if (generateAbsences) {
 
+      if (length(uniqueSpecies) == 1) warning("Can't generate absences if only one species is specified.")
+
+
       private$dataStructured <- generateAbsences(dataList = private$dataStructured, speciesName = speciesName, datasetName = dataAdd, responseName = responseName)
 
 
@@ -488,6 +491,7 @@ addGBIF = function(Species = 'All', datasetName = NULL,
 
     if (generateAbsences) {
 
+      if (length(Species) == 1) warning("Can't generate absences if only one species is specified.")
 
       private$dataGBIF <- generateAbsences(dataList = private$dataGBIF, speciesName = 'species', datasetName = datasetName, responseName = responsePA)
 
@@ -555,7 +559,9 @@ addGBIF = function(Species = 'All', datasetName = NULL,
 
     covRaster <- terra::mask(terra::crop(covRaster, private$Area), private$Area)
 
-    covRaster <- terra::app(covRaster[[covIndex]], fun = Function)
+    if (deparse(substitute(Function)) %in% c('mean', 'median', 'sd')) covRaster <- terra::app(covRaster[[covIndex]], fun = Function)
+    else covRaster <- terra::app(terra::app(covRaster[[covIndex]], fun = mean), fun = Function)
+
     names(covRaster) <- worldClim
 
     private$Covariates[[worldClim]] <- covRaster
