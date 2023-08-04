@@ -26,7 +26,7 @@ sdmWorkflow <- function(Workflow = NULL) {
   if (length(Workflow$.__enclos_env__$private$optionsISDM) > 0) {
 
     if (!is.null(Workflow$.__enclos_env__$private$optionsISDM[['pointsSpatial']])) .__pointsSpatial.__ <- Workflow$.__enclos_env__$private$optionsISDM$pointsSpatial
-    else .__pointsSpatial.__ <- 'shared'
+    else .__pointsSpatial.__ <- 'copy'#'shared' #Should this be copy?
 
     if (!is.null(Workflow$.__enclos_env__$private$optionsISDM[['copyModel']])) .__copyModel.__ <- eval(parse(text = Workflow$.__enclos_env__$private$optionsISDM['copyModel']))
     else .__copyModel.__ <- eval(parse(text = 'list(beta = list(fixed = FALSE))'))
