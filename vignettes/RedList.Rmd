@@ -34,7 +34,7 @@ library(intSDM)
 *intSDM* has two main functions: `startWorkflow()` and `sdmWorkflow()`. The first of which is designed to setup and specify all the individual components of the workflow using different slot functions. The functions related to this object include:
 
 | Function name         | Function use                                                                                                |
-|-------------------|-----------------------------------------------------|
+|--------------------|----------------------------------------------------|
 | `.$plot()`            | Plot data and other objects required for the model.                                                         |
 | `.$addStructured()`   | Add data not available on GBIF.                                                                             |
 | `.$addMesh()`         | Create an *inla.mesh* object.                                                                               |
@@ -93,17 +93,20 @@ The other source of data considered comes from the Norwegian Species Observation
 workflow$addGBIF(datasetName = 'NTNU', 
                  datasetType = 'PA',
                  limit = 10000,
+                 coordinateUncertaintyInMeters = '0,50',
                  generateAbsences = TRUE, 
                  datasetKey = 'd29d79fd-2dc4-4ef5-89b8-cdf66994de0d')
 
 workflow$addGBIF(datasetName = 'UiO',
                  datasetType = 'PA',
                  limit = 10000,
+                 coordinateUncertaintyInMeters = '0,50',
                  generateAbsences = TRUE,
                  datasetKey = 'e45c7d91-81c6-4455-86e3-2965a5739b1f')
 
 workflow$addGBIF(datasetName = 'CZ', 
                  datasetType = 'PO',
+                 coordinateUncertaintyInMeters = '0,50',
                  limit = 10000,
                  datasetKey = 'b124e1e0-4755-430f-9eab-894f25a9b59c')
 
@@ -117,7 +120,7 @@ Covariate data may be added to the model using `.$addCovariates()`. Layers from 
 
 ```{r addCovariates, eval = FALSE}
 
-workflow$addCovariates(worldClim = 'tavg', res = 10, Function = scale)
+workflow$addCovariates(worldClim = 'tavg', res = 5, Function = scale)
 workflow$plot(Covariates = TRUE)
 
 ```
