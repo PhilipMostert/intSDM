@@ -4,12 +4,12 @@
 \alias{obtainCovariate}
 \title{obtainCovariate: Function to obtain a covariate later for a specified country.}
 \usage{
-obtainCovariate(covariates, countries, projection, path)
+obtainCovariate(covariates, res, projection, path)
 }
 \arguments{
 \item{covariates}{A vector of covariate names to obtain.}
 
-\item{countries}{A vector of country names to obtain covariates for.}
+\item{res}{Resolution of the worldclim variable. Valid options are: \code{10}, \code{5}, \code{2.5} or \code{0.5} (minutes of a degree).}
 
 \item{projection}{Coordinate reference system to use in analysis.}
 

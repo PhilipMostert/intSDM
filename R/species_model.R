@@ -221,7 +221,7 @@ species_model <- R6::R6Class(classname = 'species_model', public = list(
 #'
 #' @param dataStructured The dataset used in the model. Must be either a \code{data.frame}, \code{sf} or \code{SpatialPoints*} object, or a \code{list} containing multiples of these classes.
 #' @param datasetType A vector which gives the type of dataset. Must be either \code{'count'}, \code{'PO'} or \code{'PA'}.
-#' @param datasetName An optional argument to create a new name for the dataset. Must be the same length as \code{dataStructured} if that is provided as a \list{list}.
+#' @param datasetName An optional argument to create a new name for the dataset. Must be the same length as \code{dataStructured} if that is provided as a \code{list}.
 #' @param responseName Name of the response variable in the dataset. If \code{dataType} is \code{'PO'}, then this argument may be missing.
 #' @param trialsName Name of the trial name variable in the \code{PA} datasets.
 #' @param speciesName Name of the species variable name in the datasets.

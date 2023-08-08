@@ -22,6 +22,7 @@ An object containing the data, covariates  and other relevant information to be 
 \item \href{#method-species_model-specifySpatial}{\code{species_model$specifySpatial()}}
 \item \href{#method-species_model-biasFields}{\code{species_model$biasFields()}}
 \item \href{#method-species_model-workflowOutput}{\code{species_model$workflowOutput()}}
+\item \href{#method-species_model-obtainMeta}{\code{species_model$obtainMeta()}}
 \item \href{#method-species_model-clone}{\code{species_model$clone()}}
 }
 }
@@ -123,7 +124,8 @@ The function is used to convert structured datasets into a framework which is us
   trialsName,
   datasetName = NULL,
   speciesName,
-  coordinateNames
+  coordinateNames,
+  generateAbsences = FALSE
 )}\if{html}{\out{</div>}}
 }
 
@@ -138,11 +140,13 @@ The function is used to convert structured datasets into a framework which is us
 
 \item{\code{trialsName}}{Name of the trial name variable in the \code{PA} datasets.}
 
-\item{\code{datasetName}}{An optional argument to change the name of the dataset in the model. Must be the same length as \code{dataStructured} if that is provided as a \list{list}.}
+\item{\code{datasetName}}{An optional argument to create a new name for the dataset. Must be the same length as \code{dataStructured} if that is provided as a \code{list}.}
 
 \item{\code{speciesName}}{Name of the species variable name in the datasets.}
 
 \item{\code{coordinateNames}}{Names of the coordinate vector in the dataset.}
+
+\item{\code{generateAbsences}}{Generates absences for \code{'PA'} data. This is done by combining all the sampling locations for all the species, and creating an absence where a given species does not occur.}
 }
 \if{html}{\out{</div>}}
 }
@@ -179,6 +183,7 @@ Function to add species occurrence records from GBIF (using the \code{rgbif} pac
   responseCounts = "individualCount",
   responsePA = "occurrenceStatus",
   assign2Global = FALSE,
+  generateAbsences = FALSE,
   ...
 )}\if{html}{\out{</div>}}
 }
@@ -198,6 +203,8 @@ Function to add species occurrence records from GBIF (using the \code{rgbif} pac
 
 \item{\code{assign2Global}}{Assign the dataset to the global environment. The object will be assigned to an object specified using the \code{datasetName} object.}
 
+\item{\code{generateAbsences}}{Generates absences for \code{'PA'} data. This is done by combining all the sampling locations for all the species, and creating an absence where a given species does not occur.}
+
 \item{\code{...}}{Additional arguments to specify the \link[rgbif]{occ_data} function from \code{rgbif}. See \code{?occ_data} for more details.}
 }
 \if{html}{\out{</div>}}
@@ -212,6 +219,7 @@ Function to add spatial covariates to the workflow. The covariates may either be
 \if{html}{\out{<div class="r">}}\preformatted{species_model$addCovariates(
   Object = NULL,
   worldClim = NULL,
+  res = 2.5,
   Months = "All",
   Function = "mean",
   ...
@@ -224,6 +232,8 @@ Function to add spatial covariates to the workflow. The covariates may either be
 \item{\code{Object}}{A object of class: \code{spatRaster}, \code{SpatialPixelsDataFrame} or \code{raster} containing covariate information across the area. Note that this function will check if the covariates span the boundary area, so it may be preferable to add your own boundary using \code{`.$addArea`} if this argument is specified.}
 
 \item{\code{worldClim}}{Name of the worldClim to include in the model. See \code{?worldclim_country} from the \code{geodata} package for more information.}
+
+\item{\code{res}}{Resolution of the worldclim variable. Valid options are: \code{10}, \code{5}, \code{2.5} or \code{0.5} (minutes of a degree).}
 
 \item{\code{Months}}{The months to include the covariate for. Defaults to \code{All} which includes covariate layers for all months.}
 
@@ -345,6 +355,25 @@ Function to specify the workflow output from the model. This argument must be at
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{Output}}{The names of the outputs to give in the workflow. Must be at least one of: \code{'Model'}, \code{'Prediction'}, \code{'Maps'} and \code{'Cross-validation'}.}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-species_model-obtainMeta"></a>}}
+\if{latex}{\out{\hypertarget{method-species_model-obtainMeta}{}}}
+\subsection{Method \code{obtainMeta()}}{
+Obtain metadata from the workflow.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{species_model$obtainMeta(Number = TRUE, Citations = TRUE)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{Number}}{Print the number of observations per dataset. Defaults to \code{TRUE}.}
+
+\item{\code{Citations}}{Print the citations for the GBIF obtained datasets. Defaults to \code{TRUE}.}
 }
 \if{html}{\out{</div>}}
 }
