@@ -786,6 +786,65 @@ addGBIF = function(Species = 'All', datasetName = NULL,
     private$Output <- Output
 
   }
+  ,
+
+#' @description Obtain metadata from the workflow.
+#' @param Number Print the number of observations per dataset. Defaults to \code{TRUE}.
+#' @param Citations Print the citations for the GBIF obtained datasets. Defaults to \code{TRUE}.
+#'
+
+obtainMeta = function(Number = TRUE,
+                      Citations = TRUE) {
+
+  cat('Metadata for the workflow:\n')
+
+  if (Number) {
+
+  cat('Number of observations in dataset:\n')
+
+  for (species in sub(" ", "_", private$Species)) {
+
+    cat(paste0(species, ':'),'\n')
+
+    if (length(private$dataGBIF) > 0) speciesNumGBIF <- unlist(lapply(workflow$.__enclos_env__$private$dataGBIF[[species]], nrow))
+    else speciesNumGBIF <- NULL
+
+    if (length(private$dataStructured) > 0) speciesNumStructured <- unlist(lapply(workflow$.__enclos_env__$private$dataGBIF[[species]], nrow))
+    else speciesNumStructured <- NULL
+
+    speciesNum <- c(speciesNumGBIF, speciesNumStructured)
+
+    numData <- data.frame(Dataset = names(speciesNum),
+                          Place = rep('-', length(speciesNum)),
+                          Number = speciesNum)
+    colnames(numData) <- c('Dataset', '', '#')
+    print.data.frame(numData, row.names = FALSE, right = TRUE)
+    cat('Sum:');cat('',sum(speciesNum))
+    cat('\n')
+
+  }
+
+  }
+
+
+  if (Citations) {
+
+  if (length(private$dataGBIF) == 0) stop('Please call .$addGBIF() to obtain data from GBIF.')
+
+  cat('Citations for GBIF data:\n')
+  datasetKeys <- c(na.omit(unique(unlist(lapply(unlist(private$dataGBIF, recursive = FALSE), function(x) x$datasetKey)))))
+
+  listKeys <- vector(mode = 'list', length = length(datasetKeys))
+  names(listKeys) <- datasetKeys
+
+  for (key in datasetKeys) listKeys[[key]] <- rgbif::gbif_citation(x = key)
+
+  print(listKeys)
+
+  }
+
+
+}
   ))
 
 species_model$set('private', 'Area', NULL)

@@ -58,7 +58,8 @@ startWorkflow <- function(Countries, Species,
                                           'modelOptions',
                                           'specifySpatial',
                                           'biasFields',
-                                          'workflowOutput'),
+                                          'workflowOutput',
+                                          'obtainMeta'),
                                  Description = c('---------------','-> Plot data',
                                                  '-> Add structured data',
                                                  '-> Create an inla.mesh object',
@@ -69,7 +70,8 @@ startWorkflow <- function(Countries, Species,
                                                  '-> Add INLA model options',
                                                  '-> Specify spatial effects',
                                                  '-> Add bias field',
-                                                 '-> Output of workflow'))
+                                                 '-> Output of workflow',
+                                                 '-> Summary of metadata'))
 print.data.frame(descriptionSlots, right = FALSE, row.names = FALSE)
 
 cat('\nThe workflow may then be estimated using the "sdmWorkflow" function.\n\n')
