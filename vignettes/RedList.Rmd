@@ -34,7 +34,7 @@ library(intSDM)
 *intSDM* has two main functions: `startWorkflow()` and `sdmWorkflow()`. The first of which is designed to setup and specify all the individual components of the workflow using different slot functions. The functions related to this object include:
 
 | Function name         | Function use                                                                                                |
-|--------------------|----------------------------------------------------|
+|---------------------|---------------------------------------------------|
 | `.$plot()`            | Plot data and other objects required for the model.                                                         |
 | `.$addStructured()`   | Add data not available on GBIF.                                                                             |
 | `.$addMesh()`         | Create an *inla.mesh* object.                                                                               |
@@ -46,6 +46,7 @@ library(intSDM)
 | `.$specifySpatial()`  | Add penalizing complexity priors to the spatial effects.                                                    |
 | `.$biasFields()`      | Specify an additional spatial effect for a dataset.                                                         |
 | `.$workflowOutput()`  | Specify the output of the workflow.                                                                         |
+| `.$obtainMeta()`      | Obtain metadata for the occurrence records.                                                                 |
 
 `sdmWorkflow()` implements the workflow based on the objects added in `startWorkflow()`. The output of this function is a list of objects specified in `.$workflowOutput()`.
 
@@ -116,7 +117,7 @@ workflow$plot(Species = TRUE)
 
 ### Adding covariate data
 
-Covariate data may be added to the model using `.$addCovariates()`. Layers from *WorldClim [@fick2017worldclim]* may be accessed using the *worldClim argument*. This in turn uses the *geodata [@geodata]* R package to obtain *spatRaster* objects of the covariates cropped around the study domain. Other covariate latyers may be added using the *Object* argument.
+Covariate data may be added to the model using `.$addCovariates()`. Layers from *WorldClim [@fick2017worldclim]* may be accessed using the *worldClim argument*. This in turn uses the *geodata [@geodata]* R package to obtain *spatRaster* objects of the covariates cropped around the study domain. Other covariate layers may be added using the *Object* argument.
 
 ```{r addCovariates, eval = FALSE}
 
