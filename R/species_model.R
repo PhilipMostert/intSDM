@@ -29,7 +29,7 @@ species_model <- R6::R6Class(classname = 'species_model', public = list(
     }
 
     private$Species <- Species
-
+    private$timeStarted <- Sys.time()
     private$Directory <- Directory
     private$Project <- nameProject
     private$Save <- Save
@@ -798,6 +798,8 @@ obtainMeta = function(Number = TRUE,
 
   cat('Metadata for the workflow:\n')
 
+  cat('Time started:\n'); cat(as.character(private$timeStarted), '\n')
+
   if (Number) {
 
   cat('Number of observations in dataset:\n')
@@ -820,7 +822,7 @@ obtainMeta = function(Number = TRUE,
     colnames(numData) <- c('Dataset', '', '#')
     print.data.frame(numData, row.names = FALSE, right = TRUE)
     cat('Sum:');cat('',sum(speciesNum))
-    cat('\n')
+    cat('\n\n')
 
   }
 
@@ -863,6 +865,7 @@ species_model$set('private', 'Quiet', TRUE)
 species_model$set('private', 'Directory', getwd())
 species_model$set('private', 'Project', NULL)
 species_model$set('private', 'sharedField', NULL)
+species_model$set('private', 'timeStarted', NULL)
 #species_model$set('private', 'datasetFieldsSpecify', list())
 species_model$set('private', 'biasFieldsSpecify', list())
 species_model$set('private', 'datasetName', NULL)
