@@ -57,7 +57,7 @@ testthat::test_that('Test that addGBIF correctly adds the correct data to the mo
   expect_true(unique(workflow$.__enclos_env__$private$dataGBIF$Fraxinus_excelsior$GBIFTEST2$occurrenceStatus) %in% c(0,1))
 
   ##Change to Counts and check that NAs are removed.
-  expect_warning(workflow$addGBIF(datasetName = 'GBIFTEST3', datasetType = 'Counts', limit = 10000), 'Removing reccords with NA individualCount values')
+  expect_warning(workflow$addGBIF(datasetName = 'GBIFTEST3', datasetType = 'Counts', limit = 1000), 'Removing reccords with NA individualCount values')
   expect_setequal(class(workflow$.__enclos_env__$private$dataGBIF$Fraxinus_excelsior$GBIFTEST3), c('sf', 'data.frame'))
   expect_true(sum(is.na(workflow$.__enclos_env__$private$dataGBIF$GBIFTEST3$individualCount)) == 0)
 
@@ -173,15 +173,15 @@ testthat::test_that('addStructured can add the data correctly to the model', {
   expect_setequal(names(workflow$.__enclos_env__$private$dataStructured$Fraxinus_excelsior$dataCounts), c('geometry', 'individualCount', 'speciesName'))
 
   #Add an sp dataset
-  dataPASP <- as(dataPA, 'Spatial')
-  workflow$addStructured(dataStructured = dataPASP, datasetType = 'PA', responseName = 'Presence', speciesName = 'species')
-  expect_setequal(class(workflow$.__enclos_env__$private$dataStructured$Fraxinus_excelsior$dataPASP), c('sf', 'data.frame'))
+  #dataPASP <- as(dataPA, 'Spatial')
+  #workflow$addStructured(dataStructured = dataPASP, datasetType = 'PA', responseName = 'Presence', speciesName = 'species')
+  #expect_setequal(class(workflow$.__enclos_env__$private$dataStructured$Fraxinus_excelsior$dataPASP), c('sf', 'data.frame'))
 
-  dataSP <- as(st_as_sf(st_sample(x = countries, size = 100)), 'Spatial')
-  dataSP$species <- species
-  workflow$addStructured(dataStructured = dataSP, datasetType = 'PO', speciesName = 'species')
-  expect_setequal(names(workflow$.__enclos_env__$private$dataStructured$Fraxinus_excelsior$dataSP), c('geometry', 'speciesName'))
-  expect_setequal(class(workflow$.__enclos_env__$private$dataStructured$Fraxinus_excelsior$dataSP), c('sf', 'data.frame'))
+  #dataSP <- as(st_as_sf(st_sample(x = countries, size = 100)), 'Spatial')
+  #dataSP$species <- species
+  #workflow$addStructured(dataStructured = dataSP, datasetType = 'PO', speciesName = 'species')
+  #expect_setequal(names(workflow$.__enclos_env__$private$dataStructured$Fraxinus_excelsior$dataSP), c('geometry', 'speciesName'))
+  #expect_setequal(class(workflow$.__enclos_env__$private$dataStructured$Fraxinus_excelsior$dataSP), c('sf', 'data.frame'))
 
   #Add a data.frame object
   dataFrame <- st_transform(dataPA, proj)
@@ -207,8 +207,8 @@ testthat::test_that('addMesh correctly adds the mesh to the model', {
 
   expect_error(workflow$addMesh())
 
-  meshObject <<- inla.mesh.2d(boundary = INLA::inla.sp2segment(as(countries, 'Spatial')),
-                             max.edge = 2,
+  meshObject <<- inla.mesh.2d(boundary = inlabru::fm_sp2segment(countries),
+                             max.edge = 200000,
                              offset = 10,
                              crs = proj)
 

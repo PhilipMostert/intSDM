@@ -15,7 +15,7 @@ testthat::test_that('obtainCovariate can correctly obtain the covariate layer, a
     ##If taking too long//servers down
 
   try(cov <- R.utils::withTimeout(
-    obtainCovariate(covname, countries,
+    obtainCovariate(covname, countries, res = '5',
                     projection, path), timeout = 60, onTimeout = 'silent'))
 
   if ('cov' %in% ls()) {
@@ -28,7 +28,7 @@ testthat::test_that('obtainCovariate can correctly obtain the covariate layer, a
   #Change CRS
   projection2 <- 'EPSG:4326'
 
-  try(cov2 <-  R.utils::withTimeout(obtainCovariate(covname, countries,
+  try(cov2 <-  R.utils::withTimeout(obtainCovariate(covname, countries, res = '5',
                          projection2, path), timeout = 60, onTimeout = 'silent'))
 
   if ('cov2' %in% ls()) {
