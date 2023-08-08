@@ -115,6 +115,16 @@ workflow$plot(Species = TRUE)
 
 ```
 
+### Metadata
+
+We can then view the metadata for the obtained occurrence records using the `.$obtainMeta()` function, which will give us the citation for the datasets used in this workflow.
+
+```{r metadata}
+
+workflow$obtainMeta()
+
+```
+
 ### Adding covariate data
 
 Covariate data may be added to the model using `.$addCovariates()`. Layers from *WorldClim [@fick2017worldclim]* may be accessed using the *worldClim argument*. This in turn uses the *geodata [@geodata]* R package to obtain *spatRaster* objects of the covariates cropped around the study domain. Other covariate layers may be added using the *Object* argument.
@@ -188,3 +198,4 @@ Maps$Ulmus_glabra$Maps
 Maps$Arnica_montana$Maps
 
 ```
+
