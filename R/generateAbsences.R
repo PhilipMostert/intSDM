@@ -12,9 +12,9 @@ generateAbsences <- function(dataList, datasetName,
   #allCoords <- unique(do.call(rbind, lapply(unlist(dataList, recursive = FALSE), st_coordinates)))
   allCoords <- unique(do.call(rbind, lapply(datasetData, st_coordinates)))
 
-  allCoords <- unique(st_as_sf(data.frame(allCoords),
-                               coords = colnames(allCoords),
-                               crs = workflow$.__enclos_env__$private$Projection))
+  allCoords <- st_as_sf(data.frame(allCoords),
+                        coords = colnames(allCoords),
+                        crs = workflow$.__enclos_env__$private$Projection)
 
   for (species in names(dataList)) {
 
