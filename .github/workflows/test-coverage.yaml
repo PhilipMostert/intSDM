@@ -57,9 +57,6 @@ jobs:
           dependencies: '"all"'
           extra-packages: |
              rcmdcheck
-             any::lwgeom
-
-
 
       - name: Session info
         run: |
