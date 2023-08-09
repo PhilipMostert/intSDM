@@ -57,9 +57,8 @@ jobs:
           dependencies: '"all"'
           extra-packages: |
              rcmdcheck
-          run: |
-            install.packages(c("remotes", "rcmdcheck", "covr"), repos='http://cran.us.r-project.org')
-            remotes::install_github('PhilipMostert/PointedSDMs')
+             any::lwgeom
+
 
 
       - name: Session info
