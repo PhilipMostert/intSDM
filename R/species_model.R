@@ -348,7 +348,7 @@ species_model <- R6::R6Class(classname = 'species_model', public = list(
       if (length(uniqueSpecies) == 1) warning("Can't generate absences if only one species is specified.")
 
 
-      private$dataStructured <- generateAbsences(dataList = private$dataStructured, speciesName = speciesName, datasetName = dataAdd, responseName = responseName)
+      private$dataStructured <- generateAbsences(dataList = private$dataStructured, speciesName = speciesName, datasetName = dataAdd, responseName = responseName, Projection = private$Projection)
 
 
     }
@@ -493,7 +493,7 @@ addGBIF = function(Species = 'All', datasetName = NULL,
 
       if (length(Species) == 1) warning("Can't generate absences if only one species is specified.")
 
-      private$dataGBIF <- generateAbsences(dataList = private$dataGBIF, speciesName = 'species', datasetName = datasetName, responseName = responsePA)
+      private$dataGBIF <- generateAbsences(dataList = private$dataGBIF, speciesName = 'species', datasetName = datasetName, responseName = responsePA, Projection = private$Projection)
 
 
     }

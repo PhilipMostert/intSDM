@@ -3,18 +3,20 @@
 #' @param datasetName The name of the dataset.
 #' @param speciesName The name of the species variable name.
 #' @param responseName The name of the response variable name.
+#' @param Projection Coordinate reference system used.
 #'
 generateAbsences <- function(dataList, datasetName,
-                             speciesName, responseName) {
+                             speciesName, responseName,
+                             Projection) {
 
 
   datasetData <- lapply(dataList, function(x) x[[datasetName]])
   #allCoords <- unique(do.call(rbind, lapply(unlist(dataList, recursive = FALSE), st_coordinates)))
   allCoords <- unique(do.call(rbind, lapply(datasetData, st_coordinates)))
 
-  allCoords <- st_as_sf(data.frame(allCoords),
+  allCoords <- unique(st_as_sf(data.frame(allCoords),
                         coords = colnames(allCoords),
-                        crs = workflow$.__enclos_env__$private$Projection)
+                        crs = Projection))
 
   for (species in names(dataList)) {
 
