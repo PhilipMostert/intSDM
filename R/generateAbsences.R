@@ -1,3 +1,4 @@
+#' @title Function to generate absences for data that comes from checklist data.
 #' @description Function used to generate absences for data coming from lists. This function takes all the sampling locations from all the species obtained from a given dataset, and generates an absence if a species does not occur at a given location.
 #' @param dataList A List of data objects for the dataset.
 #' @param datasetName The name of the dataset.
