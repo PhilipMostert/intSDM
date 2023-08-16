@@ -9,7 +9,7 @@ startWorkflow(
   Species,
   Projection,
   Save = TRUE,
-  saveOptions = list(projectDirectory = getwd(), projectName = NULL),
+  saveOptions = list(projectDirectory = NULL, projectName = NULL),
   Quiet = FALSE
 )
 }
@@ -22,7 +22,7 @@ startWorkflow(
 
 \item{Save}{Logical argument indicating if the model objects and outputs should be saved as .rds files. Defaults to \code{TRUE}. If \code{FALSE} then the output of the workflow will be a list of objects at each step of the workflow.}
 
-\item{saveOptions}{A list containing two items: \code{projectDirectory} indicating where the objects should be saved (defaults to \code{getwd()}), and \code{projectName} which indicates the name for the folder in the relevant directory. The latter argument is required, regardless of the value given to \code{Save}.}
+\item{saveOptions}{A list containing two items: \code{projectDirectory} indicating where the objects should be saved (defaults to \code{NULL}), and \code{projectName} which indicates the name for the folder in the relevant directory. The latter argument is required, regardless of the value given to \code{Save}.}
 
 \item{Quiet}{Logical argument indicating if the workflow should provide the user messages during the setup and estimation process. Defaults to \code{TRUE}.}
 }
