@@ -58,5 +58,5 @@ functions to help customize the workflow. These include:
 | `.$workflowOutput()`  | Specify the output of the workflow.                                                                                                                                                                                                                                                        |
 | `.$obtainMeta()`      | Obtain metadata for the occurrence records.                                                                                                                                                                                                                                                |
 
-An example of the package use is provided as a vignette within the
+An example of the package in-use is provided as a vignette within the
 package.
