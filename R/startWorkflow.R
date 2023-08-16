@@ -5,7 +5,7 @@
 #' @param Species A vector of Species names (scientific) to include in the analysis. Names should be given carefully since the names provided will be used to obtain _GBIF_ observations.
 #' @param Projection The coordinate reference system used in the workflow.
 #' @param Save Logical argument indicating if the model objects and outputs should be saved as .rds files. Defaults to \code{TRUE}. If \code{FALSE} then the output of the workflow will be a list of objects at each step of the workflow.
-#' @param saveOptions A list containing two items: \code{projectDirectory} indicating where the objects should be saved (defaults to \code{getwd()}), and \code{projectName} which indicates the name for the folder in the relevant directory. The latter argument is required, regardless of the value given to \code{Save}.
+#' @param saveOptions A list containing two items: \code{projectDirectory} indicating where the objects should be saved (defaults to \code{NULL}), and \code{projectName} which indicates the name for the folder in the relevant directory. The latter argument is required, regardless of the value given to \code{Save}.
 #' @param Quiet Logical argument indicating if the workflow should provide the user messages during the setup and estimation process. Defaults to \code{TRUE}.
 #'
 #' @returns An R6 object of class \code{species_model}. This object contains a collection of slot functions to assist the user in customizing their workflow.
@@ -16,13 +16,16 @@ startWorkflow <- function(Countries, Species,
                           Projection,
                           Save = TRUE,
                           saveOptions = list(
-                          projectDirectory = getwd(),
+                          projectDirectory = NULL,
                           projectName = NULL),
                           Quiet = FALSE) {
 
   if (Save) {
 
   if (!is.character(saveOptions$projectName)) stop('Please provide projectName in the saveOptions list.')
+  if (!all(names(saveOptions) %in% c('projectName', 'projectDirectory'))) stop('saveOptions needs to be a list containing objects with names: `projectDirectory` and `projectName`.')
+
+    if (is.null(saveOptions$projectDirectory)) saveOptions$projectDirectory <- getwd()
 
   }
 
