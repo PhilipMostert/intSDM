@@ -70,7 +70,7 @@ sdmWorkflow <- function(Workflow = NULL) {
 
    if (!Quiet) message('Initializing model', '\n\n')
 
-  initializeModel <- PointedSDMs::intModel(speciesDataset, Mesh = .__mesh.__, Projection = sp::CRS(.__proj.__), Coordinates = .__coordinates.__,
+  initializeModel <- PointedSDMs::intModel(speciesDataset, Mesh = .__mesh.__, Projection = .__proj.__, Coordinates = .__coordinates.__,
                                             responsePA = .__responsePA.__, responseCounts = .__responseCounts.__,
                                             trialsPA = .__trialsName.__, pointsSpatial = .__pointsSpatial.__,
                                             pointsIntercept = .__pointsIntercept.__ ,
