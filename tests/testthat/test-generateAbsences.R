@@ -1,6 +1,7 @@
 testthat::test_that('generateAbsences correctly creates absences for the data.', {
 
   ##First set up workflow
+  skip_on_cran()
 
   proj <- '+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
   species <- c('Fraxinus excelsior', 'Ulmus glabra', 'Arnica montana')

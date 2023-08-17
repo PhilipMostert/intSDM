@@ -1,5 +1,5 @@
 ##First set up workflow
-
+library(lwgeom)
 proj <- '+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
 species <- 'Fraxinus excelsior'
 workflow <- startWorkflow(Species = species,
@@ -38,6 +38,8 @@ testthat::test_that('Test that addArea correctly adds the correct area to the mo
 
 testthat::test_that('Test that addGBIF correctly adds the correct data to the model', {
 
+  skip_on_cran()
+
   expect_error(workflow$addGBIF(), 'Please provide a name to give your dataset using datasetName.')
   expect_error(workflow$addGBIF(Species = 'Not_provided', datasetName = 'TEST'), 'Species provided not specified in startWorkflow().')
 
@@ -71,6 +73,9 @@ testthat::test_that('Test that addGBIF correctly adds the correct data to the mo
 })
 
 testthat::test_that('Test that addCovariate correctly adds the desired covariate to the model', {
+
+  skip_on_cran()
+
   skip(message = 'geodata is down for now')
   expect_error(workflow$addCovariates(), 'One of object or worldClim is required.')
 
@@ -120,6 +125,9 @@ testthat::test_that('Test that addCovariate correctly adds the desired covariate
 })
 
 testthat::test_that('addStructured can add the data correctly to the model', {
+
+  skip_on_cran()
+
 
   workflow <- startWorkflow(Species = species,
                             saveOptions = list(projectName = 'testthatexample'),
@@ -205,6 +213,8 @@ testthat::test_that('addStructured can add the data correctly to the model', {
 
 testthat::test_that('addMesh correctly adds the mesh to the model', {
 
+  skip_on_cran()
+
   expect_error(workflow$addMesh())
 
   meshObject <<- inla.mesh.2d(boundary = inlabru::fm_sp2segment(countries),
@@ -245,6 +255,8 @@ testthat::test_that('crossValidation correctly specifies the correct cross-valid
 
 testthat::test_that('modelOptions correctly adds options', {
 
+  skip_on_cran()
+
   expect_error(workflow$modelOptions(INLA = 'control.strategy = list()'), 'INLA needs to be a list of INLA arguments to specify the model.')
 
   expect_error(workflow$modelOptions(ISDM = list(marks = TRUE)), 'ISDM needs to be a named list with at least one of the following options: "pointCovariates", "pointsIntercept", "pointsSpatial" or "copyModel".')
@@ -264,6 +276,8 @@ testthat::test_that('modelOptions correctly adds options', {
 
 testthat::test_that('specifySpatial correctly specifies the spatial fields', {
 
+  skip_on_cran()
+
   expect_error(workflow$specifySpatial(), 'Please provide arguments to customize the INLA spde object using the ... argument.')
   workflowNoMesh <- startWorkflow(Species = species,
                                   saveOptions = list(projectName = 'testthatexample'),
@@ -279,6 +293,8 @@ testthat::test_that('specifySpatial correctly specifies the spatial fields', {
   })
 
 testthat::test_that('biasFields correctly adds the bias field', {
+
+  skip_on_cran()
 
   expect_error(workflow$biasFields(), 'argument "datasetName" is missing, with no default')
 
@@ -303,6 +319,8 @@ testthat::test_that('biasFields correctly adds the bias field', {
 })
 
 testthat::test_that('workflowOutput gives the correct output', {
+
+  skip_on_cran()
 
   expect_error(workflow$workflowOutput(), 'argument "Output" is missing, with no default')
 
