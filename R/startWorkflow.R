@@ -11,15 +11,12 @@
 #' @returns An R6 object of class \code{species_model}. This object contains a collection of slot functions to assist the user in customizing their workflow.
 #'
 #' @examples
-#'
 #' ##Start a workflow without saving objects
 #'
 #' workflow <- startWorkflow(Species = 'Fraxinus excelsior',
-#'                           Projection = '4326',
+#'                           Projection = "+proj=longlat +ellps=WGS84",
 #'                           Save = FALSE,
 #'                           saveOptions = list(projectName = 'example'))
-#'
-#'
 #' @export
 
 startWorkflow <- function(Countries, Species,

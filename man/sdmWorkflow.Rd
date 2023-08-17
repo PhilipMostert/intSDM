@@ -16,11 +16,11 @@ The return of the function depends on the argument \code{Save} from the \code{st
 This function is used to compile the reproducible workflow from the \code{R6} object created with \code{startFunction}. Depending on what was specified before, this function will estimate the integrated species distribution model, perform cross-validation, create predictions from the model and plot these predictions.
 }
 \examples{
-
-if (requireNamespace(INLA)) {
+\dontrun{
+if (requireNamespace('INLA')) {
 
 workflow <- startWorkflow(Species = 'Fraxinus excelsior',
-                          Projection = '4326',
+                          Projection = '+proj=longlat +ellps=WGS84',
                           Save = FALSE,
                           saveOptions = list(projectName = 'example'))
 workflow$addArea(countryName = 'Sweden')
@@ -36,5 +36,6 @@ workflow$workflowOutput('Model')
 
 Model <- sdmWorkflow(workflow)
 
+}
 }
 }

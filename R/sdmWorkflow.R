@@ -7,11 +7,11 @@
 #' @return The return of the function depends on the argument \code{Save} from the \code{startWorkflow} function. If this argument is \code{FALSE} then the objects will be saved to the specidfied directory. If this argument is \code{TRUE} then a list of different outcomes from the workflow will be returned.
 #' @export
 #' @examples
-#'
-#' if (requireNamespace(INLA)) {
+#' \dontrun{
+#' if (requireNamespace('INLA')) {
 #'
 #' workflow <- startWorkflow(Species = 'Fraxinus excelsior',
-#'                           Projection = '4326',
+#'                           Projection = '+proj=longlat +ellps=WGS84',
 #'                           Save = FALSE,
 #'                           saveOptions = list(projectName = 'example'))
 #' workflow$addArea(countryName = 'Sweden')
@@ -27,6 +27,7 @@
 #'
 #' Model <- sdmWorkflow(workflow)
 #'
+#' }
 #' }
 
 sdmWorkflow <- function(Workflow = NULL) {

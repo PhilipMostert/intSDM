@@ -13,20 +13,18 @@ An object containing the data, covariates  and other relevant information to be 
 ## ------------------------------------------------
 
 workflow <- startWorkflow(Species = 'Fraxinus excelsior',
-                          Projection = '4326',
+                          Projection = '+proj=longlat +ellps=WGS84',
                           Save = FALSE,
                           saveOptions = list(projectName = 'example'))
 
 workflow$print()
 
-
 ## ------------------------------------------------
 ## Method `species_model$plot`
 ## ------------------------------------------------
 
-
 workflow <- startWorkflow(Species = 'Fraxinus excelsior',
-                          Projection = '4326',
+                          Projection = '+proj=longlat +ellps=WGS84',
                           Save = FALSE,
                           saveOptions = list(projectName = 'example'))
 
@@ -34,13 +32,12 @@ workflow <- startWorkflow(Species = 'Fraxinus excelsior',
 workflow$addArea(countryName = 'Germany')
 workflow$plot(Boundary = TRUE)
 
-
 ## ------------------------------------------------
 ## Method `species_model$addStructured`
 ## ------------------------------------------------
 
 workflow <- startWorkflow(Species = 'Fraxinus excelsior',
-                          Projection = '4326',
+                          Projection = '+proj=longlat +ellps=WGS84',
                           Save = FALSE,
                           saveOptions = list(projectName = 'example'))
 
@@ -48,23 +45,22 @@ workflow <- startWorkflow(Species = 'Fraxinus excelsior',
 workflow$addArea(countryName = 'Sweden')
 
 #Generate random species
-speciesData <- data.frame(X = runif(100), Y = runif(100),
-                          Response = sample(c(0,1), 100),
-                          Name = 'Fraxinus_excelsior')
+speciesData <- data.frame(X = runif(1000, 12, 24),
+                          Y = runif(1000, 56, 68),
+               Response = sample(c(0,1), 1000, replace = TRUE),
+               Name = 'Fraxinus_excelsior')
 workflow$addStructured(dataStructured = speciesData, datasetType = 'PA',
                        datasetName = 'xx', responseName = 'Response',
                        speciesName = 'Name', coordinateNames = c('X', 'Y'))
-
 
 ## ------------------------------------------------
 ## Method `species_model$addMesh`
 ## ------------------------------------------------
 
-
-if (requireNamespace(INLA)) {
-
+if (requireNamespace('INLA')) {
+\dontrun{
 workflow <- startWorkflow(Species = 'Fraxinus excelsior',
-                          Projection = '4326',
+                          Projection = '+proj=longlat +ellps=WGS84',
                           Save = FALSE,
                           saveOptions = list(projectName = 'example'))
 
@@ -75,15 +71,14 @@ workflow$addMesh(cutoff = 20000,
                  offset= 100000)
 
 }
-
+}
 
 ## ------------------------------------------------
 ## Method `species_model$addGBIF`
 ## ------------------------------------------------
 
-
 workflow <- startWorkflow(Species = 'Fraxinus excelsior',
-                          Projection = '4326',
+                          Projection = '+proj=longlat +ellps=WGS84',
                           Save = FALSE,
                           saveOptions = list(projectName = 'example'))
 workflow$addArea(countryName = 'Sweden')
@@ -93,73 +88,49 @@ workflow$addGBIF(datasetName = 'exampleGBIF',
                  limit = 10000,
                  coordinateUncertaintyInMeters = '0,50')
 
-
-
-
-## ------------------------------------------------
-## Method `species_model$addCovariates`
-## ------------------------------------------------
-
-
-#' if (requireNamespace(INLA)) {
-
-workflow <- startWorkflow(Species = 'Fraxinus excelsior',
-                          Projection = '4326',
-                          Save = FALSE,
-                          saveOptions = list(projectName = 'example'))
-
-#Add boundary
-workflow$addArea(countryName = 'Sweden')
-workflow$addCovariates(worldClim = 'tavg', res = '10')
-
-}
-
-
 ## ------------------------------------------------
 ## Method `species_model$addArea`
 ## ------------------------------------------------
 
 workflow <- startWorkflow(Species = 'Fraxinus excelsior',
-                          Projection = '4326',
+                          Projection = '+proj=longlat +ellps=WGS84',
                           Save = FALSE,
                           saveOptions = list(projectName = 'example'))
 
 #Add boundary
 workflow$addArea(countryName = 'Sweden')
-
 
 ## ------------------------------------------------
 ## Method `species_model$crossValidation`
 ## ------------------------------------------------
 
 workflow <- startWorkflow(Species = 'Fraxinus excelsior',
-                          Projection = '4326',
+                          Projection = '+proj=longlat +ellps=WGS84',
                           Save = FALSE,
                           saveOptions = list(projectName = 'example'))
 
 workflow$crossValidation(Method = 'Loo')
-
-
 
 ## ------------------------------------------------
 ## Method `species_model$modelOptions`
 ## ------------------------------------------------
 
 workflow <- startWorkflow(Species = 'Fraxinus excelsior',
-                          Projection = '4326',
+                          Projection = '+proj=longlat +ellps=WGS84',
                           Save = FALSE,
                           saveOptions = list(projectName = 'example'))
 
 workflow$modelOptions(INLA = list(control.inla=list(int.strategy = 'eb')),
                       ISDM = list(pointsIntercept = FALSE))
 
-
 ## ------------------------------------------------
 ## Method `species_model$specifySpatial`
 ## ------------------------------------------------
 
+\dontrun{
+if (requireNamespace('INLA')) {
 workflow <- startWorkflow(Species = 'Fraxinus excelsior',
-                          Projection = '4326',
+                          Projection = '+proj=longlat +ellps=WGS84',
                           Save = FALSE,
                           saveOptions = list(projectName = 'example'))
 
@@ -170,17 +141,17 @@ workflow$addMesh(cutoff = 20000,
                  offset= 100000)
 workflow$specifySpatial(prior.range = c(200000, 0.05),
                         prior.sigma = c(5, 0.1))
-
+}
+}
 
 ## ------------------------------------------------
 ## Method `species_model$biasFields`
 ## ------------------------------------------------
 
-
-if(requireNamespace(INLA)) {
+if(requireNamespace('INLA')) {
 
 workflow <- startWorkflow(Species = 'Fraxinus excelsior',
-                          Projection = '4326',
+                          Projection = '+proj=longlat +ellps=WGS84',
                           Save = FALSE,
                           saveOptions = list(projectName = 'example'))
 workflow$addArea(countryName = 'Sweden')
@@ -190,26 +161,25 @@ workflow$addGBIF(datasetName = 'exampleGBIF',
                  limit = 10000,
                  coordinateUncertaintyInMeters = '0,50')
 workflow$biasFields(datasetName = 'exampleGBIF')
-
 }
+
 
 ## ------------------------------------------------
 ## Method `species_model$workflowOutput`
 ## ------------------------------------------------
 
-#' workflow <- startWorkflow(Species = 'Fraxinus excelsior',
-                          Projection = '4326',
+workflow <- startWorkflow(Species = 'Fraxinus excelsior',
+                          Projection = '+proj=longlat +ellps=WGS84',
                           Save = FALSE,
                           saveOptions = list(projectName = 'example'))
 workflow$workflowOutput('Predictions')
-
 
 ## ------------------------------------------------
 ## Method `species_model$obtainMeta`
 ## ------------------------------------------------
 
-#' workflow <- startWorkflow(Species = 'Fraxinus excelsior',
-                          Projection = '4326',
+workflow <- startWorkflow(Species = 'Fraxinus excelsior',
+                          Projection = '+proj=longlat +ellps=WGS84',
                           Save = FALSE,
                           saveOptions = list(projectName = 'example'))
 workflow$addArea(countryName = 'Sweden')
@@ -219,7 +189,6 @@ workflow$addGBIF(datasetName = 'exampleGBIF',
                  limit = 10000,
                  coordinateUncertaintyInMeters = '0,50')
 workflow$obtainMeta()
-
 }
 \section{Methods}{
 \subsection{Public methods}{
@@ -297,12 +266,11 @@ Prints the datasets, their data type and the number of observations, as well as 
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{workflow <- startWorkflow(Species = 'Fraxinus excelsior',
-                          Projection = '4326',
+                          Projection = '+proj=longlat +ellps=WGS84',
                           Save = FALSE,
                           saveOptions = list(projectName = 'example'))
 
 workflow$print()
-
 }
 \if{html}{\out{</div>}}
 
@@ -341,16 +309,14 @@ A ggplot object.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
-\preformatted{
-workflow <- startWorkflow(Species = 'Fraxinus excelsior',
-                          Projection = '4326',
+\preformatted{workflow <- startWorkflow(Species = 'Fraxinus excelsior',
+                          Projection = '+proj=longlat +ellps=WGS84',
                           Save = FALSE,
                           saveOptions = list(projectName = 'example'))
 
 #Add boundary
 workflow$addArea(countryName = 'Germany')
 workflow$plot(Boundary = TRUE)
-
 }
 \if{html}{\out{</div>}}
 
@@ -399,7 +365,7 @@ The function is used to convert structured datasets into a framework which is us
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{workflow <- startWorkflow(Species = 'Fraxinus excelsior',
-                          Projection = '4326',
+                          Projection = '+proj=longlat +ellps=WGS84',
                           Save = FALSE,
                           saveOptions = list(projectName = 'example'))
 
@@ -407,13 +373,13 @@ The function is used to convert structured datasets into a framework which is us
 workflow$addArea(countryName = 'Sweden')
 
 #Generate random species
-speciesData <- data.frame(X = runif(100), Y = runif(100),
-                          Response = sample(c(0,1), 100),
-                          Name = 'Fraxinus_excelsior')
+speciesData <- data.frame(X = runif(1000, 12, 24),
+                          Y = runif(1000, 56, 68),
+               Response = sample(c(0,1), 1000, replace = TRUE),
+               Name = 'Fraxinus_excelsior')
 workflow$addStructured(dataStructured = speciesData, datasetType = 'PA',
                        datasetName = 'xx', responseName = 'Response',
                        speciesName = 'Name', coordinateNames = c('X', 'Y'))
-
 }
 \if{html}{\out{</div>}}
 
@@ -440,11 +406,10 @@ Function to add an \code{inla.mesh} object to the workflow. The user may either 
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
-\preformatted{
-if (requireNamespace(INLA)) {
-
+\preformatted{if (requireNamespace('INLA')) {
+\dontrun{
 workflow <- startWorkflow(Species = 'Fraxinus excelsior',
-                          Projection = '4326',
+                          Projection = '+proj=longlat +ellps=WGS84',
                           Save = FALSE,
                           saveOptions = list(projectName = 'example'))
 
@@ -455,7 +420,7 @@ workflow$addMesh(cutoff = 20000,
                  offset= 100000)
 
 }
-
+}
 }
 \if{html}{\out{</div>}}
 
@@ -503,9 +468,8 @@ Function to add species occurrence records from GBIF (using the \code{rgbif} pac
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
-\preformatted{
-workflow <- startWorkflow(Species = 'Fraxinus excelsior',
-                          Projection = '4326',
+\preformatted{workflow <- startWorkflow(Species = 'Fraxinus excelsior',
+                          Projection = '+proj=longlat +ellps=WGS84',
                           Save = FALSE,
                           saveOptions = list(projectName = 'example'))
 workflow$addArea(countryName = 'Sweden')
@@ -514,9 +478,6 @@ workflow$addGBIF(datasetName = 'exampleGBIF',
                  datasetType = 'PA',
                  limit = 10000,
                  coordinateUncertaintyInMeters = '0,50')
-
-
-
 }
 \if{html}{\out{</div>}}
 
@@ -556,27 +517,6 @@ Function to add spatial covariates to the workflow. The covariates may either be
 }
 \if{html}{\out{</div>}}
 }
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{
-#' if (requireNamespace(INLA)) {
-
-workflow <- startWorkflow(Species = 'Fraxinus excelsior',
-                          Projection = '4326',
-                          Save = FALSE,
-                          saveOptions = list(projectName = 'example'))
-
-#Add boundary
-workflow$addArea(countryName = 'Sweden')
-workflow$addCovariates(worldClim = 'tavg', res = '10')
-
-}
-
-}
-\if{html}{\out{</div>}}
-
-}
-
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-species_model-addArea"></a>}}
@@ -601,13 +541,12 @@ Function to add a boundary around the study area. This function allows the user 
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{workflow <- startWorkflow(Species = 'Fraxinus excelsior',
-                          Projection = '4326',
+                          Projection = '+proj=longlat +ellps=WGS84',
                           Save = FALSE,
                           saveOptions = list(projectName = 'example'))
 
 #Add boundary
 workflow$addArea(countryName = 'Sweden')
-
 }
 \if{html}{\out{</div>}}
 
@@ -638,13 +577,11 @@ Function to add a spatial cross validation method to the workflow.
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{workflow <- startWorkflow(Species = 'Fraxinus excelsior',
-                          Projection = '4326',
+                          Projection = '+proj=longlat +ellps=WGS84',
                           Save = FALSE,
                           saveOptions = list(projectName = 'example'))
 
 workflow$crossValidation(Method = 'Loo')
-
-
 }
 \if{html}{\out{</div>}}
 
@@ -672,13 +609,12 @@ Function to specify model options for the \code{INLA} and \code{PointedSDMs} par
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{workflow <- startWorkflow(Species = 'Fraxinus excelsior',
-                          Projection = '4326',
+                          Projection = '+proj=longlat +ellps=WGS84',
                           Save = FALSE,
                           saveOptions = list(projectName = 'example'))
 
 workflow$modelOptions(INLA = list(control.inla=list(int.strategy = 'eb')),
                       ISDM = list(pointsIntercept = FALSE))
-
 }
 \if{html}{\out{</div>}}
 
@@ -703,8 +639,10 @@ Function to specify pc priors for the shared random field in the model. See \cod
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
-\preformatted{workflow <- startWorkflow(Species = 'Fraxinus excelsior',
-                          Projection = '4326',
+\preformatted{\dontrun{
+if (requireNamespace('INLA')) {
+workflow <- startWorkflow(Species = 'Fraxinus excelsior',
+                          Projection = '+proj=longlat +ellps=WGS84',
                           Save = FALSE,
                           saveOptions = list(projectName = 'example'))
 
@@ -715,7 +653,8 @@ workflow$addMesh(cutoff = 20000,
                  offset= 100000)
 workflow$specifySpatial(prior.range = c(200000, 0.05),
                         prior.sigma = c(5, 0.1))
-
+}
+}
 }
 \if{html}{\out{</div>}}
 
@@ -742,11 +681,10 @@ Function to add bias fields to the model.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
-\preformatted{
-if(requireNamespace(INLA)) {
+\preformatted{if(requireNamespace('INLA')) {
 
 workflow <- startWorkflow(Species = 'Fraxinus excelsior',
-                          Projection = '4326',
+                          Projection = '+proj=longlat +ellps=WGS84',
                           Save = FALSE,
                           saveOptions = list(projectName = 'example'))
 workflow$addArea(countryName = 'Sweden')
@@ -756,8 +694,8 @@ workflow$addGBIF(datasetName = 'exampleGBIF',
                  limit = 10000,
                  coordinateUncertaintyInMeters = '0,50')
 workflow$biasFields(datasetName = 'exampleGBIF')
-
 }
+
 }
 \if{html}{\out{</div>}}
 
@@ -782,12 +720,11 @@ Function to specify the workflow output from the model. This argument must be at
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
-\preformatted{#' workflow <- startWorkflow(Species = 'Fraxinus excelsior',
-                          Projection = '4326',
+\preformatted{workflow <- startWorkflow(Species = 'Fraxinus excelsior',
+                          Projection = '+proj=longlat +ellps=WGS84',
                           Save = FALSE,
                           saveOptions = list(projectName = 'example'))
 workflow$workflowOutput('Predictions')
-
 }
 \if{html}{\out{</div>}}
 
@@ -814,8 +751,8 @@ Obtain metadata from the workflow.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
-\preformatted{#' workflow <- startWorkflow(Species = 'Fraxinus excelsior',
-                          Projection = '4326',
+\preformatted{workflow <- startWorkflow(Species = 'Fraxinus excelsior',
+                          Projection = '+proj=longlat +ellps=WGS84',
                           Save = FALSE,
                           saveOptions = list(projectName = 'example'))
 workflow$addArea(countryName = 'Sweden')
@@ -825,7 +762,6 @@ workflow$addGBIF(datasetName = 'exampleGBIF',
                  limit = 10000,
                  coordinateUncertaintyInMeters = '0,50')
 workflow$obtainMeta()
-
 }
 \if{html}{\out{</div>}}
 
