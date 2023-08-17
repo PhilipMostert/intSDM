@@ -46,7 +46,7 @@ Suggests:
     viridis,
     INLA (>= 21.08.31),
     ggpolypath,
-    ggmap,
+    R.utils,
     lwgeom,
     spatstat,
     RColorBrewer,
