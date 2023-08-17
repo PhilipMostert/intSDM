@@ -217,7 +217,7 @@ testthat::test_that('addMesh correctly adds the mesh to the model', {
 
   expect_error(workflow$addMesh())
 
-  meshObject <<- inla.mesh.2d(boundary = inlabru::fm_sp2segment(countries),
+  meshObject <<- INLA::inla.mesh.2d(boundary = inlabru::fm_sp2segment(countries),
                              max.edge = 200000,
                              offset = 10,
                              crs = proj)
