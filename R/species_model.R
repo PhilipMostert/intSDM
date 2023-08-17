@@ -229,7 +229,6 @@ species_model <- R6::R6Class(classname = 'species_model', public = list(
 #' @param generateAbsences Generates absences for \code{'PA'} data. This is done by combining all the sampling locations for all the species, and creating an absence where a given species does not occur.
 #'
 #' @import methods
-#' @import sp
 #' @import sf
 #'
   addStructured = function(dataStructured, datasetType,
@@ -367,7 +366,6 @@ species_model <- R6::R6Class(classname = 'species_model', public = list(
 #' @param Object An \code{inla.mesh} object to add to the workflow.
 #' @param ... Additional arguments to pass to \code{INLA}'s \code{inla.mesh.2d}. Use \code{?inla.mesh.2d} to find out more about the different arguments.
 #'
-#' @import INLA
 #'
 
   addMesh = function(Object,
@@ -728,7 +726,6 @@ addGBIF = function(Species = 'All', datasetName = NULL,
 #' @description Function to specify pc priors for the shared random field in the model. See \code{?INLA::inla.spde2.pcmatern} for more details.
 #' @param ... Arguments passed on to \link[INLA]{inla.spde2.pcmatern}.
 #'
-#' @import INLA
   specifySpatial = function(...) {
 
 
@@ -746,7 +743,6 @@ addGBIF = function(Species = 'All', datasetName = NULL,
 #' @param datasetName Name of the dataset to add a bias field to.
 #' @param ... Additional arguments passed on to \link[INLA]{inla.spde2.pcmatern} to customize the priors for the pc matern for the bias fields.
 #'
-#' @import INLA
 
   biasFields = function(datasetName, ...) {
 
