@@ -29,7 +29,6 @@ Authors@R:
 Depends:
     R (>= 3.5),
     ggplot2,
-    sp (>= 1.4-5),
     terra,
     sf,
     stats,
@@ -38,18 +37,17 @@ Depends:
 Imports:
     R6,
     geodata,
-    lwgeom,
-    INLA (>= 21.08.31),
     inlabru (>= 2.3.1),
-    R.utils,
     giscoR,
     blockCV,
     rgbif,
     tidyterra
 Suggests:
     viridis,
+    INLA (>= 21.08.31),
     ggpolypath,
     ggmap,
+    lwgeom,
     spatstat,
     RColorBrewer,
     knitr,
