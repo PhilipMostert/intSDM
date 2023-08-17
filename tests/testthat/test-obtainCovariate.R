@@ -1,8 +1,8 @@
 testthat::test_that('obtainCovariate can correctly obtain the covariate layer, and transform it to the desired projection', {
 
  skip_on_cran()
+ library(R.utils)
 
-  #args
   covname <- "tavg"
   countries <- c('Norway', 'Sweden')
   projection <- "+proj=lcc +lat_1=48 +lat_2=33 +lon_0=-100 +datum=WGS84"
@@ -14,7 +14,7 @@ testthat::test_that('obtainCovariate can correctly obtain the covariate layer, a
 
     ##If taking too long//servers down
 
-  try(cov <- R.utils::withTimeout(
+  try(cov <- withTimeout(
     obtainCovariate(covname, countries, res = '5',
                     projection, path), timeout = 60, onTimeout = 'silent'))
 
@@ -28,7 +28,7 @@ testthat::test_that('obtainCovariate can correctly obtain the covariate layer, a
   #Change CRS
   projection2 <- 'EPSG:4326'
 
-  try(cov2 <-  R.utils::withTimeout(obtainCovariate(covname, countries, res = '5',
+  try(cov2 <-  withTimeout(obtainCovariate(covname, countries, res = '5',
                          projection2, path), timeout = 60, onTimeout = 'silent'))
 
   if ('cov2' %in% ls()) {
