@@ -32,3 +32,14 @@ An R6 object of class \code{species_model}. This object contains a collection of
 \description{
 Function to initialize the reproducible workflow using integrated species distribution models. The arguments for this function are used to specify which species and countries are to be studied, as well as how the results of the model should be saved (either as an R object or saved to some directory). This function outputs an \code{R6} object with additional slot functions to help further customize the model specification. See \code{?species_model} for more details on these functions.
 }
+\examples{
+
+##Start a workflow without saving objects
+
+workflow <- startWorkflow(Species = 'Fraxinus excelsior',
+                          Projection = '4326',
+                          Save = FALSE,
+                          saveOptions = list(projectName = 'example'))
+
+
+}

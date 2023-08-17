@@ -15,3 +15,26 @@ The return of the function depends on the argument \code{Save} from the \code{st
 \description{
 This function is used to compile the reproducible workflow from the \code{R6} object created with \code{startFunction}. Depending on what was specified before, this function will estimate the integrated species distribution model, perform cross-validation, create predictions from the model and plot these predictions.
 }
+\examples{
+
+if (requireNamespace(INLA)) {
+
+workflow <- startWorkflow(Species = 'Fraxinus excelsior',
+                          Projection = '4326',
+                          Save = FALSE,
+                          saveOptions = list(projectName = 'example'))
+workflow$addArea(countryName = 'Sweden')
+
+workflow$addGBIF(datasetName = 'exampleGBIF',
+                 datasetType = 'PA',
+                 limit = 10000,
+                 coordinateUncertaintyInMeters = '0,50')
+workflow$addMesh(cutoff = 20000,
+                 max.edge=c(60000, 80000),
+                 offset= 100000)
+workflow$workflowOutput('Model')
+
+Model <- sdmWorkflow(workflow)
+
+}
+}

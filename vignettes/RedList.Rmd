@@ -28,13 +28,14 @@ In support of our manuscript, we developed an R [@R] package to help construct i
 ```{r load packages}
 
 library(intSDM)
+library(INLA)
 
 ```
 
 *intSDM* has two main functions: `startWorkflow()` and `sdmWorkflow()`. The first of which is designed to setup and specify all the individual components of the workflow using different slot functions. The functions related to this object include:
 
 | Function name         | Function use                                                                                               |
-|----------------|--------------------------------------------------------|
+|-----------------------|------------------------------------------------------------------------------------------------------------|
 | `.$plot()`            | Plot data and other objects required for the model.                                                        |
 | `.$addStructured()`   | Add data not available on GBIF.                                                                            |
 | `.$addMesh()`         | Create an *inla.mesh* object.                                                                              |

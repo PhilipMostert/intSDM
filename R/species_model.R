@@ -41,6 +41,14 @@ species_model <- R6::R6Class(classname = 'species_model', public = list(
 #' @description Prints the datasets, their data type and the number of observations, as well as the marks and their respective families.
 #' @param ... Not used.
 #' @import stats
+#' @examples
+#' workflow <- startWorkflow(Species = 'Fraxinus excelsior',
+#'                           Projection = '4326',
+#'                           Save = FALSE,
+#'                           saveOptions = list(projectName = 'example'))
+#'
+#' workflow$print()
+#'
 
   print = function(...) {
 
@@ -107,6 +115,17 @@ species_model <- R6::R6Class(classname = 'species_model', public = list(
 #' @param Species Add the species location data to the plot.
 #' @param Covariates Add the spatial covariates to the plot.
 #' @return A ggplot object.
+#'
+#' @examples
+#'
+#' workflow <- startWorkflow(Species = 'Fraxinus excelsior',
+#'                           Projection = '4326',
+#'                           Save = FALSE,
+#'                           saveOptions = list(projectName = 'example'))
+#'
+#' #Add boundary
+#' workflow$addArea(countryName = 'Germany')
+#' workflow$plot(Boundary = TRUE)
 #'
 #' @import ggplot2
 #' @import inlabru
@@ -227,6 +246,23 @@ species_model <- R6::R6Class(classname = 'species_model', public = list(
 #' @param speciesName Name of the species variable name in the datasets.
 #' @param coordinateNames Names of the coordinate vector in the dataset.
 #' @param generateAbsences Generates absences for \code{'PA'} data. This is done by combining all the sampling locations for all the species, and creating an absence where a given species does not occur.
+#'
+#' @examples
+#' workflow <- startWorkflow(Species = 'Fraxinus excelsior',
+#'                           Projection = '4326',
+#'                           Save = FALSE,
+#'                           saveOptions = list(projectName = 'example'))
+#'
+#' #Add boundary
+#' workflow$addArea(countryName = 'Sweden')
+#'
+#' #Generate random species
+#' speciesData <- data.frame(X = runif(100), Y = runif(100),
+#'                           Response = sample(c(0,1), 100),
+#'                           Name = 'Fraxinus_excelsior')
+#' workflow$addStructured(dataStructured = speciesData, datasetType = 'PA',
+#'                        datasetName = 'xx', responseName = 'Response',
+#'                        speciesName = 'Name', coordinateNames = c('X', 'Y'))
 #'
 #' @import methods
 #' @import sf
@@ -365,7 +401,22 @@ species_model <- R6::R6Class(classname = 'species_model', public = list(
 #' @description Function to add an \code{inla.mesh} object to the workflow. The user may either add their own mesh to the workflow, or use the arguments of this function to help create one.
 #' @param Object An \code{inla.mesh} object to add to the workflow.
 #' @param ... Additional arguments to pass to \code{INLA}'s \code{inla.mesh.2d}. Use \code{?inla.mesh.2d} to find out more about the different arguments.
+#' @examples
 #'
+#' if (requireNamespace(INLA)) {
+#'
+#' workflow <- startWorkflow(Species = 'Fraxinus excelsior',
+#'                           Projection = '4326',
+#'                           Save = FALSE,
+#'                           saveOptions = list(projectName = 'example'))
+#'
+#' #Add boundary
+#' workflow$addArea(countryName = 'Sweden')
+#' workflow$addMesh(cutoff = 20000,
+#'                  max.edge=c(60000, 80000),
+#'                  offset= 100000)
+#'
+#' }
 #'
 
   addMesh = function(Object,
@@ -409,6 +460,21 @@ species_model <- R6::R6Class(classname = 'species_model', public = list(
 #' @param assign2Global Assign the dataset to the global environment. The object will be assigned to an object specified using the \code{datasetName} object.
 #' @param generateAbsences Generates absences for \code{'PA'} data. This is done by combining all the sampling locations for all the species, and creating an absence where a given species does not occur.
 #' @param ... Additional arguments to specify the \link[rgbif]{occ_data} function from \code{rgbif}. See \code{?occ_data} for more details.
+#' @examples
+#'
+#' workflow <- startWorkflow(Species = 'Fraxinus excelsior',
+#'                           Projection = '4326',
+#'                           Save = FALSE,
+#'                           saveOptions = list(projectName = 'example'))
+#' workflow$addArea(countryName = 'Sweden')
+#'
+#' workflow$addGBIF(datasetName = 'exampleGBIF',
+#'                  datasetType = 'PA',
+#'                  limit = 10000,
+#'                  coordinateUncertaintyInMeters = '0,50')
+#'
+#'
+#'
 
 addGBIF = function(Species = 'All', datasetName = NULL,
                    datasetType = 'PO',
@@ -511,6 +577,20 @@ addGBIF = function(Species = 'All', datasetName = NULL,
 #' @param ... Not used.
 #'
 #' @import terra
+#' @examples
+#'
+#' #' if (requireNamespace(INLA)) {
+#'
+#' workflow <- startWorkflow(Species = 'Fraxinus excelsior',
+#'                           Projection = '4326',
+#'                           Save = FALSE,
+#'                           saveOptions = list(projectName = 'example'))
+#'
+#' #Add boundary
+#' workflow$addArea(countryName = 'Sweden')
+#' workflow$addCovariates(worldClim = 'tavg', res = '10')
+#'
+#' }
 #'
   addCovariates = function(Object = NULL,
                            worldClim = NULL,
@@ -596,6 +676,15 @@ addGBIF = function(Species = 'All', datasetName = NULL,
 #'
 #' @import sf
 #'
+#' @examples
+#' workflow <- startWorkflow(Species = 'Fraxinus excelsior',
+#'                           Projection = '4326',
+#'                           Save = FALSE,
+#'                           saveOptions = list(projectName = 'example'))
+#'
+#' #Add boundary
+#' workflow$addArea(countryName = 'Sweden')
+#'
   addArea = function(Object = NULL,
                      countryName = NULL,
                      ...) {
@@ -639,6 +728,14 @@ addGBIF = function(Species = 'All', datasetName = NULL,
 #' @param blockOptions A list of options to specify the spatial block cross-validation. Must be a named list with arguments specified for: \code{k}, \code{rows_cols}, \code{plot}, \code{seed}. See \code{blockCV::cv_spatial} for more information.
 #'
 #' @import blockCV
+#' @examples
+#' workflow <- startWorkflow(Species = 'Fraxinus excelsior',
+#'                           Projection = '4326',
+#'                           Save = FALSE,
+#'                           saveOptions = list(projectName = 'example'))
+#'
+#' workflow$crossValidation(Method = 'Loo')
+#'
 #'
   crossValidation = function(Method, blockOptions = list(k = 5, rows_cols = c(4,4), plot = FALSE, seed = NULL)) {
 
@@ -706,6 +803,14 @@ addGBIF = function(Species = 'All', datasetName = NULL,
 #' @description Function to specify model options for the \code{INLA} and \code{PointedSDMs} parts of the model.
 #' @param ISDM Arguments to specify in \link[PointedSDMs]{intModel} from the \code{PointedSDMs} function. This argument needs to be a named list of the following options: \code{pointCovariates}, \code{pointsIntercept}, \code{pointsSpatial} or \code{copyModel}. See \code{?intModel} for more details.
 #' @param INLA Options to specify in \link[INLA]{inla} from the \code{INLA} function. See \code{?inla} for more details.
+#' @examples
+#' workflow <- startWorkflow(Species = 'Fraxinus excelsior',
+#'                           Projection = '4326',
+#'                           Save = FALSE,
+#'                           saveOptions = list(projectName = 'example'))
+#'
+#' workflow$modelOptions(INLA = list(control.inla=list(int.strategy = 'eb')),
+#'                       ISDM = list(pointsIntercept = FALSE))
 #'
   modelOptions = function(ISDM = list(),
                           INLA = list()) {
@@ -725,6 +830,19 @@ addGBIF = function(Species = 'All', datasetName = NULL,
 
 #' @description Function to specify pc priors for the shared random field in the model. See \code{?INLA::inla.spde2.pcmatern} for more details.
 #' @param ... Arguments passed on to \link[INLA]{inla.spde2.pcmatern}.
+#' @examples
+#' workflow <- startWorkflow(Species = 'Fraxinus excelsior',
+#'                           Projection = '4326',
+#'                           Save = FALSE,
+#'                           saveOptions = list(projectName = 'example'))
+#'
+#' #Add boundary
+#' workflow$addArea(countryName = 'Sweden')
+#' workflow$addMesh(cutoff = 20000,
+#'                  max.edge=c(60000, 80000),
+#'                  offset= 100000)
+#' workflow$specifySpatial(prior.range = c(200000, 0.05),
+#'                         prior.sigma = c(5, 0.1))
 #'
   specifySpatial = function(...) {
 
@@ -742,7 +860,23 @@ addGBIF = function(Species = 'All', datasetName = NULL,
 #' @description Function to add bias fields to the model.
 #' @param datasetName Name of the dataset to add a bias field to.
 #' @param ... Additional arguments passed on to \link[INLA]{inla.spde2.pcmatern} to customize the priors for the pc matern for the bias fields.
+#' @examples
 #'
+#' if(requireNamespace(INLA)) {
+#'
+#' workflow <- startWorkflow(Species = 'Fraxinus excelsior',
+#'                           Projection = '4326',
+#'                           Save = FALSE,
+#'                           saveOptions = list(projectName = 'example'))
+#' workflow$addArea(countryName = 'Sweden')
+#'
+#' workflow$addGBIF(datasetName = 'exampleGBIF',
+#'                  datasetType = 'PA',
+#'                  limit = 10000,
+#'                  coordinateUncertaintyInMeters = '0,50')
+#' workflow$biasFields(datasetName = 'exampleGBIF')
+#'
+#' }
 
   biasFields = function(datasetName, ...) {
 
@@ -771,6 +905,12 @@ addGBIF = function(Species = 'All', datasetName = NULL,
 
 #' @description Function to specify the workflow output from the model. This argument must be at least one of: \code{'Model'}, \code{'Prediction'}, \code{'Maps'} and \code{'Cross-validation'}.
 #' @param Output The names of the outputs to give in the workflow. Must be at least one of: \code{'Model'}, \code{'Prediction'}, \code{'Maps'} and \code{'Cross-validation'}.
+#' @examples
+#' #' workflow <- startWorkflow(Species = 'Fraxinus excelsior',
+#'                           Projection = '4326',
+#'                           Save = FALSE,
+#'                           saveOptions = list(projectName = 'example'))
+#' workflow$workflowOutput('Predictions')
 #'
   workflowOutput = function(Output) {
 
@@ -787,6 +927,18 @@ addGBIF = function(Species = 'All', datasetName = NULL,
 #' @description Obtain metadata from the workflow.
 #' @param Number Print the number of observations per dataset. Defaults to \code{TRUE}.
 #' @param Citations Print the citations for the GBIF obtained datasets. Defaults to \code{TRUE}.
+#' @examples
+#' #' workflow <- startWorkflow(Species = 'Fraxinus excelsior',
+#'                           Projection = '4326',
+#'                           Save = FALSE,
+#'                           saveOptions = list(projectName = 'example'))
+#' workflow$addArea(countryName = 'Sweden')
+#'
+#' workflow$addGBIF(datasetName = 'exampleGBIF',
+#'                  datasetType = 'PA',
+#'                  limit = 10000,
+#'                  coordinateUncertaintyInMeters = '0,50')
+#' workflow$obtainMeta()
 #'
 
 obtainMeta = function(Number = TRUE,

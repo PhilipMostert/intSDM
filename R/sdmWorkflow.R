@@ -6,6 +6,28 @@
 #'
 #' @return The return of the function depends on the argument \code{Save} from the \code{startWorkflow} function. If this argument is \code{FALSE} then the objects will be saved to the specidfied directory. If this argument is \code{TRUE} then a list of different outcomes from the workflow will be returned.
 #' @export
+#' @examples
+#'
+#' if (requireNamespace(INLA)) {
+#'
+#' workflow <- startWorkflow(Species = 'Fraxinus excelsior',
+#'                           Projection = '4326',
+#'                           Save = FALSE,
+#'                           saveOptions = list(projectName = 'example'))
+#' workflow$addArea(countryName = 'Sweden')
+#'
+#' workflow$addGBIF(datasetName = 'exampleGBIF',
+#'                  datasetType = 'PA',
+#'                  limit = 10000,
+#'                  coordinateUncertaintyInMeters = '0,50')
+#' workflow$addMesh(cutoff = 20000,
+#'                  max.edge=c(60000, 80000),
+#'                  offset= 100000)
+#' workflow$workflowOutput('Model')
+#'
+#' Model <- sdmWorkflow(workflow)
+#'
+#' }
 
 sdmWorkflow <- function(Workflow = NULL) {
 
