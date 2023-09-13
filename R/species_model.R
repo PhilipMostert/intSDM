@@ -165,10 +165,13 @@ species_model <- R6::R6Class(classname = 'species_model', public = list(
         namesspeData <- names(speData)
         namesTimes <- rep(namesspeData, times = unlist(lapply(speData, length)))
 
-        spatData[[species]] <- sf::st_as_sf(do.call(c, speData))
+        if (length(speData) > 0) {
 
+        spatData[[species]] <- sf::st_as_sf(do.call(c, speData))
         spatData[[species]]$.__species_index_var <- species
         spatData[[species]]$.__names_index_var <- namesTimes
+
+         }
 
       }
 
@@ -455,6 +458,7 @@ species_model <- R6::R6Class(classname = 'species_model', public = list(
 #' @param generateAbsences Generates absences for \code{'PA'} data. This is done by combining all the sampling locations for all the species, and creating an absence where a given species does not occur.
 #' @param ... Additional arguments to specify the \link[rgbif]{occ_data} function from \code{rgbif}. See \code{?occ_data} for more details.
 #' @examples
+#' \dontrun{
 #' workflow <- startWorkflow(Species = 'Fraxinus excelsior',
 #'                           Projection = '+proj=longlat +ellps=WGS84',
 #'                           Save = FALSE,
@@ -465,6 +469,7 @@ species_model <- R6::R6Class(classname = 'species_model', public = list(
 #'                  datasetType = 'PA',
 #'                  limit = 10000,
 #'                  coordinateUncertaintyInMeters = '0,50')
+#' }
 
 addGBIF = function(Species = 'All', datasetName = NULL,
                    datasetType = 'PO',
@@ -537,7 +542,7 @@ addGBIF = function(Species = 'All', datasetName = NULL,
     private$classGBIF[[sub(" ", '_', speciesName)]][[datasetName]] <- datasetType
 
   }
-  } else assign(datasetName,  private$dataGBIF[[speciesName]][[datasetName]], envir = globalenv())
+  } else datasetName <<- private$dataGBIF[[speciesName]][[datasetName]]#assign(datasetName,  private$dataGBIF[[speciesName]][[datasetName]], envir = globalenv())
 
   }
 
@@ -581,7 +586,7 @@ addGBIF = function(Species = 'All', datasetName = NULL,
 #' workflow$addCovariates(worldClim = 'tavg', res = '10')
 #'
 #' }
-#'
+#'}
 
   addCovariates = function(Object = NULL,
                            worldClim = NULL,
@@ -791,7 +796,7 @@ addGBIF = function(Species = 'All', datasetName = NULL,
 
 #' @description Function to specify model options for the \code{INLA} and \code{PointedSDMs} parts of the model.
 #' @param ISDM Arguments to specify in \link[PointedSDMs]{intModel} from the \code{PointedSDMs} function. This argument needs to be a named list of the following options: \code{pointCovariates}, \code{pointsIntercept}, \code{pointsSpatial} or \code{copyModel}. See \code{?intModel} for more details.
-#' @param INLA Options to specify in \link[INLA]{inla} from the \code{INLA} function. See \code{?inla} for more details.
+#' @param INLA Options to specify in \link[INLA]{INLA} from the \code{inla} function. See \code{?inla} for more details.
 #' @examples
 #' workflow <- startWorkflow(Species = 'Fraxinus excelsior',
 #'                           Projection = '+proj=longlat +ellps=WGS84',
@@ -852,6 +857,7 @@ addGBIF = function(Species = 'All', datasetName = NULL,
 #' @param datasetName Name of the dataset to add a bias field to.
 #' @param ... Additional arguments passed on to \link[INLA]{inla.spde2.pcmatern} to customize the priors for the pc matern for the bias fields.
 #' @examples
+#' \dontrun{
 #' if(requireNamespace('INLA')) {
 #'
 #' workflow <- startWorkflow(Species = 'Fraxinus excelsior',
@@ -866,7 +872,7 @@ addGBIF = function(Species = 'All', datasetName = NULL,
 #'                  coordinateUncertaintyInMeters = '0,50')
 #' workflow$biasFields(datasetName = 'exampleGBIF')
 #' }
-#'
+#' }
 
   biasFields = function(datasetName, ...) {
 
@@ -917,6 +923,7 @@ addGBIF = function(Species = 'All', datasetName = NULL,
 #' @param Number Print the number of observations per dataset. Defaults to \code{TRUE}.
 #' @param Citations Print the citations for the GBIF obtained datasets. Defaults to \code{TRUE}.
 #' @examples
+#' \dontrun{
 #' workflow <- startWorkflow(Species = 'Fraxinus excelsior',
 #'                           Projection = '+proj=longlat +ellps=WGS84',
 #'                           Save = FALSE,
@@ -928,6 +935,7 @@ addGBIF = function(Species = 'All', datasetName = NULL,
 #'                  limit = 10000,
 #'                  coordinateUncertaintyInMeters = '0,50')
 #' workflow$obtainMeta()
+#' }
 
 obtainMeta = function(Number = TRUE,
                       Citations = TRUE) {
