@@ -77,6 +77,7 @@ workflow$addMesh(cutoff = 20000,
 ## Method `species_model$addGBIF`
 ## ------------------------------------------------
 
+\dontrun{
 workflow <- startWorkflow(Species = 'Fraxinus excelsior',
                           Projection = '+proj=longlat +ellps=WGS84',
                           Save = FALSE,
@@ -87,6 +88,26 @@ workflow$addGBIF(datasetName = 'exampleGBIF',
                  datasetType = 'PA',
                  limit = 10000,
                  coordinateUncertaintyInMeters = '0,50')
+}
+
+## ------------------------------------------------
+## Method `species_model$addCovariates`
+## ------------------------------------------------
+
+\dontrun{
+if (requireNamespace('INLA')) {
+
+workflow <- startWorkflow(Species = 'Fraxinus excelsior',
+                          Projection = '+proj=longlat +ellps=WGS84',
+                          Save = FALSE,
+                          saveOptions = list(projectName = 'example'))
+
+#Add boundary
+workflow$addArea(countryName = 'Sweden')
+workflow$addCovariates(worldClim = 'tavg', res = '10')
+
+}
+}
 
 ## ------------------------------------------------
 ## Method `species_model$addArea`
@@ -148,6 +169,7 @@ workflow$specifySpatial(prior.range = c(200000, 0.05),
 ## Method `species_model$biasFields`
 ## ------------------------------------------------
 
+\dontrun{
 if(requireNamespace('INLA')) {
 
 workflow <- startWorkflow(Species = 'Fraxinus excelsior',
@@ -162,7 +184,7 @@ workflow$addGBIF(datasetName = 'exampleGBIF',
                  coordinateUncertaintyInMeters = '0,50')
 workflow$biasFields(datasetName = 'exampleGBIF')
 }
-
+}
 
 ## ------------------------------------------------
 ## Method `species_model$workflowOutput`
@@ -178,6 +200,7 @@ workflow$workflowOutput('Predictions')
 ## Method `species_model$obtainMeta`
 ## ------------------------------------------------
 
+\dontrun{
 workflow <- startWorkflow(Species = 'Fraxinus excelsior',
                           Projection = '+proj=longlat +ellps=WGS84',
                           Save = FALSE,
@@ -189,6 +212,7 @@ workflow$addGBIF(datasetName = 'exampleGBIF',
                  limit = 10000,
                  coordinateUncertaintyInMeters = '0,50')
 workflow$obtainMeta()
+}
 }
 \section{Methods}{
 \subsection{Public methods}{
@@ -439,7 +463,6 @@ Function to add species occurrence records from GBIF (using the \code{rgbif} pac
   datasetType = "PO",
   responseCounts = "individualCount",
   responsePA = "occurrenceStatus",
-  assign2Global = FALSE,
   generateAbsences = FALSE,
   ...
 )}\if{html}{\out{</div>}}
@@ -458,8 +481,6 @@ Function to add species occurrence records from GBIF (using the \code{rgbif} pac
 
 \item{\code{responsePA}}{Name of the response variable for the PA data. Defaults to the standard Darwin core value \code{occurrenceStatus}.}
 
-\item{\code{assign2Global}}{Assign the dataset to the global environment. The object will be assigned to an object specified using the \code{datasetName} object.}
-
 \item{\code{generateAbsences}}{Generates absences for \code{'PA'} data. This is done by combining all the sampling locations for all the species, and creating an absence where a given species does not occur.}
 
 \item{\code{...}}{Additional arguments to specify the \link[rgbif]{occ_data} function from \code{rgbif}. See \code{?occ_data} for more details.}
@@ -468,7 +489,8 @@ Function to add species occurrence records from GBIF (using the \code{rgbif} pac
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
-\preformatted{workflow <- startWorkflow(Species = 'Fraxinus excelsior',
+\preformatted{\dontrun{
+workflow <- startWorkflow(Species = 'Fraxinus excelsior',
                           Projection = '+proj=longlat +ellps=WGS84',
                           Save = FALSE,
                           saveOptions = list(projectName = 'example'))
@@ -478,6 +500,7 @@ workflow$addGBIF(datasetName = 'exampleGBIF',
                  datasetType = 'PA',
                  limit = 10000,
                  coordinateUncertaintyInMeters = '0,50')
+}
 }
 \if{html}{\out{</div>}}
 
@@ -517,6 +540,27 @@ Function to add spatial covariates to the workflow. The covariates may either be
 }
 \if{html}{\out{</div>}}
 }
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+if (requireNamespace('INLA')) {
+
+workflow <- startWorkflow(Species = 'Fraxinus excelsior',
+                          Projection = '+proj=longlat +ellps=WGS84',
+                          Save = FALSE,
+                          saveOptions = list(projectName = 'example'))
+
+#Add boundary
+workflow$addArea(countryName = 'Sweden')
+workflow$addCovariates(worldClim = 'tavg', res = '10')
+
+}
+}
+}
+\if{html}{\out{</div>}}
+
+}
+
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-species_model-addArea"></a>}}
@@ -602,7 +646,7 @@ Function to specify model options for the \code{INLA} and \code{PointedSDMs} par
 \describe{
 \item{\code{ISDM}}{Arguments to specify in \link[PointedSDMs]{intModel} from the \code{PointedSDMs} function. This argument needs to be a named list of the following options: \code{pointCovariates}, \code{pointsIntercept}, \code{pointsSpatial} or \code{copyModel}. See \code{?intModel} for more details.}
 
-\item{\code{INLA}}{Options to specify in \link[INLA]{inla} from the \code{INLA} function. See \code{?inla} for more details.}
+\item{\code{INLA}}{Options to specify in \link[INLA]{INLA} from the \code{inla} function. See \code{?inla} for more details.}
 }
 \if{html}{\out{</div>}}
 }
@@ -681,7 +725,8 @@ Function to add bias fields to the model.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
-\preformatted{if(requireNamespace('INLA')) {
+\preformatted{\dontrun{
+if(requireNamespace('INLA')) {
 
 workflow <- startWorkflow(Species = 'Fraxinus excelsior',
                           Projection = '+proj=longlat +ellps=WGS84',
@@ -695,7 +740,7 @@ workflow$addGBIF(datasetName = 'exampleGBIF',
                  coordinateUncertaintyInMeters = '0,50')
 workflow$biasFields(datasetName = 'exampleGBIF')
 }
-
+}
 }
 \if{html}{\out{</div>}}
 
@@ -751,7 +796,8 @@ Obtain metadata from the workflow.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
-\preformatted{workflow <- startWorkflow(Species = 'Fraxinus excelsior',
+\preformatted{\dontrun{
+workflow <- startWorkflow(Species = 'Fraxinus excelsior',
                           Projection = '+proj=longlat +ellps=WGS84',
                           Save = FALSE,
                           saveOptions = list(projectName = 'example'))
@@ -762,6 +808,7 @@ workflow$addGBIF(datasetName = 'exampleGBIF',
                  limit = 10000,
                  coordinateUncertaintyInMeters = '0,50')
 workflow$obtainMeta()
+}
 }
 \if{html}{\out{</div>}}
 

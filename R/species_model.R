@@ -454,7 +454,6 @@ species_model <- R6::R6Class(classname = 'species_model', public = list(
 #' @param datasetType The data type of the dataset. Defaults to \code{PO}, but may also be \code{PA} or \code{Counts}.
 #' @param responseCounts Name of the response variable for the counts data. Defaults to the standard Darwin core value \code{individualCounts}.
 #' @param responsePA Name of the response variable for the PA data. Defaults to the standard Darwin core value \code{occurrenceStatus}.
-#' @param assign2Global Assign the dataset to the global environment. The object will be assigned to an object specified using the \code{datasetName} object.
 #' @param generateAbsences Generates absences for \code{'PA'} data. This is done by combining all the sampling locations for all the species, and creating an absence where a given species does not occur.
 #' @param ... Additional arguments to specify the \link[rgbif]{occ_data} function from \code{rgbif}. See \code{?occ_data} for more details.
 #' @examples
@@ -474,7 +473,6 @@ species_model <- R6::R6Class(classname = 'species_model', public = list(
 addGBIF = function(Species = 'All', datasetName = NULL,
                    datasetType = 'PO',
                    responseCounts = 'individualCount', responsePA = 'occurrenceStatus',
-                   assign2Global = FALSE,
                    generateAbsences = FALSE, ...) {
 
   if (is.null(private$Area)) stop('An area needs to be provided before adding species. This may be done with the `.$addArea` function.')
@@ -533,8 +531,6 @@ addGBIF = function(Species = 'All', datasetName = NULL,
   }
 
 
-  if (!assign2Global) {
-
   if (nrow(GBIFspecies) == 0) warning('All species observations were removed due to duplicates')
   else {
 
@@ -542,7 +538,7 @@ addGBIF = function(Species = 'All', datasetName = NULL,
     private$classGBIF[[sub(" ", '_', speciesName)]][[datasetName]] <- datasetType
 
   }
-  } else datasetName <<- private$dataGBIF[[speciesName]][[datasetName]]#assign(datasetName,  private$dataGBIF[[speciesName]][[datasetName]], envir = globalenv())
+
 
   }
 
