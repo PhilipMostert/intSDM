@@ -624,7 +624,7 @@ addGBIF = function(Species = 'All', datasetName = NULL,
     if (!dir.exists(covDirectory)) covDirectory <- getwd()#dir.create(covDirectory)
     if (!private$Quiet) message(paste('Saved covariate objects may be found in', covDirectory))
 
-    if (is.null(private$Countries)) stop('Please specify a country first before obtaining a covariate layer. This may be done using either startWorkflow or through `.$addArea`.')
+    #if (is.null(private$Countries)) stop('Please specify a country first before obtaining a covariate layer. This may be done using either startWorkflow or through `.$addArea`.')
 
     covRaster <- obtainCovariate(covariates = worldClim,
                                  res = res,
