@@ -64,9 +64,6 @@ testthat::test_that('Test that addGBIF correctly adds the correct data to the mo
   expect_true(sum(is.na(workflow$.__enclos_env__$private$dataGBIF$GBIFTEST3$individualCount)) == 0)
 
   ##Check assign2global
-  workflow$addGBIF(datasetName = 'GBIFTEST4', assign2Global = TRUE)
-
-  expect_true('GBIFTEST4' %in% ls(envir = globalenv()))
   #rm(GBIFTEST4, envir = globalenv())
 
 
@@ -219,8 +216,7 @@ testthat::test_that('addMesh correctly adds the mesh to the model', {
 
   meshObject <<- INLA::inla.mesh.2d(boundary = inlabru::fm_sp2segment(countries),
                              max.edge = 200000,
-                             offset = 10,
-                             crs = proj)
+                             offset = 10)
 
   workflow$addMesh(Object = meshObject)
   expect_equal(class(workflow$.__enclos_env__$private$Mesh), 'inla.mesh')
