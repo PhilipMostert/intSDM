@@ -219,10 +219,10 @@ testthat::test_that('addMesh correctly adds the mesh to the model', {
                              offset = 10)
 
   workflow$addMesh(Object = meshObject)
-  expect_equal(class(workflow$.__enclos_env__$private$Mesh), 'inla.mesh')
+  expect_equal(class(workflow$.__enclos_env__$private$Mesh), c('fm_mesh_2d','inla.mesh'))
 
   workflow$addMesh(max.edge = 200000, cutoff = 3)
-  expect_equal(class(workflow$.__enclos_env__$private$Mesh), 'inla.mesh')
+  expect_equal(class(workflow$.__enclos_env__$private$Mesh), c('fm_mesh_2d','inla.mesh'))
 
 })
 
