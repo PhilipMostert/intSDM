@@ -975,6 +975,15 @@ obtainMeta = function(Number = TRUE,
 
   if (Citations) {
 
+  if (any(names(private$Covariates) %in% c("tavg", "tmin", "tmax",
+                                            "prec", "bio", "bioc",
+                                            "elev", "wind", "vapr", "srad"))) {
+
+    cat('Citation for WorldClim Data:\n')
+    cat('Fick, S.E. and R.J. Hijmans, 2017. WorldClim 2: new 1km spatial resolution climate surfaces for global land areas. \nInternational Journal of Climatology 37 (12): 4302-4315.\n\n')
+
+  }
+
   if (length(private$dataGBIF) == 0) stop('Please call .$addGBIF() to obtain data from GBIF.')
 
   cat('Citations for GBIF data:\n')
