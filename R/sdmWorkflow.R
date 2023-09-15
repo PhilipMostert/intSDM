@@ -80,9 +80,9 @@ sdmWorkflow <- function(Workflow = NULL) {
                            names(Workflow$.__enclos_env__$private$dataStructured)))) {
 
    speciesNameInd <- sub(' ', '_', species)
-   dir.create(path = paste0(modDirectory, '/', speciesNameInd))
+   if (saveObjects) dir.create(path = paste0(modDirectory, '/', speciesNameInd))
 
-   if (!Quiet) message(paste('Starting model for', species, '\n\n'))
+   if (!Quiet) message(paste('\nStarting model for', species, '\n\n'))
 
    speciesDataset <- append(Workflow$.__enclos_env__$private$dataGBIF[[species]],
                             Workflow$.__enclos_env__$private$dataStructured[[species]])
@@ -91,7 +91,35 @@ sdmWorkflow <- function(Workflow = NULL) {
 
   if (length(speciesDataset) == 0) stop('No data added to the model. Please add data using `.$addGBIF` or `.$addStructured`.')
 
-   if (!Quiet) message('Initializing model', '\n\n')
+   if (!Quiet) message('\nInitializing model', '\n\n')
+
+   if (length(speciesDataset) == 1) {
+
+     initializeModel <- dataSDM$new(coordinates = .__coordinates.__, projection = .__proj.__,
+                            Inlamesh = .__mesh.__, initialnames = names(speciesDataset),
+                            responsecounts = .__responseCounts.__,
+                            responsepa = .__responsePA.__,
+                            marksnames = NULL,
+                            marksfamily = NULL,
+                            pointcovariates = NULL,
+                            trialspa = .__trialsName.__,
+                            trialsmarks = NULL,
+                            spatial = .__pointsSpatial.__,
+                            marksspatial = NULL,
+                            speciesname = NULL,
+                            intercepts = .__pointsIntercept.__,
+                            marksintercepts = NULL,
+                            spatialcovariates = spatCovs,
+                            boundary = NULL,
+                            ips = NULL,
+                            temporal = NULL,
+                            temporalmodel = NULL,
+                            speciesspatial = NULL,
+                            offset = NULL,
+                            copymodel = .__copyModel.__)
+     initializeModel$addData(speciesDataset)
+   }
+   else {
 
   initializeModel <- PointedSDMs::intModel(speciesDataset, Mesh = .__mesh.__, Projection = .__proj.__, Coordinates = .__coordinates.__,
                                             responsePA = .__responsePA.__, responseCounts = .__responseCounts.__,
@@ -99,6 +127,8 @@ sdmWorkflow <- function(Workflow = NULL) {
                                             pointsIntercept = .__pointsIntercept.__ ,
                                             copyModel = .__copyModel.__,
                                             spatialCovariates = spatCovs)
+
+   }
 
   if (!is.null(Workflow$.__enclos_env__$private$sharedField)) initializeModel$spatialFields$sharedField$sharedField <- Workflow$.__enclos_env__$private$sharedField
 
@@ -109,7 +139,6 @@ sdmWorkflow <- function(Workflow = NULL) {
     if (!is.null(Workflow$.__enclos_env__$private$biasFieldsSpecify)) {
 
       for (biasName in names(Workflow$.__enclos_env__$private$biasFieldsSpecify)) {
-
 
         initializeModel$spatialFields$biasFields[[biasName]] <- Workflow$.__enclos_env__$private$biasFieldsSpecify[[biasName]]
 
@@ -130,7 +159,7 @@ sdmWorkflow <- function(Workflow = NULL) {
 
   }
 
-  message('Estimating ISDM:\n\n')
+  message('\nEstimating ISDM:\n\n')
 
   PSDMsMOdel <- PointedSDMs::fitISDM(initializeModel,
                                      options = Workflow$.__enclos_env__$private$optionsINLA)
@@ -139,7 +168,7 @@ sdmWorkflow <- function(Workflow = NULL) {
 
     if (saveObjects) {
 
-    if (!Quiet) message('Saving Model object:', '\n\n')
+    if (!Quiet) message('\nSaving Model object:', '\n\n')
     saveRDS(object = PSDMsMOdel, file = paste0(modDirectory,'/', speciesNameInd, '/intModel.rds'))
 
     } else outputList[[speciesNameInd]][['Model']] <- PSDMsMOdel
@@ -151,12 +180,12 @@ sdmWorkflow <- function(Workflow = NULL) {
 
     if ('spatialBlock' %in% Workflow$.__enclos_env__$private$CVMethod) {
 
-      if (!Quiet) message('Estimating spatial block cross-validation:\n\n')
+      if (!Quiet) message('\nEstimating spatial block cross-validation:\n\n')
       spatialBlockCV <- PointedSDMs::blockedCV(initializeModel)
 
       if (saveObjects) {
 
-      if (!Quiet) message('Saving spatial blocked cross-validation object:', '\n\n')
+      if (!Quiet) message('\nSaving spatial blocked cross-validation object:', '\n\n')
       saveRDS(object = spatialBlockCV, file = paste0(modDirectory,'/', speciesNameInd, '/spatialBlock.rds'))
 
       } else outputList[[speciesNameInd]][['spatialBlock']] <- spatialBlockCV
@@ -166,12 +195,12 @@ sdmWorkflow <- function(Workflow = NULL) {
 
     if ('Loo' %in% Workflow$.__enclos_env__$private$CVMethod) {
 
-      if (!Quiet) message('Estimating leave-one-out cross-validation:\n\n')
+      if (!Quiet) message('\nEstimating leave-one-out cross-validation:\n\n')
       LooCV <- PointedSDMs::datasetOut(model = PSDMsMOdel)
 
       if (saveObjects) {
 
-      if (!Quiet) message('Saving leave-one-out cross-validation object:', '\n\n')
+      if (!Quiet) message('\nSaving leave-one-out cross-validation object:', '\n\n')
       saveRDS(object = LooCV, file = paste0(modDirectory,'/', speciesNameInd, '/LooCV.rds'))
 
       } else outputList[[speciesNameInd]][['LooCV']] <- LooCV
@@ -184,15 +213,15 @@ sdmWorkflow <- function(Workflow = NULL) {
 
     if (any(c('Predictions', 'Maps') %in% Oputs)) {
 
-      if (!Quiet) message('Predicting model:\n\n')
+      if (!Quiet) message('\nPredicting model:\n\n')
       .__mask.__ <- as(Workflow$.__enclos_env__$private$Area, 'Spatial')
-      Predictions <- predict(PSDMsMOdel, data = inlabru::pixels(mesh = .__mesh.__,
+      Predictions <- predict(PSDMsMOdel, data = inlabru::fm_pixels(mesh = .__mesh.__,
                                                                 mask = .__mask.__),
                              predictor = TRUE)
 
       if (saveObjects) {
 
-      if (!Quiet)  message('Saving predictions object:', '\n\n')
+      if (!Quiet)  message('\nSaving predictions object:', '\n\n')
       saveRDS(object = Predictions, file = paste0(modDirectory,'/', speciesNameInd, '/Predictions.rds'))
 
       } else outputList[[speciesNameInd]][['Predictions']] <- Predictions
@@ -201,11 +230,11 @@ sdmWorkflow <- function(Workflow = NULL) {
 
     if ('Maps' %in% Oputs) {
 
-      if (!Quiet) message("Plotting Maps:\n\n")
+      if (!Quiet) message("\nPlotting Maps:\n\n")
 
       if (saveObjects) {
 
-      if (!Quiet) message('Saving plots object:', '\n\n')
+      if (!Quiet) message('\nSaving plots object:', '\n\n')
        plot(Predictions)
        ggsave(filename = paste0(modDirectory,'/', speciesNameInd, '/Map.png'))
 
