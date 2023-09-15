@@ -203,7 +203,7 @@ species_model <- R6::R6Class(classname = 'species_model', public = list(
                            boundaryComponent +
                            meshComponent +
                            speciesComponent +
-                           guidesComponent
+                           guidesComponent + ggtitle(cov)
 
 
 
@@ -646,15 +646,19 @@ addGBIF = function(Species = 'All', datasetName = NULL,
 
       Object <- terra::project(Object, private$Projection)
 
-      if (length(names(Object)) > 1) stop('Please provide each covariate into the workflow as their own object.')
+      #if (length(names(Object)) > 1) stop('Please provide each covariate into the workflow as their own object.')
+
+      for (cov in names(Object)) {
 
       #Check this for all classes
-      maskedDF <- terra::mask(Object, private$Area)
+      maskedDF <- terra::mask(Object[cov], private$Area)
 
       if (all(is.na(terra::values(maskedDF)))) stop('The covariate provided and the area specified do not match.')
 
-      private$Covariates[[names(Object)]] <- Object
-      #else get name of object and then save ti
+      private$Covariates[[cov]] <- Object[cov]
+
+}
+      #else get name of object and then save it
 
     }
 
