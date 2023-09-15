@@ -35,7 +35,7 @@ library(INLA)
 *intSDM* has two main functions: `startWorkflow()` and `sdmWorkflow()`. The first of which is designed to setup and specify all the individual components of the workflow using different slot functions. The functions related to this object include:
 
 | Function name         | Function use                                                                                               |
-|-----------------------|------------------------------------------------------------------------------------------------------------|
+|----------------|--------------------------------------------------------|
 | `.$plot()`            | Plot data and other objects required for the model.                                                        |
 | `.$addStructured()`   | Add data not available on GBIF.                                                                            |
 | `.$addMesh()`         | Create an *inla.mesh* object.                                                                              |
@@ -116,16 +116,6 @@ workflow$plot(Species = TRUE)
 
 ```
 
-### Metadata
-
-We can then view the metadata for the obtained occurrence records using the `.$obtainMeta()` function, which will give us the citation for the datasets used in this workflow.
-
-```{r metadata}
-
-workflow$obtainMeta()
-
-```
-
 ### Adding covariate data
 
 Covariate data may be added to the model using `.$addCovariates()`. Layers from *WorldClim [@fick2017worldclim]* may be accessed using the *worldClim argument*. This in turn uses the *geodata [@geodata]* R package to obtain *spatRaster* objects of the covariates cropped around the study domain. Other covariate layers may be added using the *Object* argument.
@@ -137,6 +127,18 @@ workflow$plot(Covariates = TRUE)
 
 ```
 
+### Metadata
+
+We can then view the metadata for the obtained occurrence records using the `.$obtainMeta()` function, which will give us the citation for the datasets used in this workflow.
+
+```{r metadata}
+
+workflow$obtainMeta()
+
+```
+
+### 
+
 ### Creating an *inla.mesh* object
 
 One of the objects required for our model is an *inla.mesh* object, which we will use in the approximation of our spatial random fields. The `.$addMesh()` function's argument *...* uses `INLA::inla.mesh.2d()` to create this object.
@@ -144,7 +146,7 @@ One of the objects required for our model is an *inla.mesh* object, which we wil
 ```{r INLA}
 
 workflow$addMesh(cutoff = 20000,
-                 max.edge=c(60000, 80000),
+                 max.edge = c(60000, 80000),
                  offset= 100000)
 
 workflow$plot(Mesh = TRUE)
