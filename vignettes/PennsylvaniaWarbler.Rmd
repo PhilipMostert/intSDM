@@ -107,6 +107,7 @@ workflow$addMesh(cutoff = 0.2,
 For this case study, we specify the model outcome as *Model*. This will give us the *R-INLA* model outcome for which we could analyse further.
 
 ```{r outcomes}
+
 workflow$workflowOutput('Model')
 
 workflow$modelOptions(INLA = list(control.inla=list(int.strategy = 'eb',
@@ -120,6 +121,6 @@ workflow$modelOptions(INLA = list(control.inla=list(int.strategy = 'eb',
 
 Models <- sdmWorkflow(Workflow = workflow)
 
-lapply(Models, summary)
+lapply(unlist(Models, recursive = FALSE), summary)
 
 ```
