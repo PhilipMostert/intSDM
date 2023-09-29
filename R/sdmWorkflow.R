@@ -60,7 +60,7 @@ sdmWorkflow <- function(Workflow = NULL) {
 
   } else {
 
-    .__pointsSpatial.__ <- 'shared'
+    .__pointsSpatial.__ <- 'copy'
     .__copyModel.__ <- eval(parse(text = 'list(beta = list(fixed = FALSE))'))
     .__pointsIntercept.__ <- TRUE
 
@@ -172,6 +172,16 @@ sdmWorkflow <- function(Workflow = NULL) {
     saveRDS(object = PSDMsMOdel, file = paste0(modDirectory,'/', speciesNameInd, '/intModel.rds'))
 
     } else outputList[[speciesNameInd]][['Model']] <- PSDMsMOdel
+
+  }
+
+  if ('Richness' %in% Oputs) {
+
+    message('\nCreating richness model:\n\n')
+
+    message('\nCreating richness maps:\n\n')
+
+    richnessMap <- predict(richnessModel)
 
   }
 
