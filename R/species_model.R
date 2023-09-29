@@ -899,8 +899,8 @@ addGBIF = function(Species = 'All', datasetName = NULL,
   }
   ,
 
-#' @description Function to specify the workflow output from the model. This argument must be at least one of: \code{'Model'}, \code{'Prediction'}, \code{'Maps'} and \code{'Cross-validation'}.
-#' @param Output The names of the outputs to give in the workflow. Must be at least one of: \code{'Model'}, \code{'Prediction'}, \code{'Maps'} and \code{'Cross-validation'}.
+#' @description Function to specify the workflow output from the model. This argument must be at least one of: \code{'Model'}, \code{'Prediction'}, \code{'Richness'}, \code{'Maps'} and \code{'Cross-validation'}.
+#' @param Output The names of the outputs to give in the workflow. Must be at least one of: \code{'Model'}, \code{'Prediction'}, \code{'Richness'}, \code{'Maps'} and \code{'Cross-validation'}.
 #' @examples
 #' workflow <- startWorkflow(Species = 'Fraxinus excelsior',
 #'                           Projection = '+proj=longlat +ellps=WGS84',
@@ -912,6 +912,7 @@ addGBIF = function(Species = 'All', datasetName = NULL,
   if (!all(Output %in% c('Model',
                          'Predictions',
                          'Maps',
+                         'Richness',
                          'Cross-validation'))) stop('Output needs to be at least one of: Model, Predictions, Maps or Cross-validation.')
 
     private$Output <- Output
