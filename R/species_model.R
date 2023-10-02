@@ -454,6 +454,7 @@ species_model <- R6::R6Class(classname = 'species_model', public = list(
 #' @param datasetType The data type of the dataset. Defaults to \code{PO}, but may also be \code{PA} or \code{Counts}.
 #' @param responseCounts Name of the response variable for the counts data. Defaults to the standard Darwin core value \code{individualCounts}.
 #' @param responsePA Name of the response variable for the PA data. Defaults to the standard Darwin core value \code{occurrenceStatus}.
+#' @param removeDuplicates Argument used to remove duplicate observations for a species across datasets. May take a long time if there are many observations obtained across multiple datasets. Defaults to \code{FALSE}.
 #' @param generateAbsences Generates absences for \code{'PA'} data. This is done by combining all the sampling locations for all the species, and creating an absence where a given species does not occur.
 #' @param ... Additional arguments to specify the \link[rgbif]{occ_data} function from \code{rgbif}. See \code{?occ_data} for more details.
 #' @examples
@@ -471,8 +472,8 @@ species_model <- R6::R6Class(classname = 'species_model', public = list(
 #' }
 
 addGBIF = function(Species = 'All', datasetName = NULL,
-                   datasetType = 'PO',
-                   responseCounts = 'individualCount', responsePA = 'occurrenceStatus',
+                   datasetType = 'PO', responseCounts = 'individualCount',
+                   responsePA = 'occurrenceStatus', removeDuplicates = FALSE,
                    generateAbsences = FALSE, ...) {
 
   if (is.null(private$Area)) stop('An area needs to be provided before adding species. This may be done with the `.$addArea` function.')
@@ -510,6 +511,8 @@ addGBIF = function(Species = 'All', datasetName = NULL,
                             datasettype = datasetType,
                             ...)
 
+  if (removeDuplicates) {
+
   if (length(private$dataGBIF[[sub(" ", '_', speciesName)]]) > 0) {
 
     anySame <- st_equals_exact(do.call(c, lapply(private$dataGBIF[[sub(" ", '_', speciesName)]], function(x) st_geometry(x))),
@@ -530,6 +533,7 @@ addGBIF = function(Species = 'All', datasetName = NULL,
 
   }
 
+    }
 
   if (nrow(GBIFspecies) == 0) warning('All species observations were removed due to duplicates')
   else {
