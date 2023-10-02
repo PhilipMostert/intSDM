@@ -56,7 +56,7 @@ testthat::test_that('Test that addGBIF correctly adds the correct data to the mo
 
   expect_equal(workflow$.__enclos_env__$private$classGBIF$Fraxinus_excelsior$GBIFTEST2, 'PA')
   expect_setequal(class(workflow$.__enclos_env__$private$dataGBIF$Fraxinus_excelsior$GBIFTEST2), c('sf', 'data.frame'))
-  expect_true(unique(workflow$.__enclos_env__$private$dataGBIF$Fraxinus_excelsior$GBIFTEST2$occurrenceStatus) %in% c(0,1))
+  expect_true(all(unique(workflow$.__enclos_env__$private$dataGBIF$Fraxinus_excelsior$GBIFTEST2$occurrenceStatus) %in% c(0,1)))
 
   ##Change to Counts and check that NAs are removed.
   expect_warning(workflow$addGBIF(datasetName = 'GBIFTEST3', datasetType = 'Counts', limit = 1000), 'Removing reccords with NA individualCount values')

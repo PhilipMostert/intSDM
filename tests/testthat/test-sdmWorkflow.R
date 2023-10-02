@@ -19,7 +19,7 @@ testthat::test_that('sdmWorkflow produces the correct output given different Wor
   workflow$addMesh(max.edge = 500000) #200000
   #Test something about CV-method -- none specified but given as output
   #Need to test a lot of the copy model; points spatial; points intercept parts
-
+  workflow$modelOptions(ISDM = list(pointsSpatial = 'shared'))
   sdmWorkflow(Workflow = workflow)
   expect_true(all(c(dir.exists('./testthatexample/Fraxinus_excelsior'))))
 
@@ -41,7 +41,9 @@ testthat::test_that('sdmWorkflow produces the correct output given different Wor
   biasWorkflow$workflowOutput('Model')
   biasWorkflow$addMesh(max.edge = 500000) #200000
   biasWorkflow$biasFields('GBIF_data')
+  biasWorkflow$modelOptions(ISDM = list(pointsSpatial = 'shared'))
   biasMod <- sdmWorkflow(biasWorkflow)
+
   expect_setequal(names(biasMod$Fraxinus_excelsior$Model$summary.random), c("shared_spatial", "GBIF_data_biasField"))
   rm(biasWorkflow)
 
