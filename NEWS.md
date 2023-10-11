@@ -1,19 +1,17 @@
-## *intSDM* version 2.0
+## *intSDM* version 2.0.1
 
 ------------------------------------------------------------------------
 
 ### Package updates
 
--   Major changes to the primary functions of the package: both `structuredData` and `species_model` have now been depreciated.
+-   Fixes to the plot function such that it works even if no species present in a given dataset.
 
-    -   The package has now shifted to two new functions: `startWorkflow` and `sdmWorkflow` to help structure the workflow.
+-   Removed the argument *assign2Global* in `.$addGBIF()`
 
--   The package has depreciated any *sp* and *raster* support, and now uses *sf* and *terra* for the spatial data.
+-   Fixed issue regarding obtaining covariates from *WorldClim* when a country name was not specified in `startWorkflow` or `.$addArea`.
 
--   Cross-validation methods have been added to the workflow as a possible output.
+-   Fixed the naming of variable problem that occurred when only one dataset is considered in an analysis.
 
--   The workflow now provides more meaningful messages throughout the whole process.
+-   Added a new vignette: *PennsylvaniaWarbler*. This vignette is similar to the *Setophaga* vignette from the *PointedSDMs* R package. It is designed to show how to add species occurrence data and environmental covariates to the workflow from sources other than *GBIF* and *WorldClim*.
 
--   The workflow gives the user the option to save the model outputs in *R* formats.
-
--   The function now has the ability to provide metadata on the occurrence data obtained.
+-   Added the argument *removeDuplicates* to `.$addGBIF`, which will now remove duplicate records for a given species. This was automatic in the previous version, but became quite timely to run when multiple datasets were included in the workflow.
