@@ -177,11 +177,13 @@ sdmWorkflow <- function(Workflow = NULL) {
 
   if ('Richness' %in% Oputs) {
 
-    message('\nCreating richness model:\n\n')
+    message('Richness output not available yet!')
 
-    message('\nCreating richness maps:\n\n')
+    #message('\nCreating richness model:\n\n')
 
-    richnessMap <- predict(richnessModel)
+    #message('\nCreating richness maps:\n\n')
+
+    #richnessMap <- predict(richnessModel)
 
   }
 
