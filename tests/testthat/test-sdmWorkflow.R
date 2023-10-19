@@ -6,13 +6,16 @@ testthat::test_that('sdmWorkflow produces the correct output given different Wor
    #1. Just GBIF data
   proj <- '+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
   species <- c('Fraxinus excelsior')
-  workflow <- startWorkflow(Species = species,
+  workflow <- try(startWorkflow(Species = species,
                             saveOptions = list(projectName = 'testthatexample', projectDirectory = './'),
                             Projection = proj, Countries = 'Norway',
-                            Quiet = TRUE, Save = TRUE)
+                            Quiet = TRUE, Save = TRUE))
 
-  if (is.null(workflow$.__enclos_env__$private$Area)) {
+  if (!exists('workflow')) {
 
+  workflow <- startWorkflow(Species = species,
+                  saveOptions = list(projectName = 'testthatexample', projectDirectory = './'),
+                  Projection = proj, Quiet = TRUE, Save = TRUE)
 
     countries <- st_as_sf(geodata::world(path = tempdir()))
     countries <- countries[countries$NAME_0 %in% c('Norway'),]

@@ -3,9 +3,9 @@ testthat::test_that('formatStructured can correctly convert a dataset into the c
   skip_on_cran()
 
   proj <- '+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
-  map <-  obtainArea(names = c('Norway'), projection = proj)
+  map <-  try(obtainArea(names = c('Norway'), projection = proj))
 
-  if (!exists('map')) {
+  if (inherits(map, 'try-error')) {
 
     map <- st_as_sf(geodata::world(path = tempdir()))
     map <- map[map$NAME_0 == 'Norway',]

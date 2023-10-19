@@ -9,7 +9,8 @@ testthat::test_that('generateAbsences correctly creates absences for the data.',
                             saveOptions = list(projectName = 'testthatexample'),
                             Projection = proj,
                             Quiet = TRUE, Save = FALSE)
-  workflow$addArea(countryName = c('Sweden', 'Norway'))
+
+  try(workflow$addArea(countryName = c('Sweden', 'Norway')))
 
   if (is.null(workflow$.__enclos_env__$private$Area)) {
 

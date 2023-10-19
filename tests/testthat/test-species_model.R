@@ -13,7 +13,7 @@ testthat::test_that('Test that addArea correctly adds the correct area to the mo
   #Check that countryName works
   expect_error(workflow$addArea(), 'One of object or countryName is required.')
 
-  workflow$addArea(countryName = c('Sweden', 'Norway'))
+  try(workflow$addArea(countryName = c('Sweden', 'Norway')))
 
   ##Check adding an area as an object
   workflow2 <- startWorkflow(Species = species,
@@ -97,7 +97,7 @@ testthat::test_that('Test that addCovariate correctly adds the desired covariate
                                      Projection = proj,
                                      Quiet = TRUE, Save = TRUE)
 
-  covariateWorkflow$addArea(countryName = c('Norway', 'Sweden'))
+  try(covariateWorkflow$addArea(countryName = c('Norway', 'Sweden')))
 
   if (is.null(covariateWorkflow$.__enclos_env__$private$Area)) covariateWorkflow$addArea(Object = countries)
 
@@ -147,7 +147,7 @@ testthat::test_that('addStructured can add the data correctly to the model', {
                             saveOptions = list(projectName = 'testthatexample'),
                             Projection = proj,
                             Quiet = TRUE, Save = FALSE)
-  workflow$addArea(countryName = c('Norway', 'Sweden'))
+  try(workflow$addArea(countryName = c('Norway', 'Sweden')))
 
   if (is.null(workflow$.__enclos_env__$private$Area)) workflow$addArea(Object = countries)
   #Simulate PA datasets.

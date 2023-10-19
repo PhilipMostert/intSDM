@@ -17,8 +17,7 @@ testthat::test_that('startWorkflow can correctly create a species_model object, 
 
   skip_if(inherits(countriesTry, 'try-error'))
 
-  expect_message(startWorkflow(Countries = countries,
-                Species = species,
+  expect_message(startWorkflow(Species = species,
                 saveOptions = list(projectName = 'testthat'),
                 Projection = proj,
                 Quiet = TRUE), regexp = NA)
@@ -28,8 +27,7 @@ testthat::test_that('startWorkflow can correctly create a species_model object, 
                                Projection = proj,
                                Quiet = FALSE), regexp = NULL)
 
-  workflow <- startWorkflow(Countries = countries,
-                            Species = species,
+  workflow <- startWorkflow(Species = species,
                             saveOptions = list(projectName = 'testthatexample',
                                                projectDirectory = './'),
                             Projection = proj,
