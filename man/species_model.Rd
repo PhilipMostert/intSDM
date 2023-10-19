@@ -463,6 +463,7 @@ Function to add species occurrence records from GBIF (using the \code{rgbif} pac
   datasetType = "PO",
   responseCounts = "individualCount",
   responsePA = "occurrenceStatus",
+  removeDuplicates = FALSE,
   generateAbsences = FALSE,
   ...
 )}\if{html}{\out{</div>}}
@@ -480,6 +481,8 @@ Function to add species occurrence records from GBIF (using the \code{rgbif} pac
 \item{\code{responseCounts}}{Name of the response variable for the counts data. Defaults to the standard Darwin core value \code{individualCounts}.}
 
 \item{\code{responsePA}}{Name of the response variable for the PA data. Defaults to the standard Darwin core value \code{occurrenceStatus}.}
+
+\item{\code{removeDuplicates}}{Argument used to remove duplicate observations for a species across datasets. May take a long time if there are many observations obtained across multiple datasets. Defaults to \code{FALSE}.}
 
 \item{\code{generateAbsences}}{Generates absences for \code{'PA'} data. This is done by combining all the sampling locations for all the species, and creating an absence where a given species does not occur.}
 
@@ -751,7 +754,7 @@ workflow$biasFields(datasetName = 'exampleGBIF')
 \if{html}{\out{<a id="method-species_model-workflowOutput"></a>}}
 \if{latex}{\out{\hypertarget{method-species_model-workflowOutput}{}}}
 \subsection{Method \code{workflowOutput()}}{
-Function to specify the workflow output from the model. This argument must be at least one of: \code{'Model'}, \code{'Prediction'}, \code{'Maps'} and \code{'Cross-validation'}.
+Function to specify the workflow output from the model. This argument must be at least one of: \code{'Model'}, \code{'Prediction'}, \code{'Richness'}, \code{'Maps'} and \code{'Cross-validation'}.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{species_model$workflowOutput(Output)}\if{html}{\out{</div>}}
 }
@@ -759,7 +762,7 @@ Function to specify the workflow output from the model. This argument must be at
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{Output}}{The names of the outputs to give in the workflow. Must be at least one of: \code{'Model'}, \code{'Prediction'}, \code{'Maps'} and \code{'Cross-validation'}.}
+\item{\code{Output}}{The names of the outputs to give in the workflow. Must be at least one of: \code{'Model'}, \code{'Prediction'}, \code{'Richness'}, \code{'Maps'} and \code{'Cross-validation'}.}
 }
 \if{html}{\out{</div>}}
 }
