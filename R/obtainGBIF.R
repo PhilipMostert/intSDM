@@ -20,6 +20,8 @@ obtainGBIF <- function(query,
                        datasettype,
                        ...) {
 
+  ##Add something here to create absences in lists where species are not.
+
   if (!inherits(geometry, 'sf')) geometry <- as(geometry, 'sf')
 
   boundaryCheck <- sf::st_transform(geometry, crs = "+proj=longlat +ellps=WGS84")
@@ -57,12 +59,14 @@ obtainGBIF <- function(query,
 
   } else PresSpeciesOCC <- data.frame(PresSpeciesOCC$data)
 
-  AbsSpeciesOCC <- rgbif::occ_data(scientificName = species,
+  AbsSpeciesOCC <- try(rgbif::occ_data(scientificName = species,
                                     #country = countryCode, #Country codes
                                     geometry = st_bbox(boundaryCheck),
                                     hasCoordinate = TRUE,
                                     occurrenceStatus = 'ABSENT',
-                                    ...)
+                                    ...), silent = FALSE)
+
+  if (inherits(AbsSpeciesOCC, 'try-error')) stop('Could not download data from GBIF. Please change your search query or try again later.')
 
   if (!all(names(AbsSpeciesOCC) %in% c('meta', 'data'))) {
 

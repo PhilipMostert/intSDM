@@ -16,9 +16,11 @@ obtainCovariate <- function(covariates,
 
   ##Do for other covariate layers
 
-  covariateLayers <- geodata::worldclim_global(res = res,
+  covariateLayers <- try(geodata::worldclim_global(res = res,
                                                var = covariates,
-                                               path = path)
+                                               path = path), silent = FALSE)
+
+  if (inherits(covariateLayers, 'try-error')) stop('Could not download covariate layers. Please try again later.')
 
   covariateLayers <- terra::project(covariateLayers, projection)
 
