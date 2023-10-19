@@ -47,10 +47,10 @@ testthat::test_that('sdmWorkflow produces the correct output given different Wor
 
   biasWorkflow <- startWorkflow(Species = species,
                             saveOptions = list(projectName = 'testthatexample', projectDirectory = './tests'),
-                            Projection = proj, Countries = 'Norway',
+                            Projection = proj,
                             Quiet = TRUE, Save = FALSE)
 
-  if (is.null(biasWorkflow$.__enclos_env__$private$Area)) biasWorkflow$addArea(Object = countries)
+  biasWorkflow$addArea(Object = countries)
 
 
   biasWorkflow$addGBIF(datasetName = 'GBIF_data') #Get less species
@@ -66,10 +66,10 @@ testthat::test_that('sdmWorkflow produces the correct output given different Wor
 
   copyWorkflow <- startWorkflow(Species = species,
                                 saveOptions = list(projectName = 'testthatexample', projectDirectory = './tests'),
-                                Projection = proj, Countries = 'Norway',
+                                Projection = proj,
                                 Quiet = TRUE, Save = FALSE)
 
-  if (is.null(copyWorkflow$.__enclos_env__$private$Area)) copyWorkflow$addArea(Object = countries)
+  copyWorkflow$addArea(Object = countries)
 
   copyWorkflow$addGBIF(datasetName = 'GBIF_data') #Get less species
   copyWorkflow$addGBIF(datasetName = 'GBIF_data2', limit = 50, datasetType = 'PA')
