@@ -15,7 +15,7 @@ obtainArea <- function(names, projection, ...) {
 
   world <- try(giscoR::gisco_get_countries(year = 2020, ...), silent = FALSE)
 
-  if (inherits(world, 'try-error')) stop('Could not download country data. Please try again later')
+  if (inherits(world, 'try-error') || is.null(world)) stop('Could not download country data. Please try again later')
 
   if (!all(names %in% world$NAME_ENGL)) stop('At least one name provided not a valid country.')
 
