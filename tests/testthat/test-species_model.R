@@ -36,6 +36,8 @@ testthat::test_that('Test that addArea correctly adds the correct area to the mo
     countries <- st_as_sf(geodata::world(path = tempdir()))
     countries <- countries[countries$NAME_0 %in% c('Norway', 'Sweden'),]
     countries <<- st_transform(countries, proj)
+    workflow$addArea(Object = countries)
+
   }
 
   workflow2$addArea(Object = countries)

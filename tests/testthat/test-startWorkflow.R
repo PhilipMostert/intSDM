@@ -13,6 +13,9 @@ testthat::test_that('startWorkflow can correctly create a species_model object, 
                             Species = species,
                             saveOptions = list(projectName = 'testthat')), 'argument "Projection" is missing, with no default')
 
+  countriesTry <- try(giscoR::gisco_countries[giscoR::gisco_countries$NAME_ENGL %in% c('Sweden', 'Norway'), ])
+
+  skip_if(inherits(countriesTry, 'try-error'))
 
   expect_message(startWorkflow(Countries = countries,
                 Species = species,
