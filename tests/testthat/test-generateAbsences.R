@@ -18,7 +18,7 @@ testthat::test_that('generateAbsences correctly creates absences for the data.',
     map <- map[map$NAME_0 == 'Norway',]
     map <- st_transform(map, proj)
 
-    workflow$addArea(object = map)
+    workflow$addArea(Object = map)
 
   }
 

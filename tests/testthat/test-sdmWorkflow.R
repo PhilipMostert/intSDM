@@ -11,9 +11,10 @@ testthat::test_that('sdmWorkflow produces the correct output given different Wor
                             Projection = proj, Countries = 'Norway',
                             Quiet = TRUE, Save = TRUE))
 
-  if (!exists('workflow')) {
+  if (inherits(workflow, 'try-error')) {
 
-  workflow <- startWorkflow(Species = species,
+
+    workflow <- startWorkflow(Species = species,
                   saveOptions = list(projectName = 'testthatexample', projectDirectory = './'),
                   Projection = proj, Quiet = TRUE, Save = TRUE)
 
