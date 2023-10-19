@@ -23,6 +23,7 @@ workflow$print()
 ## Method `species_model$plot`
 ## ------------------------------------------------
 
+\dontrun{
 workflow <- startWorkflow(Species = 'Fraxinus excelsior',
                           Projection = '+proj=longlat +ellps=WGS84',
                           Save = FALSE,
@@ -31,11 +32,13 @@ workflow <- startWorkflow(Species = 'Fraxinus excelsior',
 #Add boundary
 workflow$addArea(countryName = 'Germany')
 workflow$plot(Boundary = TRUE)
+}
 
 ## ------------------------------------------------
 ## Method `species_model$addStructured`
 ## ------------------------------------------------
 
+\dontrun{
 workflow <- startWorkflow(Species = 'Fraxinus excelsior',
                           Projection = '+proj=longlat +ellps=WGS84',
                           Save = FALSE,
@@ -52,6 +55,7 @@ speciesData <- data.frame(X = runif(1000, 12, 24),
 workflow$addStructured(dataStructured = speciesData, datasetType = 'PA',
                        datasetName = 'xx', responseName = 'Response',
                        speciesName = 'Name', coordinateNames = c('X', 'Y'))
+                       }
 
 ## ------------------------------------------------
 ## Method `species_model$addMesh`
@@ -113,6 +117,7 @@ workflow$addCovariates(worldClim = 'tavg', res = '10')
 ## Method `species_model$addArea`
 ## ------------------------------------------------
 
+\dontrun{
 workflow <- startWorkflow(Species = 'Fraxinus excelsior',
                           Projection = '+proj=longlat +ellps=WGS84',
                           Save = FALSE,
@@ -120,6 +125,7 @@ workflow <- startWorkflow(Species = 'Fraxinus excelsior',
 
 #Add boundary
 workflow$addArea(countryName = 'Sweden')
+}
 
 ## ------------------------------------------------
 ## Method `species_model$crossValidation`
@@ -333,7 +339,8 @@ A ggplot object.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
-\preformatted{workflow <- startWorkflow(Species = 'Fraxinus excelsior',
+\preformatted{\dontrun{
+workflow <- startWorkflow(Species = 'Fraxinus excelsior',
                           Projection = '+proj=longlat +ellps=WGS84',
                           Save = FALSE,
                           saveOptions = list(projectName = 'example'))
@@ -341,6 +348,7 @@ A ggplot object.
 #Add boundary
 workflow$addArea(countryName = 'Germany')
 workflow$plot(Boundary = TRUE)
+}
 }
 \if{html}{\out{</div>}}
 
@@ -388,7 +396,8 @@ The function is used to convert structured datasets into a framework which is us
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
-\preformatted{workflow <- startWorkflow(Species = 'Fraxinus excelsior',
+\preformatted{\dontrun{
+workflow <- startWorkflow(Species = 'Fraxinus excelsior',
                           Projection = '+proj=longlat +ellps=WGS84',
                           Save = FALSE,
                           saveOptions = list(projectName = 'example'))
@@ -404,6 +413,7 @@ speciesData <- data.frame(X = runif(1000, 12, 24),
 workflow$addStructured(dataStructured = speciesData, datasetType = 'PA',
                        datasetName = 'xx', responseName = 'Response',
                        speciesName = 'Name', coordinateNames = c('X', 'Y'))
+                       }
 }
 \if{html}{\out{</div>}}
 
@@ -587,13 +597,15 @@ Function to add a boundary around the study area. This function allows the user 
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
-\preformatted{workflow <- startWorkflow(Species = 'Fraxinus excelsior',
+\preformatted{\dontrun{
+workflow <- startWorkflow(Species = 'Fraxinus excelsior',
                           Projection = '+proj=longlat +ellps=WGS84',
                           Save = FALSE,
                           saveOptions = list(projectName = 'example'))
 
 #Add boundary
 workflow$addArea(countryName = 'Sweden')
+}
 }
 \if{html}{\out{</div>}}
 

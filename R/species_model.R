@@ -118,6 +118,7 @@ species_model <- R6::R6Class(classname = 'species_model', public = list(
 #' @import inlabru
 #' @importFrom tidyterra geom_spatraster
 #' @examples
+#' \dontrun{
 #' workflow <- startWorkflow(Species = 'Fraxinus excelsior',
 #'                           Projection = '+proj=longlat +ellps=WGS84',
 #'                           Save = FALSE,
@@ -126,6 +127,7 @@ species_model <- R6::R6Class(classname = 'species_model', public = list(
 #' #Add boundary
 #' workflow$addArea(countryName = 'Germany')
 #' workflow$plot(Boundary = TRUE)
+#' }
 
   plot = function(Mesh = FALSE,
                   Boundary = TRUE,
@@ -248,6 +250,7 @@ species_model <- R6::R6Class(classname = 'species_model', public = list(
 #' @import methods
 #' @import sf
 #' @examples
+#' \dontrun{
 #' workflow <- startWorkflow(Species = 'Fraxinus excelsior',
 #'                           Projection = '+proj=longlat +ellps=WGS84',
 #'                           Save = FALSE,
@@ -264,6 +267,7 @@ species_model <- R6::R6Class(classname = 'species_model', public = list(
 #' workflow$addStructured(dataStructured = speciesData, datasetType = 'PA',
 #'                        datasetName = 'xx', responseName = 'Response',
 #'                        speciesName = 'Name', coordinateNames = c('X', 'Y'))
+#'                        }
 
   addStructured = function(dataStructured, datasetType,
                            responseName, trialsName,
@@ -676,6 +680,7 @@ addGBIF = function(Species = 'All', datasetName = NULL,
 #'
 #' @import sf
 #' @examples
+#' \dontrun{
 #' workflow <- startWorkflow(Species = 'Fraxinus excelsior',
 #'                           Projection = '+proj=longlat +ellps=WGS84',
 #'                           Save = FALSE,
@@ -683,6 +688,7 @@ addGBIF = function(Species = 'All', datasetName = NULL,
 #'
 #' #Add boundary
 #' workflow$addArea(countryName = 'Sweden')
+#' }
 
   addArea = function(Object = NULL,
                      countryName = NULL,
