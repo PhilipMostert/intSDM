@@ -4,6 +4,14 @@ testthat::test_that('formatStructured can correctly convert a dataset into the c
 
   proj <- '+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
   map <-  obtainArea(names = c('Norway'), projection = proj)
+
+  if (!exists('map')) {
+
+    map <- st_as_sf(geodata::world(path = tempdir()))
+    map <- map[map$NAME_0 == 'Norway',]
+    map <- st_transform(map, proj)
+  }
+
   box <- st_bbox(map)
 
   dataChange <- data.frame(x = rnorm(100, mean = (box$xmax + box$xmin)/2, sd = 100000),
@@ -68,8 +76,6 @@ testthat::test_that('formatStructured can correctly convert a dataset into the c
   expect_error(formatStructured(dataOCC = dataChange3, type = model,
                varsOld = old, varsNew = new,
                projection = proj, boundary = map), 'Dataset provided has no reccords over the boundary.')
-
-
 
 
 })

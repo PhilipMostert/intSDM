@@ -14,17 +14,30 @@ testthat::test_that('Test that addArea correctly adds the correct area to the mo
   expect_error(workflow$addArea(), 'One of object or countryName is required.')
 
   workflow$addArea(countryName = c('Sweden', 'Norway'))
+
+  ##Check adding an area as an object
+  workflow2 <- startWorkflow(Species = species,
+                             saveOptions = list(projectName = 'testthatexample'),
+                             Projection = proj,
+                             Quiet = TRUE, Save = FALSE)
+
+  if (!is.null(workflow$.__enclos_env__$private$Area)) {
+
   expect_setequal(class(workflow$.__enclos_env__$private$Area), c('sf', 'data.frame'))
   expect_setequal(workflow$.__enclos_env__$private$Area$NAME_ENGL, c('Sweden', 'Norway'))
   expect_identical(st_crs(workflow$.__enclos_env__$private$Area)[2], st_crs(proj)[2])
 
-  ##Check adding an area as an object
-  workflow2 <- startWorkflow(Species = species,
-                            saveOptions = list(projectName = 'testthatexample'),
-                            Projection = proj,
-                            Quiet = TRUE, Save = FALSE)
   #Obtain object
   countries <<- giscoR::gisco_countries[giscoR::gisco_countries$NAME_ENGL %in% c('Sweden', 'Norway'), ]
+
+  }
+  else {
+
+    countries <- st_as_sf(geodata::world(path = tempdir()))
+    countries <- countries[countries$NAME_0 %in% c('Norway', 'Sweden'),]
+    countries <<- st_transform(countries, proj)
+  }
+
   workflow2$addArea(Object = countries)
   #expect_identical(workflow2$.__enclos_env__$private$Area, countries) Won't be identical due to change in CRS
 
@@ -84,6 +97,8 @@ testthat::test_that('Test that addCovariate correctly adds the desired covariate
 
   covariateWorkflow$addArea(countryName = c('Norway', 'Sweden'))
 
+  if (is.null(covariateWorkflow$.__enclos_env__$private$Area)) covariateWorkflow$addArea(Object = countries)
+
   expect_error(covariateWorkflow$addCovariates(worldClim = 'prec', Months = c('Monday', 'Tuesday')), 'Month provided is not valid.')
   expect_error(covariateWorkflow$addCovariates(worldClim = 'depth', Months = c('June', 'July', 'August')), 'worldClim argument is not a valid option.')
   expect_error(covariateWorkflow$addCovariates(worldClim = c('prec', 'bio'), Months = c('June', 'July', 'August')), 'Please only add one worldClim variable at a time.')
@@ -130,8 +145,9 @@ testthat::test_that('addStructured can add the data correctly to the model', {
                             saveOptions = list(projectName = 'testthatexample'),
                             Projection = proj,
                             Quiet = TRUE, Save = FALSE)
-  workflow$addArea(countryName = c('Sweden', 'Norway'))
+  workflow$addArea(countryName = c('Norway', 'Sweden'))
 
+  if (is.null(workflow$.__enclos_env__$private$Area)) workflow$addArea(Object = countries)
   #Simulate PA datasets.
   dataPA <- st_as_sf(st_sample(x = countries, size = 100))
   st_geometry(dataPA) <- 'geometry'

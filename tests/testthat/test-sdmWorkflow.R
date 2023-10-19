@@ -11,6 +11,16 @@ testthat::test_that('sdmWorkflow produces the correct output given different Wor
                             Projection = proj, Countries = 'Norway',
                             Quiet = TRUE, Save = TRUE)
 
+  if (is.null(workflow$.__enclos_env__$private$Area)) {
+
+
+    countries <- st_as_sf(geodata::world(path = tempdir()))
+    countries <- countries[countries$NAME_0 %in% c('Norway'),]
+    countries <<- st_transform(countries, proj)
+    workflow$addArea(Object = countries)
+
+  }
+
   workflow$addGBIF(datasetName = 'GBIF_data', limit = 50) #Get less species
   workflow$addGBIF(datasetName = 'GBIF_data2', limit = 50, datasetType = 'PA')
   expect_error(sdmWorkflow(Workflow = workflow)) #Test no output given
@@ -36,6 +46,9 @@ testthat::test_that('sdmWorkflow produces the correct output given different Wor
                             Projection = proj, Countries = 'Norway',
                             Quiet = TRUE, Save = FALSE)
 
+  if (is.null(biasWorkflow$.__enclos_env__$private$Area)) biasWorkflow$addArea(Object = countries)
+
+
   biasWorkflow$addGBIF(datasetName = 'GBIF_data') #Get less species
   biasWorkflow$addGBIF(datasetName = 'GBIF_data2', limit = 50, datasetType = 'PA')
   biasWorkflow$workflowOutput('Model')
@@ -51,6 +64,8 @@ testthat::test_that('sdmWorkflow produces the correct output given different Wor
                                 saveOptions = list(projectName = 'testthatexample', projectDirectory = './tests'),
                                 Projection = proj, Countries = 'Norway',
                                 Quiet = TRUE, Save = FALSE)
+
+  if (is.null(copyWorkflow$.__enclos_env__$private$Area)) copyWorkflow$addArea(Object = countries)
 
   copyWorkflow$addGBIF(datasetName = 'GBIF_data') #Get less species
   copyWorkflow$addGBIF(datasetName = 'GBIF_data2', limit = 50, datasetType = 'PA')

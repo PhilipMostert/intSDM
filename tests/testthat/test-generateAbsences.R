@@ -11,6 +11,16 @@ testthat::test_that('generateAbsences correctly creates absences for the data.',
                             Quiet = TRUE, Save = FALSE)
   workflow$addArea(countryName = c('Sweden', 'Norway'))
 
+  if (is.null(workflow$.__enclos_env__$private$Area)) {
+
+    map <- st_as_sf(geodata::world(path = tempdir()))
+    map <- map[map$NAME_0 == 'Norway',]
+    map <- st_transform(map, proj)
+
+    workflow$addArea(object = map)
+
+  }
+
   workflow$addGBIF(datasetType = 'PO', limit = 50, datasetName = 'PO')
 
   workflow$addGBIF(datasetType = 'PA', datasetName = 'PA', generateAbsences = FALSE)

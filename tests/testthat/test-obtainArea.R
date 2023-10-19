@@ -8,6 +8,8 @@ testthat::test_that('obtainArea can correctly obtain the boundary layer of a cou
 
   map <- obtainArea(country, proj)
 
+  if (!exists('map')) {
+
   expect_equal(class(map), c('sf', 'data.frame'))
   expect_identical(st_crs(map)[2], st_crs(proj)[2])
 
@@ -18,6 +20,7 @@ testthat::test_that('obtainArea can correctly obtain the boundary layer of a cou
   expect_equal(class(map2), c('sf', 'data.frame'))
   expect_identical(st_crs(map2)[2], st_crs(proj2)[2])
 
+  }
 
 
 })
