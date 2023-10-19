@@ -15,9 +15,15 @@ obtainArea <- function(names, projection, ...) {
 
   world <- try(giscoR::gisco_get_countries(year = 2020, ...), silent = FALSE)
 
-  if (inherits(world, 'try-error') || is.null(world)) stop('Could not download country data. Please try again later')
+  if (inherits(world, 'try-error') || is.null(world)) {
 
-  if (!all(names %in% world$NAME_ENGL)) stop('At least one name provided not a valid country.')
+    warning('Could not download country data, returning NULL. Please try again later')
+    return(NULL)
+
+    }
+  else {
+
+    if (!all(names %in% world$NAME_ENGL)) stop('At least one name provided not a valid country.')
 
   countryMap <- world[world$NAME_ENGL %in% names,]
   countryMap <- sf::st_transform(countryMap, crs = as.character(projection))
@@ -25,6 +31,8 @@ obtainArea <- function(names, projection, ...) {
   ##Maybe some warning here if countries provided are not next to each other geographically
    #What scale of areas? Could we go even finer or should that be specified by the user
 
-  countryMap
+  return(countryMap)
+
+  }
 
 }
