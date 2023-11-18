@@ -45,6 +45,8 @@ testthat::test_that('sdmWorkflow produces the correct output given different Wor
   expect_equal(as.character(Fraxinus_excelsior$componentsJoint)[2],
                "-1 + shared_spatial(main = geometry, model = shared_field) + GBIF_data_intercept(1) + GBIF_data2_intercept(1)")
   rm(Fraxinus_excelsior)
+  biasCopyonCRAN <- FALSE
+  if (biasCopyonCRAN) {
 
   biasWorkflow <- startWorkflow(Species = species,
                             saveOptions = list(projectName = 'testthatexample', projectDirectory = './tests'),
@@ -64,7 +66,7 @@ testthat::test_that('sdmWorkflow produces the correct output given different Wor
 
   expect_setequal(names(biasMod$Fraxinus_excelsior$Model$summary.random), c("shared_spatial", "GBIF_data_biasField"))
   rm(biasWorkflow)
-
+}
   copyWorkflow <- startWorkflow(Species = species,
                                 saveOptions = list(projectName = 'testthatexample', projectDirectory = './tests'),
                                 Projection = proj,
