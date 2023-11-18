@@ -4,10 +4,12 @@
 \alias{sdmWorkflow}
 \title{\code{sdmWorkflow}: Function to compile the reproducible workflow.}
 \usage{
-sdmWorkflow(Workflow = NULL)
+sdmWorkflow(Workflow = NULL, predictionDim = c(150, 150))
 }
 \arguments{
 \item{Workflow}{The \code{R6} object created from \code{startWorkflow}. This object should contain all the data and model information required to estimate and specify the model.}
+
+\item{predictionDim}{The pixel dimensions for the prediction maps. Defaults to \code{c(150, 150)}.}
 }
 \value{
 The return of the function depends on the argument \code{Save} from the \code{startWorkflow} function. If this argument is \code{FALSE} then the objects will be saved to the specidfied directory. If this argument is \code{TRUE} then a list of different outcomes from the workflow will be returned.

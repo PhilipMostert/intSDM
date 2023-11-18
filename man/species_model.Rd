@@ -726,13 +726,15 @@ workflow$specifySpatial(prior.range = c(200000, 0.05),
 \subsection{Method \code{biasFields()}}{
 Function to add bias fields to the model.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{species_model$biasFields(datasetName, ...)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{species_model$biasFields(datasetName, copyModel = FALSE, ...)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{datasetName}}{Name of the dataset to add a bias field to.}
+
+\item{\code{copyModel}}{Create copies of the biasField across the different datasets. Defaults to \code{FALSE}.}
 
 \item{\code{...}}{Additional arguments passed on to \link[INLA]{inla.spde2.pcmatern} to customize the priors for the pc matern for the bias fields.}
 }
