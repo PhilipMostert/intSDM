@@ -1,6 +1,7 @@
 #' @title \code{sdmWorkflow}: Function to compile the reproducible workflow.
 #' @description This function is used to compile the reproducible workflow from the \code{R6} object created with \code{startFunction}. Depending on what was specified before, this function will estimate the integrated species distribution model, perform cross-validation, create predictions from the model and plot these predictions.
 #' @param Workflow The \code{R6} object created from \code{startWorkflow}. This object should contain all the data and model information required to estimate and specify the model.
+#' @param predictionDim The pixel dimensions for the prediction maps. Defaults to \code{c(150, 150)}.
 #'
 #' @import PointedSDMs
 #'
@@ -30,7 +31,8 @@
 #' }
 #' }
 
-sdmWorkflow <- function(Workflow = NULL) {
+sdmWorkflow <- function(Workflow = NULL,
+                        predictionDim = c(150, 150)) {
 
   modDirectory <- Workflow$.__enclos_env__$private$Directory
   saveObjects <- Workflow$.__enclos_env__$private$Save
@@ -134,7 +136,7 @@ sdmWorkflow <- function(Workflow = NULL) {
 
   if (!is.null(Workflow$.__enclos_env__$private$biasNames)) {
 
-    initializeModel$addBias(datasetNames = Workflow$.__enclos_env__$private$biasNames)
+    initializeModel$addBias(datasetNames = Workflow$.__enclos_env__$private$biasNames, copyModel = Workflow$.__enclos_env__$private$biasFieldsCopy)
 
     if (!is.null(Workflow$.__enclos_env__$private$biasFieldsSpecify)) {
 
@@ -228,7 +230,8 @@ sdmWorkflow <- function(Workflow = NULL) {
       if (!Quiet) message('\nPredicting model:\n\n')
       .__mask.__ <- as(Workflow$.__enclos_env__$private$Area, 'Spatial')
       Predictions <- predict(PSDMsMOdel, data = inlabru::fm_pixels(mesh = .__mesh.__,
-                                                                mask = .__mask.__),
+                                                                mask = .__mask.__,
+                                                                dims = predictionDim),
                              predictor = TRUE)
 
       if (saveObjects) {
