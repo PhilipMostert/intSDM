@@ -865,6 +865,7 @@ addGBIF = function(Species = 'All', datasetName = NULL,
 
 #' @description Function to add bias fields to the model.
 #' @param datasetName Name of the dataset to add a bias field to.
+#' @param copyModel Create copies of the biasField across the different datasets. Defaults to \code{FALSE}.
 #' @param ... Additional arguments passed on to \link[INLA]{inla.spde2.pcmatern} to customize the priors for the pc matern for the bias fields.
 #' @examples
 #' \dontrun{
@@ -884,7 +885,9 @@ addGBIF = function(Species = 'All', datasetName = NULL,
 #' }
 #' }
 
-  biasFields = function(datasetName, ...) {
+  biasFields = function(datasetName,
+                        copyModel = FALSE,
+                        ...) {
 
     if (!all(datasetName %in% private$datasetName)) stop('Dataset specified for bias field not included in the workflow.')
 
@@ -899,7 +902,7 @@ addGBIF = function(Species = 'All', datasetName = NULL,
       for (dataset in datasetName) {
 
       private$biasFieldsSpecify[[dataset]] <- biasModels
-
+      private$biasFieldsCopy <- copyModel
 
       }
 
@@ -1029,6 +1032,7 @@ species_model$set('private', 'Quiet', TRUE)
 species_model$set('private', 'Directory', getwd())
 species_model$set('private', 'Project', NULL)
 species_model$set('private', 'sharedField', NULL)
+species_model$set('private', 'biasFieldsCopy', NULL)
 species_model$set('private', 'timeStarted', NULL)
 #species_model$set('private', 'datasetFieldsSpecify', list())
 species_model$set('private', 'biasFieldsSpecify', list())
