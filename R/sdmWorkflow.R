@@ -106,6 +106,9 @@ sdmWorkflow <- function(Workflow = NULL,
                             pointcovariates = NULL,
                             trialspa = .__trialsName.__,
                             trialsmarks = NULL,
+                            speciesintercept = FALSE,
+                            speciesindependent = FALSE,
+                            speciesenvironment = FALSE,
                             spatial = .__pointsSpatial.__,
                             marksspatial = NULL,
                             speciesname = NULL,
@@ -177,18 +180,6 @@ sdmWorkflow <- function(Workflow = NULL,
 
   }
 
-  if ('Richness' %in% Oputs) {
-
-    message('Richness output not available yet!')
-
-    #message('\nCreating richness model:\n\n')
-
-    #message('\nCreating richness maps:\n\n')
-
-    #richnessMap <- predict(richnessModel)
-
-  }
-
   if ('Cross-validation' %in% Oputs) {
 
 
@@ -257,6 +248,49 @@ sdmWorkflow <- function(Workflow = NULL,
       else outputList[[speciesNameInd]][['Maps']] <- plot(Predictions, plot = FALSE)
 
       rm(Predictions)
+
+
+    }
+
+  }
+
+  if ('Richness' %in% Oputs) {
+
+    message('Richness output not available yet!')
+
+    spData <- append(Workflow$.__enclos_env__$private$dataGBIF,
+                     Workflow$.__enclos_env__$private$dataStructured) #Check
+
+    richSetup <- PointedSDMs::intModel(speciesDataset, Mesh = .__mesh.__, Projection = .__proj.__, Coordinates = .__coordinates.__,
+                          responsePA = .__responsePA.__, responseCounts = .__responseCounts.__,
+                          trialsPA = .__trialsName.__,
+                          pointsIntercept = .__pointsIntercept.__ ,
+                          copyModel = .__copyModel.__, speciesName = workflow$.__enclos_env__$private$speciesName,
+                          speciesSpatial = 'shared', ##WHICH ONE??
+                          pointsSpatial = 'copy', speciesIndependent = TRUE,
+                          speciesEffects = list(Intercept = FALSE, Environmental = TRUE),
+                          spatialCovariates = spatCovs)
+
+    if (!is.null(Workflow$.__enclos_env__$private$biasNames)) {
+
+      richSetup$addBias(datasetNames = Workflow$.__enclos_env__$private$biasNames, copyModel = Workflow$.__enclos_env__$private$biasFieldsCopy)
+
+      if (!is.null(Workflow$.__enclos_env__$private$biasFieldsSpecify)) {
+
+        for (biasName in names(Workflow$.__enclos_env__$private$biasFieldsSpecify)) {
+
+          richSetup$spatialFields$biasFields[[biasName]] <- Workflow$.__enclos_env__$private$biasFieldsSpecify[[biasName]]
+
+        }
+
+
+      }
+
+
+      richModel <- PointedSDMs::fitISDM(data = richSetup,
+                                        options = Workflow$.__enclos_env__$private$optionsINLA)
+
+      ##Predict and plot
 
 
     }
