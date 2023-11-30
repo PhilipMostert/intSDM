@@ -891,13 +891,15 @@ addGBIF = function(Species = 'All', datasetName = NULL,
 
     if (!all(datasetName %in% private$datasetName)) stop('Dataset specified for bias field not included in the workflow.')
 
+    if (is.null(private$Mesh)) stop('Please add an INLA mesh before customizing the spatial fields. This may be done with the `.$addMesh` function.')
+
     private$biasNames <- unique(c(datasetName, private$biasNames))
 
     if (length(list(...)) > 0) {
 
-      if (is.null(private$Mesh)) stop('Please add an INLA mesh before customizing the spatial fields. This may be done with the `.$addMesh` function.')
-
       biasModels <- INLA::inla.spde2.pcmatern(mesh = private$Mesh, ...)
+
+      } else biasModels <- INLA::inla.spde2.matern(mesh = private$Mesh)
 
       for (dataset in datasetName) {
 
@@ -906,7 +908,7 @@ addGBIF = function(Species = 'All', datasetName = NULL,
 
       }
 
-    }
+
 
 
   }
@@ -1032,7 +1034,7 @@ species_model$set('private', 'Quiet', TRUE)
 species_model$set('private', 'Directory', getwd())
 species_model$set('private', 'Project', NULL)
 species_model$set('private', 'sharedField', NULL)
-species_model$set('private', 'biasFieldsCopy', NULL)
+species_model$set('private', 'biasFieldsCopy', FALSE)
 species_model$set('private', 'timeStarted', NULL)
 #species_model$set('private', 'datasetFieldsSpecify', list())
 species_model$set('private', 'biasFieldsSpecify', list())
