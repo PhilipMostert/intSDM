@@ -323,7 +323,7 @@ testthat::test_that('biasFields correctly adds the bias field', {
 
   workflow$biasFields(datasetName = c('dataPA2', 'dataPA'), prior.range = c(1, 0.1), prior.sigma = c(1, 0.2))
 
-  expect_setequal(names(workflow$.__enclos_env__$private$biasFieldsSpecify), c('dataPA2', 'dataPA'))
+  expect_setequal(names(workflow$.__enclos_env__$private$biasFieldsSpecify), c("dataCounts", "dataFrame", 'dataPA2', 'dataPA'))
 
   expect_setequal(class(workflow$.__enclos_env__$private$biasFieldsSpecify$dataPA2), c("inla.spde2", "inla.spde", "inla.model.class"))
   expect_setequal(class(workflow$.__enclos_env__$private$biasFieldsSpecify$dataPA), c("inla.spde2", "inla.spde", "inla.model.class"))
