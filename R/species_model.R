@@ -929,7 +929,7 @@ addGBIF = function(Species = 'All', datasetName = NULL,
                          'Maps',
                          'Bias',
                          'Richness',
-                         'Cross-validation'))) stop('Output needs to be at least one of: Model, Predictions, Maps or Cross-validation.')
+                         'Cross-validation'))) stop('Output needs to be at least one of: Model, Predictions, Maps, Bias or Cross-validation.')
 
     private$Output <- Output
 

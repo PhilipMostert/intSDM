@@ -141,6 +141,18 @@ sdmWorkflow <- function(Workflow = NULL,
 
   if (!is.null(Workflow$.__enclos_env__$private$biasNames)) {
 
+    if (!any(Workflow$.__enclos_env__$private$biasNames %in% names(speciesDataset))) {
+
+      warning('Bias fields specified for datasets not in the model. Turning bias off.')
+
+      biasIn <- FALSE
+
+      }
+
+    else {
+
+    biasIn <- TRUE
+
     initializeModel$addBias(datasetNames = Workflow$.__enclos_env__$private$biasNames, copyModel = Workflow$.__enclos_env__$private$biasFieldsCopy)
 
     if (!is.null(Workflow$.__enclos_env__$private$biasFieldsSpecify)) {
@@ -149,7 +161,9 @@ sdmWorkflow <- function(Workflow = NULL,
 
         initializeModel$spatialFields$biasFields[[biasName]] <- Workflow$.__enclos_env__$private$biasFieldsSpecify[[biasName]]
 
-        }
+      }
+
+    }
 
 
     }
@@ -256,6 +270,8 @@ sdmWorkflow <- function(Workflow = NULL,
 
   if ('Bias' %in% Oputs) {
 
+    if (biasIn) {
+
     if (!Quiet) message('\nProducing bias predictions:\n\n')
     .__mask.__ <- as(Workflow$.__enclos_env__$private$Area, 'Spatial')
     biasPreds <- predict(PSDMsMOdel, data = inlabru::fm_pixels(mesh = .__mesh.__,
@@ -270,7 +286,7 @@ sdmWorkflow <- function(Workflow = NULL,
 
     } else outputList[[speciesNameInd]][['Bias']] <- biasPreds
 
-
+    }
 
   }
 
