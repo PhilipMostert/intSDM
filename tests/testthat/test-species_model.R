@@ -338,7 +338,7 @@ testthat::test_that('workflowOutput gives the correct output', {
 
   expect_error(workflow$workflowOutput(), 'argument "Output" is missing, with no default')
 
-  expect_error(workflow$workflowOutput('Trendline'), 'Output needs to be at least one of: Model, Predictions, Maps or Cross-validation.')
+  expect_error(workflow$workflowOutput('Trendline'), 'Output needs to be at least one of: Model, Predictions, Maps, Bias or Cross-validation.')
 
   workflow$workflowOutput(c('Model', 'Maps', 'Cross-validation'))
 
