@@ -44,6 +44,8 @@ sdmWorkflow <- function(Workflow = NULL,
   Oputs <- Workflow$.__enclos_env__$private$Output
   outputList <-list()
 
+  if ('Bias' %in% Oputs && is.null(Workflow$.__enclos_env__$private$biasNames)) stop('Bias specified as output but no bias fields were added. Please do this with .$biasFields')
+
   if (is.null(Workflow$.__enclos_env__$private$CVMethod) && 'Cross-Validation' %in% Workflow$.__enclos_env__$private$Output) stop('Cross-validation specified as model output but no method provided. Please specify cross-validation method using the `.$crossValidation` function.')
 
   ##Need to do it on a species by species basis:
@@ -251,6 +253,26 @@ sdmWorkflow <- function(Workflow = NULL,
 
 
     }
+
+  if ('Bias' %in% Oputs) {
+
+    if (!Quiet) message('\nProducing bias predictions:\n\n')
+    .__mask.__ <- as(Workflow$.__enclos_env__$private$Area, 'Spatial')
+    biasPreds <- predict(PSDMsMOdel, data = inlabru::fm_pixels(mesh = .__mesh.__,
+                                                                 mask = .__mask.__,
+                                                                 dims = predictionDim),
+                         biasfield = TRUE)
+
+    if (saveObjects) {
+
+      if (!Quiet)  message('\nSaving predictions object:', '\n\n')
+      saveRDS(object = biasPreds, file = paste0(modDirectory,'/', speciesNameInd, '/biasPreds.rds'))
+
+    } else outputList[[speciesNameInd]][['Bias']] <- biasPreds
+
+
+
+  }
 
   }
 
