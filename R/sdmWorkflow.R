@@ -141,7 +141,7 @@ sdmWorkflow <- function(Workflow = NULL,
 
   if (!is.null(Workflow$.__enclos_env__$private$biasNames)) {
 
-    if (!any(Workflow$.__enclos_env__$private$biasNames %in% names(speciesDataset))) {
+    if (!any(names(speciesDataset) %in% Workflow$.__enclos_env__$private$biasNames)) {
 
       warning('Bias fields specified for datasets not in the model. Turning bias off.')
 
