@@ -153,11 +153,17 @@ sdmWorkflow <- function(Workflow = NULL,
 
     biasIn <- TRUE
 
-    initializeModel$addBias(datasetNames = Workflow$.__enclos_env__$private$biasNames, copyModel = Workflow$.__enclos_env__$private$biasFieldsCopy)
+    biasSubset <- Workflow$.__enclos_env__$private$biasNames[Workflow$.__enclos_env__$private$biasNames %in% names(speciesDataset)]
+
+    initializeModel$addBias(datasetNames = biasSubset, copyModel = Workflow$.__enclos_env__$private$biasFieldsCopy)
 
     if (!is.null(Workflow$.__enclos_env__$private$biasFieldsSpecify)) {
 
-      for (biasName in names(Workflow$.__enclos_env__$private$biasFieldsSpecify)) {
+      if (any(names(speciesDataset) %in% names(Workflow$.__enclos_env__$private$biasFieldsSpecify))) {
+
+        specifySubset <- names(Workflow$.__enclos_env__$private$biasFieldsSpecify)[names(Workflow$.__enclos_env__$private$biasFieldsSpecify) %in% names(speciesDataset)]
+
+      for (biasName in specifySubset) {
 
         initializeModel$spatialFields$biasFields[[biasName]] <- Workflow$.__enclos_env__$private$biasFieldsSpecify[[biasName]]
 
@@ -165,6 +171,7 @@ sdmWorkflow <- function(Workflow = NULL,
 
     }
 
+    }
 
     }
 
