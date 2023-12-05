@@ -281,9 +281,10 @@ sdmWorkflow <- function(Workflow = NULL,
 
     if (!Quiet) message('\nProducing bias predictions:\n\n')
     .__mask.__ <- as(Workflow$.__enclos_env__$private$Area, 'Spatial')
-    biasPreds <- predict(PSDMsMOdel, data = inlabru::fm_pixels(mesh = .__mesh.__,
-                                                                 mask = .__mask.__,
-                                                                 dims = predictionDim),
+    biasPreds <- predict(PSDMsMOdel,
+                         data = inlabru::fm_pixels(mesh = .__mesh.__,
+                         mask = .__mask.__,
+                         dims = predictionDim),
                          biasfield = TRUE)
 
     if (saveObjects) {

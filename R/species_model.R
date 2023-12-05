@@ -907,7 +907,8 @@ addGBIF = function(Species = 'All', datasetName = NULL,
 
       for (dataset in datasetName) {
 
-      private$biasFieldsSpecify[[dataset]] <- biasModels
+      if (shareModel) private$biasFieldsSpecify[['sharedBias']] <- biasModels
+      else private$biasFieldsSpecify[[dataset]] <- biasModels
       private$biasFieldsCopy <- copyModel
       private$biasFieldsShare <- shareModel
 
