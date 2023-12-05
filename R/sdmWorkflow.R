@@ -155,7 +155,7 @@ sdmWorkflow <- function(Workflow = NULL,
 
     biasSubset <- Workflow$.__enclos_env__$private$biasNames[Workflow$.__enclos_env__$private$biasNames %in% names(speciesDataset)]
 
-    initializeModel$addBias(datasetNames = biasSubset, copyModel = Workflow$.__enclos_env__$private$biasFieldsCopy)
+    initializeModel$addBias(datasetNames = biasSubset, copyModel = Workflow$.__enclos_env__$private$biasFieldsCopy, shareModel = Workflow$.__enclos_env__$private$biasFieldsShare)
 
     if (!is.null(Workflow$.__enclos_env__$private$biasFieldsSpecify)) {
 

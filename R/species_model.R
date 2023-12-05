@@ -866,6 +866,7 @@ addGBIF = function(Species = 'All', datasetName = NULL,
 #' @description Function to add bias fields to the model.
 #' @param datasetName Name of the dataset to add a bias field to.
 #' @param copyModel Create copies of the biasField across the different datasets. Defaults to \code{FALSE}.
+#' @param shareModel Share a bias field across the datasets specified with \code{datasetNames}. Defaults to \code{FALSE}.
 #' @param ... Additional arguments passed on to \link[INLA]{inla.spde2.pcmatern} to customize the priors for the pc matern for the bias fields.
 #' @examples
 #' \dontrun{
@@ -887,11 +888,14 @@ addGBIF = function(Species = 'All', datasetName = NULL,
 
   biasFields = function(datasetName,
                         copyModel = FALSE,
+                        shareModel = FALSE,
                         ...) {
 
     if (!all(datasetName %in% private$datasetName)) stop('Dataset specified for bias field not included in the workflow.')
 
     if (is.null(private$Mesh)) stop('Please add an INLA mesh before customizing the spatial fields. This may be done with the `.$addMesh` function.')
+
+    if (copyModel && shareModel) stop('Only one of copyModel and shareModel may be TRUE.')
 
     private$biasNames <- unique(c(datasetName, private$biasNames))
 
@@ -905,6 +909,7 @@ addGBIF = function(Species = 'All', datasetName = NULL,
 
       private$biasFieldsSpecify[[dataset]] <- biasModels
       private$biasFieldsCopy <- copyModel
+      private$biasFieldsShare <- shareModel
 
       }
 
@@ -1036,6 +1041,7 @@ species_model$set('private', 'Directory', getwd())
 species_model$set('private', 'Project', NULL)
 species_model$set('private', 'sharedField', NULL)
 species_model$set('private', 'biasFieldsCopy', FALSE)
+species_model$set('private', 'biasFieldsShare', FALSE)
 species_model$set('private', 'timeStarted', NULL)
 #species_model$set('private', 'datasetFieldsSpecify', list())
 species_model$set('private', 'biasFieldsSpecify', list())

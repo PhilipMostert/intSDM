@@ -726,7 +726,12 @@ workflow$specifySpatial(prior.range = c(200000, 0.05),
 \subsection{Method \code{biasFields()}}{
 Function to add bias fields to the model.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{species_model$biasFields(datasetName, copyModel = FALSE, ...)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{species_model$biasFields(
+  datasetName,
+  copyModel = FALSE,
+  shareModel = FALSE,
+  ...
+)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -735,6 +740,8 @@ Function to add bias fields to the model.
 \item{\code{datasetName}}{Name of the dataset to add a bias field to.}
 
 \item{\code{copyModel}}{Create copies of the biasField across the different datasets. Defaults to \code{FALSE}.}
+
+\item{\code{shareModel}}{Share a bias field across the datasets specified with \code{datasetNames}. Defaults to \code{FALSE}.}
 
 \item{\code{...}}{Additional arguments passed on to \link[INLA]{inla.spde2.pcmatern} to customize the priors for the pc matern for the bias fields.}
 }
@@ -776,7 +783,7 @@ Function to specify the workflow output from the model. This argument must be at
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{Output}}{The names of the outputs to give in the workflow. Must be at least one of: \code{'Model'}, \code{'Prediction'}, \code{'Richness'}, \code{'Maps'} and \code{'Cross-validation'}.}
+\item{\code{Output}}{The names of the outputs to give in the workflow. Must be at least one of: \code{'Model'}, \code{'Prediction'}, \code{'Richness'}, \code{'Maps'}, \code{'Bias'} and \code{'Cross-validation'}.}
 }
 \if{html}{\out{</div>}}
 }
