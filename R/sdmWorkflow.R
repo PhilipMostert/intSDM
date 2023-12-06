@@ -290,7 +290,7 @@ sdmWorkflow <- function(Workflow = NULL,
     if (saveObjects) {
 
       if (!Quiet)  message('\nSaving predictions object:', '\n\n')
-      saveRDS(object = biasPreds, file = paste0(modDirectory,'/', '/biasPreds',speciesNameInd,'.rds'))
+      saveRDS(object = biasPreds, file = paste0(modDirectory,'/', speciesNameInd, '/biasPreds.rds'))
 
     } else outputList[[speciesNameInd]][['Bias']] <- biasPreds
 
