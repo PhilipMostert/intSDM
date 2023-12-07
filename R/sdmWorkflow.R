@@ -86,16 +86,26 @@ sdmWorkflow <- function(Workflow = NULL,
    speciesNameInd <- sub(' ', '_', species)
    if (saveObjects) dir.create(path = paste0(modDirectory, '/', speciesNameInd))
 
-   if (!Quiet) message(paste('\nStarting model for', species, '\n\n'))
-
    speciesDataset <- append(Workflow$.__enclos_env__$private$dataGBIF[[species]],
                             Workflow$.__enclos_env__$private$dataStructured[[species]])
 
+   speciesDataset <- speciesDataset[sapply(speciesDataset, nrow) > 0]
 
 
-  if (length(speciesDataset) == 0) stop('No data added to the model. Please add data using `.$addGBIF` or `.$addStructured`.')
 
-   if (!Quiet) message('\nInitializing model', '\n\n')
+  if (length(speciesDataset) == 0)  {
+
+    warning(paste('No data added to the model for species', paste0(species,'.'), 'Skipping run.'))
+
+  }
+else {
+
+  if (!Quiet) {
+
+    message(paste('\nStarting model for', species, '\n\n'))
+    message('\nInitializing model', '\n\n')
+
+  }
 
    if (length(speciesDataset) == 1) {
 
@@ -343,7 +353,14 @@ sdmWorkflow <- function(Workflow = NULL,
 
   }
 
-  if (!saveObjects) return(outputList)
+  }
+
+  if (!saveObjects) {
+
+  if (!exists('outputList')) stop('Workflow did not run for any species.')
+  return(outputList)
+
+  }
 
 
   }
