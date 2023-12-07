@@ -164,6 +164,8 @@ species_model <- R6::R6Class(classname = 'species_model', public = list(
         speData <- lapply(append(private$dataGBIF[[species]],
                                  private$dataStructured[[species]]), function(x) x$geometry)
 
+        speData <- speData[sapply(speData, length) > 0]
+
         namesspeData <- names(speData)
         namesTimes <- rep(namesspeData, times = unlist(lapply(speData, length)))
 
@@ -659,7 +661,7 @@ addGBIF = function(Species = 'All', datasetName = NULL,
       for (cov in names(Object)) {
 
       #Check this for all classes
-      maskedDF <- terra::mask(Object[cov], private$Area)
+      maskedDF <- terra::crop(terra::mask(Object[cov], private$Area), private$Area)
 
       if (all(is.na(terra::values(maskedDF)))) stop('The covariate provided and the area specified do not match.')
 
