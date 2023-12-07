@@ -218,7 +218,7 @@ testthat::test_that('addStructured can add the data correctly to the model', {
   #Add data not in boundary
   dataNotIn <- st_as_sf(st_sample(x = giscoR::gisco_countries[giscoR::gisco_countries$NAME_ENGL == 'Portugal',], size = 100))
   dataNotIn$species <- species
-  expect_error(workflow$addStructured(dataStructured = dataNotIn, datasetType = 'PO', speciesName = 'species'), 'Dataset provided has no reccords over the boundary.')
+  expect_warning(workflow$addStructured(dataStructured = dataNotIn, datasetType = 'PO', speciesName = 'species'), 'Dataset provided has no reccords over the boundary.')
 
   workflow <<- workflow
 

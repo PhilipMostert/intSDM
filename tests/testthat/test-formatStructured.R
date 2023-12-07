@@ -73,7 +73,7 @@ testthat::test_that('formatStructured can correctly convert a dataset into the c
                             y = rnorm(100, mean = 1, sd = 2),
                             num = rpois(n = 100, lambda = 5))
 
-  expect_error(formatStructured(dataOCC = dataChange3, type = model,
+  expect_warning(formatStructured(dataOCC = dataChange3, type = model,
                varsOld = old, varsNew = new,
                projection = proj, boundary = map), 'Dataset provided has no reccords over the boundary.')
 
