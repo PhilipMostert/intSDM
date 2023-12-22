@@ -324,6 +324,9 @@ else {
 
   }
 
+
+  }
+
   if ('Richness' %in% Oputs) {
 
     if (is.null(Workflow$.__enclos_env__$private$optionsRichness[['predictionIntercept']])) stop('predictionIntercept needs to be provided. This can be done using .$modelOptions(Richness = list(predictionIntercept = "DATASETNAME")).')
@@ -334,14 +337,14 @@ else {
                      Workflow$.__enclos_env__$private$dataStructured) #Check
 
     richSetup <- PointedSDMs::intModel(speciesDataset, Mesh = .__mesh.__, Projection = .__proj.__, Coordinates = .__coordinates.__,
-                          responsePA = .__responsePA.__, responseCounts = .__responseCounts.__,
-                          trialsPA = .__trialsName.__,
-                          pointsIntercept = .__pointsIntercept.__ ,
-                          copyModel = .__copyModel.__, speciesName = workflow$.__enclos_env__$private$speciesName,
-                          speciesSpatial = 'shared', ##WHICH ONE??
-                          pointsSpatial = 'copy', speciesIndependent = TRUE,
-                          speciesEffects = list(Intercept = FALSE, Environmental = TRUE),
-                          spatialCovariates = spatCovs)
+                                       responsePA = .__responsePA.__, responseCounts = .__responseCounts.__,
+                                       trialsPA = .__trialsName.__,
+                                       pointsIntercept = .__pointsIntercept.__ ,
+                                       copyModel = .__copyModel.__, speciesName = workflow$.__enclos_env__$private$speciesName,
+                                       speciesSpatial = 'shared', ##WHICH ONE??
+                                       pointsSpatial = 'copy', speciesIndependent = TRUE,
+                                       speciesEffects = list(Intercept = FALSE, Environmental = TRUE),
+                                       spatialCovariates = spatCovs)
 
     if (!is.null(Workflow$.__enclos_env__$private$biasNames)) {
 
@@ -406,8 +409,6 @@ else {
 
 
     }
-
-  }
 
   }
 
