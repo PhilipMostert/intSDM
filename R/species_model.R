@@ -809,6 +809,7 @@ addGBIF = function(Species = 'All', datasetName = NULL,
 #' @description Function to specify model options for the \code{INLA} and \code{PointedSDMs} parts of the model.
 #' @param ISDM Arguments to specify in \link[PointedSDMs]{intModel} from the \code{PointedSDMs} function. This argument needs to be a named list of the following options: \code{pointCovariates}, \code{pointsIntercept}, \code{pointsSpatial} or \code{copyModel}. See \code{?intModel} for more details.
 #' @param INLA Options to specify in \link[INLA]{INLA} from the \code{inla} function. See \code{?inla} for more details.
+#' @param Richness Options to specify the richness model. This argument needs to be a named list of the following options: \code{predictionIntercept}.
 #' @examples
 #' workflow <- startWorkflow(Species = 'Fraxinus excelsior',
 #'                           Projection = '+proj=longlat +ellps=WGS84',
@@ -818,17 +819,29 @@ addGBIF = function(Species = 'All', datasetName = NULL,
 #' workflow$modelOptions(INLA = list(control.inla=list(int.strategy = 'eb')),
 #'                       ISDM = list(pointsIntercept = FALSE))
   modelOptions = function(ISDM = list(),
-                          INLA = list()) {
+                          INLA = list(),
+                          Richness = list()) {
 
     if (!is.list(ISDM)) stop('ISDM needs to be a list of arguments to specify the model.')
 
     if (any(!names(ISDM) %in% c('pointCovariates', 'pointsIntercept', #Remove pointCovariates perhaps?
                                 'pointsSpatial', 'copyModel'))) stop('ISDM needs to be a named list with at least one of the following options: "pointCovariates", "pointsIntercept", "pointsSpatial" or "copyModel".')
 
+    if (any(!names(Richness) %in% c('predictionIntercept'))) stop('Richness needs to be a named list with at least one of the following options: "predictionIntercept".')
+
+    if ('predictionIntercept' %in% names(Richness)) {
+
+      if (length(Richness[['predictionIntercept']] ) > 1) stop('predictionIntercept needs to contain only one element.')
+
+      if (!Richness[['predictionIntercept']] %in% private$datasetName) stop('predictionIntercept needs to be a name of one of the datasets in the model.')
+
+    }
+
     if (!is.list(INLA)) stop('INLA needs to be a list of INLA arguments to specify the model.')
 
     if (length(ISDM) > 0) private$optionsISDM <- ISDM
     if (length(INLA) > 0) private$optionsINLA <- INLA
+    if (length(Richness) > 0) private$optionsRichness <- Richness
 
   }
   ,
@@ -1032,6 +1045,7 @@ species_model$set('private', 'Covariates', NULL)
 species_model$set('private', 'Mesh', NULL)
 species_model$set('private', 'optionsISDM', list())
 species_model$set('private', 'optionsINLA', list())
+species_model$set('private', 'optionsRichness', list())
 species_model$set('private', 'CVMethod', NULL)
 species_model$set('private', 'Species', NULL)
 species_model$set('private', 'Countries', NULL)

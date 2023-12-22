@@ -653,7 +653,7 @@ workflow$crossValidation(Method = 'Loo')
 \subsection{Method \code{modelOptions()}}{
 Function to specify model options for the \code{INLA} and \code{PointedSDMs} parts of the model.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{species_model$modelOptions(ISDM = list(), INLA = list())}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{species_model$modelOptions(ISDM = list(), INLA = list(), Richness = list())}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -662,6 +662,8 @@ Function to specify model options for the \code{INLA} and \code{PointedSDMs} par
 \item{\code{ISDM}}{Arguments to specify in \link[PointedSDMs]{intModel} from the \code{PointedSDMs} function. This argument needs to be a named list of the following options: \code{pointCovariates}, \code{pointsIntercept}, \code{pointsSpatial} or \code{copyModel}. See \code{?intModel} for more details.}
 
 \item{\code{INLA}}{Options to specify in \link[INLA]{INLA} from the \code{inla} function. See \code{?inla} for more details.}
+
+\item{\code{Richness}}{Options to specify the richness model. This argument needs to be a named list of the following options: \code{predictionIntercept}.}
 }
 \if{html}{\out{</div>}}
 }
