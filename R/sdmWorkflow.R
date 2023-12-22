@@ -82,6 +82,8 @@ sdmWorkflow <- function(Workflow = NULL,
   if (!is.null(Workflow$.__enclos_env__$private$Covariates)) spatCovs <- terra::rast(Workflow$.__enclos_env__$private$Covariates)
   else spatCovs <- NULL
 
+  if (!all(Oputs == 'Richness')) {
+
   for (species in unique(c(names(Workflow$.__enclos_env__$private$dataGBIF),
                            names(Workflow$.__enclos_env__$private$dataStructured)))) {
 
@@ -317,6 +319,8 @@ else {
     }
 
   }
+
+}
 
   }
 
