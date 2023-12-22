@@ -333,16 +333,16 @@ else {
 
     .__predIntercept.__ <- Workflow$.__enclos_env__$private$optionsRichness[['predictionIntercept']]
 
-    spData <- append(Workflow$.__enclos_env__$private$dataGBIF,
-                     Workflow$.__enclos_env__$private$dataStructured) #Check
+    spData <- unlist(append(Workflow$.__enclos_env__$private$dataGBIF,
+                     Workflow$.__enclos_env__$private$dataStructured), recursive = FALSE) #Check
 
-    richSetup <- PointedSDMs::intModel(speciesDataset, Mesh = .__mesh.__, Projection = .__proj.__, Coordinates = .__coordinates.__,
+    richSetup <- PointedSDMs::intModel(spData, Mesh = .__mesh.__, Projection = .__proj.__, Coordinates = .__coordinates.__,
                                        responsePA = .__responsePA.__, responseCounts = .__responseCounts.__,
                                        trialsPA = .__trialsName.__,
                                        pointsIntercept = .__pointsIntercept.__ ,
                                        copyModel = .__copyModel.__, speciesName = workflow$.__enclos_env__$private$speciesName,
                                        speciesSpatial = 'shared', ##WHICH ONE??
-                                       pointsSpatial = 'copy', speciesIndependent = TRUE,
+                                       pointsSpatial = NULL, speciesIndependent = TRUE,
                                        speciesEffects = list(Intercept = FALSE, Environmental = TRUE),
                                        spatialCovariates = spatCovs)
 
@@ -361,6 +361,8 @@ else {
 
       }
 
+    }
+
 
       richModel <- PointedSDMs::fitISDM(data = richSetup,
                                         options = Workflow$.__enclos_env__$private$optionsINLA)
@@ -377,14 +379,14 @@ else {
       }
 
 
-      .__species.__ <- richModel[['species']][['speciesIn']]
+      .__species.__ <- unique(unlist(richModel[['species']][['speciesIn']]))
       .__covs.__ <- richModel[['spatCovs']][['name']]
 
       .__speciesEffects.__ <- list()
 
       for (indexSp in 1:length(.__species.__)) {
 
-        .__speciesEffects.__[[indexSp]] <- paste(.__species.__[indexSp], '= INLA::inla.link.cloglog(', paste0(.__species.__[indexSp],.__covs.__, collapse = '+'), '+', .__predIntercept.__, '+ speciesShared, inverse = TRUE)')
+        .__speciesEffects.__[[indexSp]] <- paste(.__species.__[indexSp], '= INLA::inla.link.cloglog(', paste0(.__species.__[indexSp],'_',.__covs.__, collapse = '+'), '+', .__predIntercept.__, '+ speciesShared, inverse = TRUE)')
 
       }
 
@@ -405,10 +407,6 @@ else {
         saveRDS(object = richPredicts, file = paste0(modDirectory, '/richnessPredictions.rds'))
 
       } else outputList[['Richness']] <- richPredicts
-
-
-
-    }
 
   }
 
