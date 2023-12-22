@@ -2,6 +2,7 @@
 #' @description This function is used to compile the reproducible workflow from the \code{R6} object created with \code{startFunction}. Depending on what was specified before, this function will estimate the integrated species distribution model, perform cross-validation, create predictions from the model and plot these predictions.
 #' @param Workflow The \code{R6} object created from \code{startWorkflow}. This object should contain all the data and model information required to estimate and specify the model.
 #' @param predictionDim The pixel dimensions for the prediction maps. Defaults to \code{c(150, 150)}.
+#' @param predictionData Optional argument for the user to specify their own data to predict on. Must be a \code{sf} or \code{SpatialPixelsDataFrame} object. Defaults to \code{NULL}.
 #'
 #' @import PointedSDMs
 #'
@@ -32,7 +33,8 @@
 #' }
 
 sdmWorkflow <- function(Workflow = NULL,
-                        predictionDim = c(150, 150)) {
+                        predictionDim = c(150, 150),
+                        predictionData = NULL) {
 
   modDirectory <- Workflow$.__enclos_env__$private$Directory
   saveObjects <- Workflow$.__enclos_env__$private$Save
@@ -252,10 +254,18 @@ else {
     if (any(c('Predictions', 'Maps') %in% Oputs)) {
 
       if (!Quiet) message('\nPredicting model:\n\n')
-      .__mask.__ <- as(Workflow$.__enclos_env__$private$Area, 'Spatial')
-      Predictions <- predict(PSDMsMOdel, data = inlabru::fm_pixels(mesh = .__mesh.__,
-                                                                mask = .__mask.__,
-                                                                dims = predictionDim),
+
+      if (is.null(predictionData)) {
+
+        .__mask.__ <- as(Workflow$.__enclos_env__$private$Area, 'Spatial')
+        predictionData <- inlabru::fm_pixels(mesh = .__mesh.__,
+                                       mask = .__mask.__,
+                                       dims = predictionDim)
+
+      }
+
+
+      Predictions <- predict(PSDMsMOdel, data = predictionData,
                              predictor = TRUE)
 
       if (saveObjects) {
@@ -312,7 +322,9 @@ else {
 
   if ('Richness' %in% Oputs) {
 
-    message('Richness output not available yet!')
+    if (is.null(Workflow$.__enclos_env__$private$optionsRichness[['predictionIntercept']])) stop('predictionIntercept needs to be provided. This can be done using .$modelOptions(Richness = list(predictionIntercept = "DATASETNAME")).')
+
+    .__predIntercept.__ <- Workflow$.__enclos_env__$private$optionsRichness[['predictionIntercept']]
 
     spData <- append(Workflow$.__enclos_env__$private$dataGBIF,
                      Workflow$.__enclos_env__$private$dataStructured) #Check
@@ -347,6 +359,46 @@ else {
                                         options = Workflow$.__enclos_env__$private$optionsINLA)
 
       ##Predict and plot
+
+      if (is.null(predictionData)) {
+
+        .__mask.__ <- as(Workflow$.__enclos_env__$private$Area, 'Spatial')
+        predictionData <- inlabru::fm_pixels(mesh = .__mesh.__,
+                                             mask = .__mask.__,
+                                             dims = predictionDim)
+
+      }
+
+
+      .__species.__ <- richModel[['species']][['speciesIn']]
+      .__covs.__ <- richModel[['spatCovs']][['name']]
+
+      .__speciesEffects.__ <- list()
+
+      for (indexSp in 1:length(.__species.__)) {
+
+        .__speciesEffects.__[[indexSp]] <- paste(.__species.__[indexSp], '= INLA::inla.link.cloglog(', paste0(.__species.__[indexSp],.__covs.__, collapse = '+'), '+', .__predIntercept.__, '+ speciesShared, inverse = TRUE)')
+
+      }
+
+      .__speciesFormulas.__ <- paste(do.call(paste0, list(.__speciesEffects.__, sep = ';')), collapse = '')
+      .__speciesEval.__ <- paste('Richness = ', paste(.__species.__, collapse = ' + '))
+
+
+      predictionFormula <- paste('{',
+                                 .__speciesFormulas.__,
+                                 .__speciesEval.__ ,'}')
+
+      richPredicts <- predict(richModel, predictionData, eval(parse(text = predictionFormula)))
+
+
+      if (saveObjects) {
+
+        if (!Quiet)  message('\nSaving richness predictions:', '\n\n')
+        saveRDS(object = richPredicts, file = paste0(modDirectory, '/richnessPredictions.rds'))
+
+      } else outputList[['Richness']] <- richPredicts
+
 
 
     }
