@@ -26,7 +26,7 @@ generateAbsences <- function(dataList, datasetName,
     if (nrow(absences) > 0) {
       nms <- names(dataList[[species]][[datasetName]])[!names(dataList[[species]][[datasetName]]) %in% 'geometry']
       absences[nms] <- NA
-      absences[speciesName] <- sub(" ", '_', species)
+      absences[,'speciesName'] <- absences[speciesName] <- sub(" ", '_', species)
       absences[responseName] <- 0
 
       dataList[[species]][[datasetName]] <- rbind(dataList[[species]][[datasetName]], absences)
