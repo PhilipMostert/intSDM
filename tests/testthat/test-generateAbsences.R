@@ -39,13 +39,13 @@ testthat::test_that('generateAbsences correctly creates absences for the data.',
   expect_true(nrow(paData$Arnica_montana) < nrow(workflow$.__enclos_env__$private$dataGBIF$Arnica_montana$PA))
 
   expect_true(all(is.na(data.frame(workflow$.__enclos_env__$private$dataGBIF$Fraxinus_excelsior$PA)[(nrow(paData$Fraxinus_excelsior) +1: nrow(workflow$.__enclos_env__$private$dataGBIF$Arnica_montana$PA)),
-  !names(workflow$.__enclos_env__$private$dataGBIF$Fraxinus_excelsior$PA) %in% c('species', 'networkKeys','occurrenceStatus', 'geometry')])))
+  !names(workflow$.__enclos_env__$private$dataGBIF$Fraxinus_excelsior$PA) %in% c('speciesName','species', 'networkKeys','occurrenceStatus', 'geometry')])))
 
   expect_true(all(is.na(data.frame(workflow$.__enclos_env__$private$dataGBIF$Ulmus_glabra$PA)[(nrow(paData$Ulmus_glabra) +1: nrow(workflow$.__enclos_env__$private$dataGBIF$Ulmus_glabra$PA)),
-                                                                                                    !names(workflow$.__enclos_env__$private$dataGBIF$Ulmus_glabra$PA) %in% c('species', 'networkKeys','occurrenceStatus', 'geometry')])))
+                                                                                                    !names(workflow$.__enclos_env__$private$dataGBIF$Ulmus_glabra$PA) %in% c('speciesName','species', 'networkKeys','occurrenceStatus', 'geometry')])))
 
   expect_true(all(is.na(data.frame(workflow$.__enclos_env__$private$dataGBIF$Arnica_montana$PA)[(nrow(paData$Arnica_montana) +1: nrow(workflow$.__enclos_env__$private$dataGBIF$Arnica_montana$PA)),
-                                                                                              !names(workflow$.__enclos_env__$private$dataGBIF$Arnica_montana$PA) %in% c('species', 'networkKeys','occurrenceStatus', 'geometry')])))
+                                                                                              !names(workflow$.__enclos_env__$private$dataGBIF$Arnica_montana$PA) %in% c('speciesName','species', 'networkKeys','occurrenceStatus', 'geometry')])))
 
 
 
