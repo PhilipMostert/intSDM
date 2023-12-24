@@ -544,8 +544,10 @@ addGBIF = function(Species = 'All', datasetName = NULL,
   if (nrow(GBIFspecies) == 0) warning('All species observations were removed due to duplicates')
   else {
 
+    GBIFspecies$speciesName <- speciesName
     private$dataGBIF[[sub(" ", '_', speciesName)]][[datasetName]] <- GBIFspecies
     private$classGBIF[[sub(" ", '_', speciesName)]][[datasetName]] <- datasetType
+
 
   }
 
