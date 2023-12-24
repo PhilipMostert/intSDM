@@ -331,10 +331,29 @@ else {
 
     if (is.null(Workflow$.__enclos_env__$private$optionsRichness[['predictionIntercept']])) stop('predictionIntercept needs to be provided. This can be done using .$modelOptions(Richness = list(predictionIntercept = "DATASETNAME")).')
 
-    .__predIntercept.__ <- Workflow$.__enclos_env__$private$optionsRichness[['predictionIntercept']]
+    .__predIntercept.__ <- paste0(Workflow$.__enclos_env__$private$optionsRichness[['predictionIntercept']],'_intercept')
 
-    spData <- unlist(append(Workflow$.__enclos_env__$private$dataGBIF,
-                     Workflow$.__enclos_env__$private$dataStructured), recursive = FALSE) #Check
+    ##Fix this
+     #Need to get the datasets back together
+
+    spData <- append(Workflow$.__enclos_env__$private$dataGBIF,
+                     Workflow$.__enclos_env__$private$dataStructured)
+    namesOrder <- c(sapply(spData, names))
+
+    spData <- lapply(tapply(unlist(spData, recursive = FALSE), namesOrder, function(x) c(x)), c)
+
+    for (dataMerge in names(spData)) {
+
+      spData[[dataMerge]] <- do.call(rbind, lapply(spData[[dataMerge]], function(x) x[, names(x) %in% c('geometry', 'speciesName', 'individualCount',
+                                                                                           'occurrenceStatus', 'numTrials', 'speciesName')]))
+
+
+    }
+
+   # spData <- unlist(append(Workflow$.__enclos_env__$private$dataGBIF,
+  #                   Workflow$.__enclos_env__$private$dataStructured), recursive = FALSE)
+
+   # names(spData) <- originalNames
 
     richSetup <- PointedSDMs::intModel(spData, Mesh = .__mesh.__, Projection = .__proj.__, Coordinates = .__coordinates.__,
                                        responsePA = .__responsePA.__, responseCounts = .__responseCounts.__,
@@ -398,7 +417,7 @@ else {
                                  .__speciesFormulas.__,
                                  .__speciesEval.__ ,'}')
 
-      richPredicts <- predict(richModel, predictionData, eval(parse(text = predictionFormula)))
+      richPredicts <- inlabru:::predict.bru(richModel, predictionData, formula = parse(text = predictionFormula))
 
 
       if (saveObjects) {
