@@ -82,7 +82,7 @@ sdmWorkflow <- function(Workflow = NULL,
   if (!is.null(Workflow$.__enclos_env__$private$Covariates)) spatCovs <- terra::rast(Workflow$.__enclos_env__$private$Covariates)
   else spatCovs <- NULL
 
-  if (!all(Oputs == 'Richness')) {
+  if (!all(Oputs %in% c('Richness', 'Bias'))) {
 
   for (species in unique(c(names(Workflow$.__enclos_env__$private$dataGBIF),
                            names(Workflow$.__enclos_env__$private$dataStructured)))) {
@@ -302,11 +302,16 @@ else {
     if (biasIn) {
 
     if (!Quiet) message('\nProducing bias predictions:\n\n')
-    .__mask.__ <- as(Workflow$.__enclos_env__$private$Area, 'Spatial')
+      if (is.null(predictionData)) {
+
+        .__mask.__ <- as(Workflow$.__enclos_env__$private$Area, 'Spatial')
+        predictionData <- inlabru::fm_pixels(mesh = .__mesh.__,
+                                             mask = .__mask.__,
+                                             dims = predictionDim)
+
+      }
     biasPreds <- predict(PSDMsMOdel,
-                         data = inlabru::fm_pixels(mesh = .__mesh.__,
-                         mask = .__mask.__,
-                         dims = predictionDim),
+                         data = predictionData,
                          biasfield = TRUE)
 
     if (saveObjects) {
@@ -426,6 +431,33 @@ else {
         saveRDS(object = richPredicts, file = paste0(modDirectory, '/richnessPredictions.rds'))
 
       } else outputList[['Richness']] <- richPredicts
+
+
+      if ('Bias' %in% Oputs) {
+
+        if (!Quiet) message('\nProducing bias predictions:\n\n')
+        if (is.null(predictionData)) {
+
+          .__mask.__ <- as(Workflow$.__enclos_env__$private$Area, 'Spatial')
+          predictionData <- inlabru::fm_pixels(mesh = .__mesh.__,
+                                               mask = .__mask.__,
+                                               dims = predictionDim)
+
+        }
+        biasPreds <- predict(PSDMsMOdel,
+                             data = predictionData,
+                             biasfield = TRUE)
+
+          if (saveObjects) {
+
+            if (!Quiet)  message('\nSaving predictions object:', '\n\n')
+            saveRDS(object = biasPreds, file = paste0(modDirectory,'/', '/biasRichnessPreds.rds'))
+
+          } else outputList[[speciesNameInd]][['BiasRichness']] <- biasPreds
+
+
+
+      }
 
   }
 
