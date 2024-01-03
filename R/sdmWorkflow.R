@@ -364,7 +364,7 @@ else {
                                        responsePA = .__responsePA.__, responseCounts = .__responseCounts.__,
                                        trialsPA = .__trialsName.__,
                                        pointsIntercept = .__pointsIntercept.__ ,
-                                       copyModel = .__copyModel.__, speciesName = workflow$.__enclos_env__$private$speciesName,
+                                       copyModel = .__copyModel.__, speciesName = Workflow$.__enclos_env__$private$speciesName,
                                        speciesSpatial = 'shared', ##WHICH ONE??
                                        pointsSpatial = NULL, speciesIndependent = TRUE,
                                        speciesEffects = list(Intercept = FALSE, Environmental = TRUE),
