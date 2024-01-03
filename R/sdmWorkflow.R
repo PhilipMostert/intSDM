@@ -343,7 +343,7 @@ else {
 
     spData <- append(Workflow$.__enclos_env__$private$dataGBIF,
                      Workflow$.__enclos_env__$private$dataStructured)
-    namesOrder <- c(sapply(spData, names))
+    namesOrder <- unlist(c(sapply(spData, names)))
 
     spData <- lapply(tapply(unlist(spData, recursive = FALSE), namesOrder, function(x) c(x)), c)
 
