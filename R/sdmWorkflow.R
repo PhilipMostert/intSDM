@@ -444,7 +444,7 @@ else {
                                                dims = predictionDim)
 
         }
-        biasPreds <- predict(PSDMsMOdel,
+        biasPreds <- predict(richModel,
                              data = predictionData,
                              biasfield = TRUE)
 
