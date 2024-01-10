@@ -372,7 +372,7 @@ else {
 
     if (!is.null(Workflow$.__enclos_env__$private$biasNames)) {
 
-      richSetup$addBias(datasetNames = Workflow$.__enclos_env__$private$biasNames, copyModel = Workflow$.__enclos_env__$private$biasFieldsCopy)
+      richSetup$addBias(datasetNames = Workflow$.__enclos_env__$private$biasNames, copyModel = Workflow$.__enclos_env__$private$biasFieldsCopy, shareModel = Workflow$.__enclos_env__$private$biasFieldsShare)
 
       if (!is.null(Workflow$.__enclos_env__$private$biasFieldsSpecify)) {
 
