@@ -422,7 +422,7 @@ else {
                                  .__speciesFormulas.__,
                                  .__speciesEval.__ ,'}')
 
-      richPredicts <- inlabru:::predict.bru(richModel, predictionData, formula = parse(text = predictionFormula))
+      richPredicts <- PointedSDMs:::predict.bruSDM(richModel, predictionData, formula = parse(text = predictionFormula))
 
 
       if (saveObjects) {
