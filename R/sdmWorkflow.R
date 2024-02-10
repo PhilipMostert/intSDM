@@ -128,6 +128,7 @@ else {
                             spatial = .__pointsSpatial.__,
                             marksspatial = NULL,
                             speciesname = NULL,
+                            formulas = NULL,
                             intercepts = .__pointsIntercept.__,
                             marksintercepts = NULL,
                             spatialcovariates = spatCovs,
