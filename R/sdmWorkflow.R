@@ -3,6 +3,8 @@
 #' @param Workflow The \code{R6} object created from \code{startWorkflow}. This object should contain all the data and model information required to estimate and specify the model.
 #' @param predictionDim The pixel dimensions for the prediction maps. Defaults to \code{c(150, 150)}.
 #' @param predictionData Optional argument for the user to specify their own data to predict on. Must be a \code{sf} or \code{SpatialPixelsDataFrame} object. Defaults to \code{NULL}.
+#' @param initialValues Find initial values using a GLM before the model is estimated. Defaults to \code{FALSE}.
+
 #'
 #' @import PointedSDMs
 #'
@@ -34,7 +36,8 @@
 
 sdmWorkflow <- function(Workflow = NULL,
                         predictionDim = c(150, 150),
-                        predictionData = NULL) {
+                        predictionData = NULL,
+                        initialValues = FALSE) {
 
   modDirectory <- Workflow$.__enclos_env__$private$Directory
   saveObjects <- Workflow$.__enclos_env__$private$Save
@@ -201,6 +204,8 @@ else {
                                  seed = Workflow$.__enclos_env__$private$blockOptions$seed)
 
   }
+
+  if (initialValues) Workflow$.__enclos_env__$private$optionsINLA[['bru_initial']] <- initValues(data = initializeModel, formulaComponents = initializeModel$.__enclos_env__$private$spatcovsNames)
 
   message('\nEstimating ISDM:\n\n')
 
@@ -390,6 +395,7 @@ else {
 
     }
 
+    if (initialValues)  Workflow$.__enclos_env__$private$optionsINLA[['bru_initial']] <- initValues(data = richSetup, formulaComponents = richSetup$.__enclos_env__$private$spatcovsNames)
 
       richModel <- try(PointedSDMs::fitISDM(data = richSetup,
                                         options = Workflow$.__enclos_env__$private$optionsINLA))
