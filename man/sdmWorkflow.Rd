@@ -7,7 +7,8 @@
 sdmWorkflow(
   Workflow = NULL,
   predictionDim = c(150, 150),
-  predictionData = NULL
+  predictionData = NULL,
+  initialValues = FALSE
 )
 }
 \arguments{
@@ -16,6 +17,8 @@ sdmWorkflow(
 \item{predictionDim}{The pixel dimensions for the prediction maps. Defaults to \code{c(150, 150)}.}
 
 \item{predictionData}{Optional argument for the user to specify their own data to predict on. Must be a \code{sf} or \code{SpatialPixelsDataFrame} object. Defaults to \code{NULL}.}
+
+\item{initialValues}{Find initial values using a GLM before the model is estimated. Defaults to \code{FALSE}.}
 }
 \value{
 The return of the function depends on the argument \code{Save} from the \code{startWorkflow} function. If this argument is \code{FALSE} then the objects will be saved to the specidfied directory. If this argument is \code{TRUE} then a list of different outcomes from the workflow will be returned.
