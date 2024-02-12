@@ -204,8 +204,10 @@ else {
 
   message('\nEstimating ISDM:\n\n')
 
-  PSDMsMOdel <- PointedSDMs::fitISDM(initializeModel,
-                                     options = Workflow$.__enclos_env__$private$optionsINLA)
+  PSDMsMOdel <- try(PointedSDMs::fitISDM(initializeModel,
+                                     options = Workflow$.__enclos_env__$private$optionsINLA))
+
+  if (inherits(PSDMsMOdel, 'try-error')) warning(paste0('Model estimation failed for ', species,'. Will skip the rest of the outputs.'))
 
   if ('Model' %in% Oputs) {
 
@@ -218,7 +220,7 @@ else {
 
   }
 
-  if ('Cross-validation' %in% Oputs) {
+  if ('Cross-validation' %in% Oputs && !inherits(PSDMsMOdel, 'try-error')) {
 
 
     if ('spatialBlock' %in% Workflow$.__enclos_env__$private$CVMethod) {
@@ -236,7 +238,7 @@ else {
       rm(spatialBlockCV)
     }
 
-    if ('Loo' %in% Workflow$.__enclos_env__$private$CVMethod) {
+    if ('Loo' %in% Workflow$.__enclos_env__$private$CVMethod && !inherits(PSDMsMOdel, 'try-error')) {
 
       if (!Quiet) message('\nEstimating leave-one-out cross-validation:\n\n')
       LooCV <- PointedSDMs::datasetOut(model = PSDMsMOdel)
@@ -254,7 +256,7 @@ else {
 
   }
 
-    if (any(c('Predictions', 'Maps') %in% Oputs)) {
+    if (any(c('Predictions', 'Maps') %in% Oputs) && !inherits(PSDMsMOdel, 'try-error')) {
 
       if (!Quiet) message('\nPredicting model:\n\n')
 
@@ -280,7 +282,7 @@ else {
 
     }
 
-    if ('Maps' %in% Oputs) {
+    if ('Maps' %in% Oputs && !inherits(PSDMsMOdel, 'try-error')) {
 
       if (!Quiet) message("\nPlotting Maps:\n\n")
 
@@ -298,7 +300,7 @@ else {
 
     }
 
-  if ('Bias' %in% Oputs) {
+  if ('Bias' %in% Oputs && !inherits(PSDMsMOdel, 'try-error')) {
 
     if (biasIn) {
 
@@ -389,8 +391,10 @@ else {
     }
 
 
-      richModel <- PointedSDMs::fitISDM(data = richSetup,
-                                        options = Workflow$.__enclos_env__$private$optionsINLA)
+      richModel <- try(PointedSDMs::fitISDM(data = richSetup,
+                                        options = Workflow$.__enclos_env__$private$optionsINLA))
+
+      if (inherits(richModel, 'try-error')) warning('Richness model failed to estimate. Will skip the rest of the outputs.')
 
       ##Predict and plot
 
@@ -422,6 +426,8 @@ else {
       predictionFormula <- paste('{',
                                  .__speciesFormulas.__,
                                  .__speciesEval.__ ,'}')
+
+      if (!inherits(richModel, 'try-error')) {
 
       richPredicts <- PointedSDMs:::predict.bruSDM(richModel, predictionData, formula = parse(text = predictionFormula))
 
@@ -456,7 +462,7 @@ else {
 
           } else outputList[[speciesNameInd]][['BiasRichness']] <- biasPreds
 
-
+        }
 
       }
 
