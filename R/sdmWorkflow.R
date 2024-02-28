@@ -426,7 +426,8 @@ else {
       }
 
       .__speciesFormulas.__ <- paste(do.call(paste0, list(.__speciesEffects.__, sep = ';')), collapse = '')
-      .__speciesEval.__ <- paste('Richness = ', paste(.__species.__, collapse = ' + '))
+      .__speciesEval.__ <- paste('list(Richness = ', paste(.__species.__, collapse = ' + '), ',',
+                                 paste(paste(paste0(.__species.__,'_probs'), '=', .__species.__, collapse = ', ')),')')
 
 
       predictionFormula <- paste('{',
