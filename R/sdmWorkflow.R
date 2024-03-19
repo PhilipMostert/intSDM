@@ -375,8 +375,10 @@ else {
                                        copyModel = .__copyModel.__, speciesName = Workflow$.__enclos_env__$private$speciesName,
                                        speciesSpatial = 'shared', ##WHICH ONE??
                                        pointsSpatial = NULL, speciesIndependent = TRUE,
-                                       speciesEffects = list(randomIntercept = NULL, Environmental = TRUE),
+                                       speciesEffects = list(randomIntercept = TRUE, Environmental = TRUE), #randomIntercept = NULL
                                        spatialCovariates = spatCovs)
+
+    if (!is.null(Workflow$.__enclos_env__$private$sharedField)) richSetup$spatialFields$speciesFields$speciesField <- Workflow$.__enclos_env__$private$sharedField
 
     if (!is.null(Workflow$.__enclos_env__$private$biasNames)) {
 
@@ -411,32 +413,61 @@ else {
                                              mask = .__mask.__,
                                              dims = predictionDim)
 
+
       }
 
 
       .__species.__ <- unique(unlist(richModel[['species']][['speciesIn']]))
+
+      predictionDataSP <- inlabru::fm_cprod(predictionData, data.frame(tempName = 1:length(.__species.__)))
+      names(predictionDataSP)[names(predictionDataSP) == 'tempName'] <- Workflow$.__enclos_env__$private$speciesName
+
       .__covs.__ <- richModel[['spatCovs']][['name']]
 
       .__speciesEffects.__ <- list()
 
       for (indexSp in 1:length(.__species.__)) {
 
-        .__speciesEffects.__[[indexSp]] <- paste(.__species.__[indexSp], '= INLA::inla.link.cloglog(', paste0(.__species.__[indexSp],'_',.__covs.__, collapse = '+'), '+', .__predIntercept.__, '+ speciesShared, inverse = TRUE)')
+        .__speciesEffects.__[[indexSp]] <- paste(.__species.__[indexSp], '= INLA::inla.link.cloglog(', paste0(.__species.__[indexSp],'_',.__covs.__, collapse = '+'), '+', .__predIntercept.__, '+', paste0(Workflow$.__enclos_env__$private$speciesName,'_intercepts') ,'+ speciesShared , inverse = TRUE)')
 
       }
 
       .__speciesFormulas.__ <- paste(do.call(paste0, list(.__speciesEffects.__, sep = ';')), collapse = '')
-      .__speciesEval.__ <- paste('list(Richness = ', paste(.__species.__, collapse = ' + '), ',',
-                                 paste(paste(paste0(.__species.__,'_probs'), '=', .__species.__, collapse = ', ')),')')
+
+      .__speciesEval.__ <- paste('Richness = list(', paste(.__species.__,'=',.__species.__, collapse = ' , '),')')
+
+      .__thin.__ <- paste0(paste(paste0(.__species.__, '[!1:length(',.__species.__,') %in% seq(', 1:2,',length(',.__species.__,'),', length(.__species.__), ')] <- FALSE'), collapse=';'),';')
+
+      #.__speciesEval.__ <- paste('list(Richness = ', paste(.__species.__, collapse = ' + '), ',',
+      #                           paste(paste(paste0(.__species.__,'_probs'), '=', .__species.__, collapse = ', ')),')')
 
 
+      #predictionFormula <- paste('{',
+      #                           .__speciesFormulas.__,
+      #                           .__speciesEval.__ ,'}')
       predictionFormula <- paste('{',
                                  .__speciesFormulas.__,
+                                 .__thin.__,
                                  .__speciesEval.__ ,'}')
 
       if (!inherits(richModel, 'try-error')) {
 
-      richPredicts <- PointedSDMs:::predict.bruSDM(richModel, predictionData, formula = parse(text = predictionFormula))
+      richPredicts <- PointedSDMs:::predict.bruSDM(richModel, predictionDataSP,
+                                                   formula = parse(text = predictionFormula))
+
+      speciesProb <- mapply(function(x, seq) {
+
+        prob <- x[x$species == seq,]
+        list(prob)
+
+      }, richPredicts[[1]], seq = 1:length(richPredicts[[1]]))
+
+      predictionData$mean <- do.call(`+`, lapply(speciesProb, function(x) x$mean))
+      #predictionData$sd ?
+      predictionData$q0.025 <- do.call(`+`, lapply(speciesProb, function(x) x$q0.025))
+      predictionData$q0.5 <- do.call(`+`, lapply(speciesProb, function(x) x$q0.5))
+      predictionData$q0.975 <- do.call(`+`, lapply(speciesProb, function(x) x$q0.975))
+
 
 
       if (saveObjects) {
@@ -444,7 +475,7 @@ else {
         if (!Quiet)  message('\nSaving richness predictions:', '\n\n')
         saveRDS(object = richPredicts, file = paste0(modDirectory, '/richnessPredictions.rds'))
 
-      } else outputList[['Richness']] <- richPredicts
+      } else outputList[['Richness']] <- predictionData#richPredicts
 
 
       if ('Bias' %in% Oputs) {
