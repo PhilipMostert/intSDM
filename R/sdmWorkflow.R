@@ -85,6 +85,8 @@ sdmWorkflow <- function(Workflow = NULL,
   if (!is.null(Workflow$.__enclos_env__$private$Covariates)) spatCovs <- terra::rast(Workflow$.__enclos_env__$private$Covariates)
   else spatCovs <- NULL
 
+  spatCovs <- do.call(c, unlist(list(spatCovs, Workflow$.__enclos_env__$private$biasCovariates), recursive = FALSE))
+
   if (!all(Oputs %in% c('Richness', 'Bias'))) {
 
   for (species in unique(c(names(Workflow$.__enclos_env__$private$dataGBIF),
@@ -150,7 +152,7 @@ else {
                                             responsePA = .__responsePA.__, responseCounts = .__responseCounts.__,
                                             trialsPA = .__trialsName.__, pointsSpatial = .__pointsSpatial.__,
                                             pointsIntercept = .__pointsIntercept.__ ,
-                                            copyModel = .__copyModel.__,
+                                            copyModel = .__copyModel.__, Boundary = Workflow$.__enclos_env__$private$Area,
                                             spatialCovariates = spatCovs)
 
    }
@@ -196,6 +198,32 @@ else {
 
 
   }
+
+  if (!is.null(Workflow$.__enclos_env__$private$biasCovNames)) {
+
+    updatedFormula <- formula(paste0('~ . - ', names(Workflow$.__enclos_env__$private$biasCovariates)))
+
+    if (any(names(speciesDataset) %in% Workflow$.__enclos_env__$private$biasCovNames)) {
+
+      notBias <- names(speciesDataset)[!names(speciesDataset) %in% Workflow$.__enclos_env__$private$biasCovNames]
+
+      if(length(notBias) > 0) {
+
+        biasIncl <- TRUE
+
+        for (dataset in notBias) {
+
+          initializeModel$updateFormula(datasetName = dataset, Formula = updatedFormula)
+
+        }
+
+      } else biasIncl <- FALSE
+
+
+    } else biasIncl <- FALSE
+
+
+  } else biasIncl <- FALSE
 
   if ('Cross-validation' %in% Oputs && 'spatialBlock' %in%Workflow$.__enclos_env__$private$CVMethod) {
 
@@ -275,8 +303,21 @@ else {
       }
 
 
-      Predictions <- predict(PSDMsMOdel, data = predictionData,
-                             predictor = TRUE)
+      #If bias covariates in model, remove them here
+      if(biasIncl) {
+
+        mdTerms <- c(rownames(PSDMsMOdel$summary.fixed), names(PSDMsMOdel$summary.random))
+
+        mdTerms <- mdTerms[!mdTerms %in% c(names(Workflow$.__enclos_env__$private$biasCovariates),
+                                           paste0(names(speciesDataset),'_biasField'),
+                                           'sharedBias_biasField')]
+
+        wBias <- formula(paste0('~ ', paste(mdTerms, collapse = '+')))
+
+        Predictions <- predict(PSDMsMOdel, data = predictionData, formula = wBias)
+
+      }
+      else Predictions <- predict(PSDMsMOdel, data = predictionData, predictor = TRUE)
 
       if (saveObjects) {
 
@@ -370,7 +411,7 @@ else {
 
     richSetup <- PointedSDMs::intModel(spData, Mesh = .__mesh.__, Projection = .__proj.__, Coordinates = .__coordinates.__,
                                        responsePA = .__responsePA.__, responseCounts = .__responseCounts.__,
-                                       trialsPA = .__trialsName.__,
+                                       trialsPA = .__trialsName.__, Boundary = Workflow$.__enclos_env__$private$Area,
                                        pointsIntercept = .__pointsIntercept.__ ,
                                        copyModel = .__copyModel.__, speciesName = Workflow$.__enclos_env__$private$speciesName,
                                        speciesSpatial = 'shared', ##WHICH ONE??
@@ -396,6 +437,32 @@ else {
       }
 
     }
+
+    if (!is.null(Workflow$.__enclos_env__$private$biasCovNames)) {
+
+      updatedFormula <- formula(paste0('~ . - ', names(Workflow$.__enclos_env__$private$biasCovariates)))
+
+      if (any(names(spData) %in% Workflow$.__enclos_env__$private$biasCovNames)) {
+
+        notBias <- names(spData)[!names(spData) %in% Workflow$.__enclos_env__$private$biasCovNames]
+
+        if(length(notBias) > 0) {
+
+          biasIncl <- TRUE
+
+          for (dataset in notBias) {
+
+            richSetup$updateFormula(datasetName = dataset, Formula = updatedFormula)
+
+          }
+
+        } else biasIncl <- FALSE
+
+
+      } else biasIncl <- FALSE
+
+
+    } else biasIncl <- FALSE
 
     if (initialValues)  Workflow$.__enclos_env__$private$optionsINLA[['bru_initial']] <- initValues(data = richSetup, formulaComponents = richSetup$.__enclos_env__$private$spatcovsNames)
 
@@ -424,6 +491,8 @@ else {
 
       .__covs.__ <- richModel[['spatCovs']][['name']]
 
+      if (!is.null(Workflow$.__enclos_env__$private$biasCovNames)) .__covs.__ <- .__covs.__[!.__covs.__ %in%  names(Workflow$.__enclos_env__$private$biasCovariates)]
+
       .__speciesEffects.__ <- list()
 
       for (indexSp in 1:length(.__species.__)) {
@@ -436,7 +505,7 @@ else {
 
       .__speciesEval.__ <- paste('Richness = list(', paste(.__species.__,'=',.__species.__, collapse = ' , '),')')
 
-      .__thin.__ <- paste0(paste(paste0(.__species.__, '[!1:length(',.__species.__,') %in% seq(', 1:2,',length(',.__species.__,'),', length(.__species.__), ')] <- FALSE'), collapse=';'),';')
+      .__thin.__ <- paste0(paste(paste0(.__species.__, '[!1:length(',.__species.__,') %in% seq(', 1:length(.__species.__),',length(',.__species.__,'),', length(.__species.__), ')] <- FALSE'), collapse=';'),';')
 
       #.__speciesEval.__ <- paste('list(Richness = ', paste(.__species.__, collapse = ' + '), ',',
       #                           paste(paste(paste0(.__species.__,'_probs'), '=', .__species.__, collapse = ', ')),')')
@@ -462,20 +531,20 @@ else {
 
       }, richPredicts[[1]], seq = 1:length(richPredicts[[1]]))
 
-      predictionData$mean <- do.call(`+`, lapply(speciesProb, function(x) x$mean))
-      #predictionData$sd ?
-      predictionData$q0.025 <- do.call(`+`, lapply(speciesProb, function(x) x$q0.025))
-      predictionData$q0.5 <- do.call(`+`, lapply(speciesProb, function(x) x$q0.5))
-      predictionData$q0.975 <- do.call(`+`, lapply(speciesProb, function(x) x$q0.975))
+      predictionData$mean <- Reduce(`+`, lapply(speciesProb, function(x) x$mean))
+      predictionData$q0.025 <- Reduce(`+`, lapply(speciesProb, function(x) x$q0.025))
+      predictionData$q0.5 <- Reduce(`+`, lapply(speciesProb, function(x) x$q0.5))
+      predictionData$q0.975 <- Reduce(`+`, lapply(speciesProb, function(x) x$q0.975))
 
+      richOutput <- list(Richness = predictionData, Probabilities = speciesProb)
 
 
       if (saveObjects) {
 
         if (!Quiet)  message('\nSaving richness predictions:', '\n\n')
-        saveRDS(object = richPredicts, file = paste0(modDirectory, '/richnessPredictions.rds'))
+        saveRDS(object = richOutput, file = paste0(modDirectory, '/richnessPredictions.rds'))
 
-      } else outputList[['Richness']] <- predictionData#richPredicts
+      } else outputList[['Richness']] <- richOutput#richPredicts
 
 
       if ('Bias' %in% Oputs) {
