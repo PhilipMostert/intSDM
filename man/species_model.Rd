@@ -193,6 +193,27 @@ workflow$biasFields(datasetName = 'exampleGBIF')
 }
 
 ## ------------------------------------------------
+## Method `species_model$biasCovariate`
+## ------------------------------------------------
+
+\dontrun{
+if(requireNamespace('INLA')) {
+
+workflow <- startWorkflow(Species = 'Fraxinus excelsior',
+                          Projection = '+proj=longlat +ellps=WGS84',
+                          Save = FALSE,
+                          saveOptions = list(projectName = 'example'))
+workflow$addArea(countryName = 'Sweden')
+
+workflow$addGBIF(datasetName = 'exampleGBIF',
+                 datasetType = 'PA',
+                 limit = 10000,
+                 coordinateUncertaintyInMeters = '0,50')
+#workflow$biasCovariate(datasetName = 'exampleGBIF', Covariate = distance_to_road)
+}
+}
+
+## ------------------------------------------------
 ## Method `species_model$workflowOutput`
 ## ------------------------------------------------
 
@@ -235,6 +256,7 @@ workflow$obtainMeta()
 \item \href{#method-species_model-modelOptions}{\code{species_model$modelOptions()}}
 \item \href{#method-species_model-specifySpatial}{\code{species_model$specifySpatial()}}
 \item \href{#method-species_model-biasFields}{\code{species_model$biasFields()}}
+\item \href{#method-species_model-biasCovariate}{\code{species_model$biasCovariate()}}
 \item \href{#method-species_model-workflowOutput}{\code{species_model$workflowOutput()}}
 \item \href{#method-species_model-obtainMeta}{\code{species_model$obtainMeta()}}
 \item \href{#method-species_model-clone}{\code{species_model$clone()}}
@@ -765,6 +787,48 @@ workflow$addGBIF(datasetName = 'exampleGBIF',
                  limit = 10000,
                  coordinateUncertaintyInMeters = '0,50')
 workflow$biasFields(datasetName = 'exampleGBIF')
+}
+}
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-species_model-biasCovariate"></a>}}
+\if{latex}{\out{\hypertarget{method-species_model-biasCovariate}{}}}
+\subsection{Method \code{biasCovariate()}}{
+Function to add bias covariates to the model.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{species_model$biasCovariate(datasetName, Covariate)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{datasetName}}{Name of the dataset to add the covariate to.}
+
+\item{\code{Covariate}}{A \code{spatRaster} layer to account for sampling bias.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+if(requireNamespace('INLA')) {
+
+workflow <- startWorkflow(Species = 'Fraxinus excelsior',
+                          Projection = '+proj=longlat +ellps=WGS84',
+                          Save = FALSE,
+                          saveOptions = list(projectName = 'example'))
+workflow$addArea(countryName = 'Sweden')
+
+workflow$addGBIF(datasetName = 'exampleGBIF',
+                 datasetType = 'PA',
+                 limit = 10000,
+                 coordinateUncertaintyInMeters = '0,50')
+#workflow$biasCovariate(datasetName = 'exampleGBIF', Covariate = distance_to_road)
 }
 }
 }
