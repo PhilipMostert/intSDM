@@ -1091,8 +1091,8 @@ obtainMeta = function(Number = TRUE,
   ))
 
 species_model$set('private', 'Area', NULL)
-species_model$set('private', 'Covariates', NULL)
-species_model$set('private', 'biasCovariates', NULL)
+species_model$set('private', 'Covariates', list())
+species_model$set('private', 'biasCovariates', list())
 species_model$set('private', 'Mesh', NULL)
 species_model$set('private', 'optionsISDM', list())
 species_model$set('private', 'optionsINLA', list())
