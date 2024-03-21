@@ -668,6 +668,7 @@ addGBIF = function(Species = 'All', datasetName = NULL,
       if (all(is.na(terra::values(maskedDF)))) stop('The covariate provided and the area specified do not match.')
 
       private$Covariates[[cov]] <- Object[cov]
+      private$Covariates <- lapply(private$Covariates, terra::wrap)
 
 }
       #else get name of object and then save it
@@ -936,6 +937,53 @@ addGBIF = function(Species = 'All', datasetName = NULL,
 
   }
   ,
+#' @description Function to add bias covariates to the model.
+#' @param datasetName Name of the dataset to add the covariate to.
+#' @param Covariate A \code{spatRaster} layer to account for sampling bias.
+#' @examples
+#' \dontrun{
+#' if(requireNamespace('INLA')) {
+#'
+#' workflow <- startWorkflow(Species = 'Fraxinus excelsior',
+#'                           Projection = '+proj=longlat +ellps=WGS84',
+#'                           Save = FALSE,
+#'                           saveOptions = list(projectName = 'example'))
+#' workflow$addArea(countryName = 'Sweden')
+#'
+#' workflow$addGBIF(datasetName = 'exampleGBIF',
+#'                  datasetType = 'PA',
+#'                  limit = 10000,
+#'                  coordinateUncertaintyInMeters = '0,50')
+#' #workflow$biasCovariate(datasetName = 'exampleGBIF', Covariate = distance_to_road)
+#' }
+#' }
+
+biasCovariate = function(datasetName,
+                         Covariate) {
+
+  if (!all(datasetName %in% private$datasetName)) stop('Dataset specified for bias covariate not included in the workflow.')
+
+  if (!inherits(Covariate, 'SpatRaster')) stop('The covariate layer must be a spatRaster object.')
+
+  Covariate <- terra::project(Covariate, private$Projection)
+
+  #if (length(names(Object)) > 1) stop('Please provide each covariate into the workflow as their own object.')
+
+  for (cov in names(Covariate)) {
+
+    #Check this for all classes
+    maskedDF <- terra::crop(terra::mask(Covariate[cov][[1]], private$Area), private$Area)
+
+    if (all(is.na(terra::values(maskedDF)))) stop('The covariate provided and the area specified do not match.')
+
+    private$biasCovariates[[cov]] <- Covariate[cov]
+
+  }
+
+  private$biasCovNames <- unique(c(datasetName, private$biasCovNames))
+
+
+},
 
 #' @description Function to specify the workflow output from the model. This argument must be at least one of: \code{'Model'}, \code{'Prediction'}, \code{'Richness'}, \code{'Maps'} and \code{'Cross-validation'}.
 #' @param Output The names of the outputs to give in the workflow. Must be at least one of: \code{'Model'}, \code{'Prediction'}, \code{'Richness'}, \code{'Maps'}, \code{'Bias'} and \code{'Cross-validation'}.
@@ -1044,6 +1092,7 @@ obtainMeta = function(Number = TRUE,
 
 species_model$set('private', 'Area', NULL)
 species_model$set('private', 'Covariates', NULL)
+species_model$set('private', 'biasCovariates', NULL)
 species_model$set('private', 'Mesh', NULL)
 species_model$set('private', 'optionsISDM', list())
 species_model$set('private', 'optionsINLA', list())
@@ -1067,6 +1116,7 @@ species_model$set('private', 'biasFieldsSpecify', list())
 species_model$set('private', 'datasetName', NULL)
 species_model$set('private', 'Save', TRUE)
 species_model$set('private', 'biasNames', NULL)
+species_model$set('private', 'biasCovNames', NULL)
 species_model$set('private', 'blockOptions', list())
 species_model$set('private', 'classGBIF', list())
 
