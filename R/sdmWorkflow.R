@@ -87,6 +87,9 @@ sdmWorkflow <- function(Workflow = NULL,
 
   spatCovs <- do.call(c, unlist(list(spatCovs, Workflow$.__enclos_env__$private$biasCovariates), recursive = FALSE))
 
+  IPS <- fm_int(domain = .__mesh.__, samplers = Workflow$.__enclos_env__$private$Area,
+                int.args = Workflow$.__enclos_env__$private$optionsIpoints)
+
   if (!all(Oputs %in% c('Richness', 'Bias'))) {
 
   for (species in unique(c(names(Workflow$.__enclos_env__$private$dataGBIF),
@@ -138,7 +141,7 @@ else {
                             marksintercepts = NULL,
                             spatialcovariates = spatCovs,
                             boundary = NULL,
-                            ips = NULL,
+                            ips = IPS,
                             temporal = NULL,
                             temporalmodel = NULL,
                             speciesspatial = NULL,
@@ -151,7 +154,7 @@ else {
   initializeModel <- PointedSDMs::intModel(speciesDataset, Mesh = .__mesh.__, Projection = .__proj.__, Coordinates = .__coordinates.__,
                                             responsePA = .__responsePA.__, responseCounts = .__responseCounts.__,
                                             trialsPA = .__trialsName.__, pointsSpatial = .__pointsSpatial.__,
-                                            pointsIntercept = .__pointsIntercept.__ ,
+                                            pointsIntercept = .__pointsIntercept.__ , IPS = IPS,
                                             copyModel = .__copyModel.__, Boundary = Workflow$.__enclos_env__$private$Area,
                                             spatialCovariates = spatCovs)
 
@@ -412,7 +415,8 @@ else {
     richSetup <- PointedSDMs::intModel(spData, Mesh = .__mesh.__, Projection = .__proj.__, Coordinates = .__coordinates.__,
                                        responsePA = .__responsePA.__, responseCounts = .__responseCounts.__,
                                        trialsPA = .__trialsName.__, Boundary = Workflow$.__enclos_env__$private$Area,
-                                       pointsIntercept = .__pointsIntercept.__ ,
+                                       pointsIntercept = .__pointsIntercept.__,
+                                       IPS = IPS,
                                        copyModel = .__copyModel.__, speciesName = Workflow$.__enclos_env__$private$speciesName,
                                        speciesSpatial = 'shared', ##WHICH ONE??
                                        pointsSpatial = NULL, speciesIndependent = TRUE,
