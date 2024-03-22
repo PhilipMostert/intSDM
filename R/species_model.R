@@ -433,7 +433,7 @@ species_model <- R6::R6Class(classname = 'species_model', public = list(
       meshArgs <- list(...)
       if (length(meshArgs) == 0) stop('Please provide ... to specify the mesh construction. See ?inla.mesh.2d for more details.')
 
-      meshObj <- INLA::inla.mesh.2d(boundary = inlabru::fm_as_inla_mesh_segment(private$Area[1]),
+      meshObj <- INLA::inla.mesh.2d(boundary = fmesher::fm_as_segm(private$Area[1]),
                                     crs = inlabru::fm_crs(private$Projection),
                                          ...
                                           )
@@ -811,7 +811,8 @@ addGBIF = function(Species = 'All', datasetName = NULL,
 
 #' @description Function to specify model options for the \code{INLA} and \code{PointedSDMs} parts of the model.
 #' @param ISDM Arguments to specify in \link[PointedSDMs]{intModel} from the \code{PointedSDMs} function. This argument needs to be a named list of the following options: \code{pointCovariates}, \code{pointsIntercept}, \code{pointsSpatial} or \code{copyModel}. See \code{?intModel} for more details.
-#' @param INLA Options to specify in \link[INLA]{INLA} from the \code{inla} function. See \code{?inla} for more details.
+#' @param Ipoints Options to specify in \link[inlabru]{fm_int}'s \code{int.args} argument. See \code{?fmesher::fm_int} for more details.
+#' @param INLA Options to specify in \link[INLA]{inla} from the \code{inla} function. See \code{?inla} for more details.
 #' @param Richness Options to specify the richness model. This argument needs to be a named list of the following options: \code{predictionIntercept}.
 #' @examples
 #' workflow <- startWorkflow(Species = 'Fraxinus excelsior',
@@ -822,6 +823,7 @@ addGBIF = function(Species = 'All', datasetName = NULL,
 #' workflow$modelOptions(INLA = list(control.inla=list(int.strategy = 'eb')),
 #'                       ISDM = list(pointsIntercept = FALSE))
   modelOptions = function(ISDM = list(),
+                          Ipoints = list(),
                           INLA = list(),
                           Richness = list()) {
 
@@ -842,7 +844,12 @@ addGBIF = function(Species = 'All', datasetName = NULL,
 
     if (!is.list(INLA)) stop('INLA needs to be a list of INLA arguments to specify the model.')
 
+    if (!is.list(Ipoints)) stop('Ipoints needs to be a list of integration point arguments.')
+
+    if (!all(names(Ipoints) %in% c('method', 'nsub1', 'nsub2'))) stop('IPoints needs to be a named list with at least one of the following options: "method", "nsub1", "nsub2"')
+
     if (length(ISDM) > 0) private$optionsISDM <- ISDM
+    if (length(Ipoints) > 0) private$optionsIpoints <- Ipoints
     if (length(INLA) > 0) private$optionsINLA <- INLA
     if (length(Richness) > 0) private$optionsRichness <- Richness
 
@@ -1097,6 +1104,7 @@ species_model$set('private', 'Mesh', NULL)
 species_model$set('private', 'optionsISDM', list())
 species_model$set('private', 'optionsINLA', list())
 species_model$set('private', 'optionsRichness', list())
+species_model$set('private', 'optionsIpoints', list())
 species_model$set('private', 'CVMethod', NULL)
 species_model$set('private', 'Species', NULL)
 species_model$set('private', 'Countries', NULL)
