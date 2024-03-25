@@ -668,7 +668,7 @@ addGBIF = function(Species = 'All', datasetName = NULL,
       if (all(is.na(terra::values(maskedDF)))) stop('The covariate provided and the area specified do not match.')
 
       private$Covariates[[cov]] <- Object[cov]
-      private$Covariates <- lapply(private$Covariates, terra::wrap)
+      #private$Covariates <- lapply(private$Covariates, terra::wrap)
 
 }
       #else get name of object and then save it
