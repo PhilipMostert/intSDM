@@ -13,7 +13,7 @@ obtainRichness(
 )
 }
 \arguments{
-\item{modelObject}{A \code{\link[PointedSDMs]{fitISDM}} object of class \code{modSpeceis}.}
+\item{modelObject}{A \code{\link[PointedSDMs]{fitISDM}} object of class \code{modSpecies}.}
 
 \item{predictionData}{An \code{sf} data.frame object of containing the locations and covariates that are predicted on.}
 
