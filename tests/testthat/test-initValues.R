@@ -82,7 +82,7 @@ testthat::test_that('initValues can estimate a glm to obtain initial values', {
   obj5 <- startSpecies(PO, PA, Counts, Projection = projection, Mesh = mesh,
                        IPS = iPoints, responseCounts = responseCounts,
                        responsePA = responsePA, speciesSpatial = 'replicate',
-                       speciesName = speciesName, spatialCovariates = cov, speciesEnvironment = TRUE, speciesIntercept = FALSE)
+                       speciesName = speciesName, spatialCovariates = cov, speciesEnvironment = 'stack', speciesIntercept = FALSE)
   speciesVals5 <- initValues(data = obj5, formulaComponents = 'covariate')
   expect_setequal(names(speciesVals5), c('fish_covariate', 'bird_covariate', 'PO_intercept', 'fish_intercept', 'PA_intercept', 'bird_intercept', 'Counts_intercept'))
 

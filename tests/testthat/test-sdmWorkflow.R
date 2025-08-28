@@ -26,8 +26,8 @@ testthat::test_that('sdmWorkflow produces the correct output given different Wor
 
   }
 
-  workflow$addGBIF(datasetName = 'GBIF_data', limit = 50) #Get less species
-  workflow$addGBIF(datasetName = 'GBIF_data2', limit = 50, datasetType = 'PA')
+  workflow$addGBIF(datasetName = 'GBIF_data', limit = 100) #Get less species
+  workflow$addGBIF(datasetName = 'GBIF_data2', limit = 100, datasetType = 'PA')
   expect_error(sdmWorkflow(Workflow = workflow)) #Test no output given
   workflow$workflowOutput('Model')
   expect_error(sdmWorkflow(Workflow = workflow)) #Test no mesh provided
@@ -75,7 +75,7 @@ testthat::test_that('sdmWorkflow produces the correct output given different Wor
 
   copyWorkflow$addArea(Object = countries)
 
-  copyWorkflow$addGBIF(datasetName = 'GBIF_data') #Get less species
+  copyWorkflow$addGBIF(datasetName = 'GBIF_data', limit = 100) #Get less species
   copyWorkflow$addGBIF(datasetName = 'GBIF_data2', limit = 50, datasetType = 'PA')
   copyWorkflow$workflowOutput('Model')
   copyWorkflow$addMesh(max.edge = 500000) #200000
@@ -112,8 +112,8 @@ testthat::test_that('sdmWorkflow produces the correct output given different Wor
 
   }
 
-  workflow$addGBIF(datasetName = 'GBIF_data', limit = 50) #Get less species
-  workflow$addGBIF(datasetName = 'GBIF_data2', limit = 50, datasetType = 'PA')
+  workflow$addGBIF(datasetName = 'GBIF_data', limit = 100) #Get less species
+  workflow$addGBIF(datasetName = 'GBIF_data2', limit = 100, datasetType = 'PA')
   expect_error(sdmWorkflow(Workflow = workflow)) #Test no output given
   workflow$workflowOutput(c('Model', 'Predictions'))
   expect_error(sdmWorkflow(Workflow = workflow)) #Test no mesh provided
@@ -132,7 +132,7 @@ testthat::test_that('sdmWorkflow produces the correct output given different Wor
   RichModel <- readRDS(file = './testthatexample/richnessModel.rds')
   expect_setequal(rownames(RichModel$summary.fixed), c("GBIF_data_intercept", "GBIF_data2_intercept"))
   expect_equal(deparse1(RichModel$componentsJoint),
-               "~-1 + shared_spatial(main = geometry, model = shared_field) + speciesShared(main = geometry, model = speciesField, group = speciesSpatialGroup, control.group = list(model = \"iid\", hyper = list(prec = list(prior = \"loggamma\", param = c(1, 5e-05))))) + GBIF_data_intercept(1) + GBIF_data2_intercept(1) + speciesName_intercepts(main = speciesName, model = \"iid\", constr = TRUE, hyper = list(prec = list(prior = \"loggamma\", param = c(1, 5e-05))))")
+               "~-1 + shared_spatial(main = geometry, model = shared_field) + speciesShared(main = geometry, model = speciesField, group = speciesSpatialGroup, control.group = list(model = \"iid\", hyper = list(prec = list(prior = \"loggamma\", param = c(1, 5e-05))))) + GBIF_data_intercept(1) + GBIF_data2_intercept(1) + speciesName_intercepts(main = speciesName, model = \"iid\", constr = TRUE, hyper = list(prec = list(fixed = TRUE, initial = log(INLA::inla.set.control.fixed.default()$prec))))")
   rm(RichModel)
   unlink('./testthatexample', recursive = TRUE)
 

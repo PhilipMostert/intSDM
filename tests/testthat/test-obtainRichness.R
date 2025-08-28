@@ -25,13 +25,15 @@ testthat::test_that('obtainRichness can produce an sf object of species richness
 
   }
 
-  workflow$addGBIF(datasetName = 'GBIF_data', limit = 50) #Get less species
+  workflow$addGBIF(datasetName = 'GBIF_data', limit = 100) #Get less species
   workflow$addGBIF(datasetName = 'GBIF_data2', limit = 50, datasetType = 'PA')
   workflow$workflowOutput(c('Model'))
-  try(withTimeout(workflow$addCovariates(worldClim = 'tmax', res = 10), timeout = 60, onTimeout = 'silent'))
+    try(withTimeout(workflow$addCovariates(worldClim = 'tmax', res = 10), timeout = 120, onTimeout = 'silent'))
   workflow$addMesh(max.edge = 500000) #200000
   workflow$modelOptions(Richness = list(predictionIntercept = 'GBIF_data'))
-  model <- sdmWorkflow(Workflow = workflow)
+  #Make data if NA
+  values(workflow$.__enclos_env__$private$Covariates$tmax) <- rnorm(nrow(values(workflow$.__enclos_env__$private$Covariates$tmax)))
+  model <- sdmWorkflow(Workflow = workflow, inlaOptions = list(control.inla = list(diagonal = 10)))
 
   ##Try wrong modelObject
   Rich <- expect_error(obtainRichness(modelObject = model), 'modelObject needs to be a modSpecies object obtained from the PointedSDMs function fitISDM.')
@@ -41,8 +43,10 @@ testthat::test_that('obtainRichness can produce an sf object of species richness
                                       predictionData = fm_pixels(workflow$.__enclos_env__$private$Mesh),
                                       predictionIntercept = 'wrong'),'predictionIntercept needs to be the name of a dataset included in modelObject.')
 
+  predDat <- fm_pixels(workflow$.__enclos_env__$private$Mesh)
+  predDat$tmax <- rnorm(nrow(predDat))
   Rich <- obtainRichness(modelObject = model$RichnessModel,
-                       predictionData = fm_pixels(workflow$.__enclos_env__$private$Mesh),
+                       predictionData = predDat,
                        predictionIntercept = 'GBIF_data')
 
   expect_identical(class(Rich), 'list')
