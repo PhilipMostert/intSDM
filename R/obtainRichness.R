@@ -1,6 +1,6 @@
 #' @title \code{obtainRichness}: Function to obtain richness estimates from a \code{\link[PointedSDMs]{fitISDM}} object.
 #' @description This function is used to obtain richness estimates for a multi-species ISDM.
-#' @param modelObject A \code{\link[PointedSDMs]{fitISDM}} object of class \code{modSpeceis}.
+#' @param modelObject A \code{\link[PointedSDMs]{fitISDM}} object of class \code{modSpecies}.
 #' @param predictionData An \code{sf} data.frame object of containing the locations and covariates that are predicted on.
 #' @param predictionIntercept The name of the prediction dataset to use in the model.
 #' @param sampleSize The size of the sampling area for the prediction intercept dataset. Defaults to \code{1}.
@@ -83,19 +83,22 @@ obtainRichness = function(modelObject, predictionData,
 
       .__speciesEval.__ <- paste('Richness = list(', paste(.__species.__,'=',.__species.__, collapse = ' , '),')')
 
-      .__thin.__ <- paste0(paste(paste0(.__species.__, '[!1:length(',.__species.__,') %in% seq(', 1:length(.__species.__),',length(',.__species.__,'),', length(.__species.__), ')] <- FALSE'), collapse=';'),';')
+      #.__thin.__ <- paste0(paste(paste0(.__species.__, '[!1:length(',.__species.__,') %in% seq(', 1:length(.__species.__),',length(',.__species.__,'),', length(.__species.__), ')] <- FALSE'), collapse=';'),';')
 
 
       predictionFormula <- paste('{',
                                  .__speciesFormulas.__,
-                                 .__thin.__,
+                                 #.__thin.__, ##REMOVE THIS
                                  .__speciesEval.__ ,'}')
 
       if (!inherits(modelObject, 'try-error')) {
 
         message('Creating richness maps:', '\n\n')
 
-        richPredicts <- PointedSDMs:::predict.bruSDM(modelObject, predictionData,
+        covariates <- modelObject$RichnessModel$spatCovs$name
+        if (!is.null(modelObject$spatCovs$biasFormula)) covariates <- covariates[!covariates %in% labels(terms(modelObject$spatCovs$biasFormula))]
+
+        richPredicts <- PointedSDMs:::predict.modSpecies(modelObject, predictionData, covariates = covariates,
                                                      formula = parse(text = predictionFormula))
 
         speciesProb <- mapply(function(x, seq) {
