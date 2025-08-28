@@ -17,7 +17,7 @@ initValues <- function(data, formulaComponents) {
 
   if (!is.null(data$.__enclos_env__$private$speciesName)) {
 
-    if (data$.__enclos_env__$private$speciesEnvironment) formulaComponents <- apply(expand.grid(paste0(unique(unlist(data$.__enclos_env__$private$speciesIn)),'_'), formulaComponents), MARGIN = 1, FUN = paste0, collapse = '')
+    if (data$.__enclos_env__$private$speciesEnvironment == 'stack') formulaComponents <- apply(expand.grid(paste0(unique(unlist(data$.__enclos_env__$private$speciesIn)),'_'), formulaComponents), MARGIN = 1, FUN = paste0, collapse = '')
 
     intercepts <- TRUE
 
@@ -77,7 +77,6 @@ initValues <- function(data, formulaComponents) {
 
   }
   modelData <- lapply(unlist(data$.__enclos_env__$private$modelData, recursive = FALSE), as.data.frame)
-
 
   # for (dataset in names(modelData)) {
 
