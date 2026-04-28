@@ -35,7 +35,7 @@ testthat::test_that('formatStructured can correctly convert a dataset into the c
                                      projection = proj, boundary = map)
 
   ##Test that the function converts the data.frame of a counts dataset into an sf with the correct variable names.
-  expect_setequal(class(dataStructured), c('sf', 'data.frame'))
+  expect_s3_class(dataStructured, 'sf')
   expect_true(all(names(dataStructured) %in% c("individualCount", "geometry")))
   expect_identical(st_crs(dataStructured)[2], st_crs(proj)[2])
 
@@ -55,7 +55,7 @@ testthat::test_that('formatStructured can correctly convert a dataset into the c
   dataStructured2 <- formatStructured(dataOCC = dataChange, type = model2,
                                      varsOld = old2, varsNew = new2, projection = proj, boundary = map)
 
-  expect_setequal(class(dataStructured2), c('sf', 'data.frame'))
+  expect_s3_class(dataStructured2, 'sf')
   expect_true(all(names(dataStructured2) %in% c("occurrenceStatus", 'numTrials', "geometry")))
   expect_identical(st_crs(dataStructured2)[2], st_crs(proj)[2])
   ##Test that if some points are not over the region, the function will give a warning.

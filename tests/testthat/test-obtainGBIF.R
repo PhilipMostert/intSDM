@@ -21,7 +21,7 @@ testthat::test_that('obtainGBIF can correctly obtain observations of species in 
                         coordinateUncertaintyInMeters = 50,
                         geometry = map, projection = proj)
 
-  expect_equal(class(species), c('sf', 'data.frame'))
+  expect_s3_class(species, 'sf')
   expect_true(all(species$coordinateUncertaintyInMeters <= 50))
   expect_identical(st_crs(species)[2], st_crs(proj)[2])
 
@@ -57,6 +57,7 @@ testthat::test_that('obtainGBIF can correctly obtain observations of species in 
 
   expect_warning(obtainGBIF(query = speciesIn, filterDistance = 1e8,
                             datasettype = 'PO',country = 'NO',
-                            geometry = map, projection = proj, year = 2010:2012), 'Fraxinus excelsior provided no occurrence reccords over the specified region.')
+                            geometry = map, projection = proj, year = 2010:2012),
+                 'Fraxinus excelsior provided no occurrence reccords over the specified region.')
 
 })

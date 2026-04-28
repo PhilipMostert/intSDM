@@ -28,7 +28,7 @@ testthat::test_that('Test that addArea correctly adds the correct area to the mo
 
   if (!is.null(workflow$.__enclos_env__$private$Area)) {
 
-  expect_equal(class(workflow$.__enclos_env__$private$Area), c('sf', 'data.frame'))
+  expect_s3_class(workflow$.__enclos_env__$private$Area, 'sf')
   expect_setequal(workflow$.__enclos_env__$private$Area$NAME_ENGL, c('Sweden', 'Norway'))
   expect_identical(st_crs(workflow$.__enclos_env__$private$Area)[2], st_crs(proj)[2])
 
@@ -70,18 +70,18 @@ testthat::test_that('Test that addGBIF correctly adds the correct data to the mo
   expect_equal(class(workflow$.__enclos_env__$private$dataGBIF), 'list')
   expect_equal(names(workflow$.__enclos_env__$private$dataGBIF), 'Fraxinus_excelsior')
   expect_equal(names(workflow$.__enclos_env__$private$dataGBIF$Fraxinus_excelsior), 'GBIFTEST')
-  expect_setequal(class(workflow$.__enclos_env__$private$dataGBIF$Fraxinus_excelsior$GBIFTEST), c('sf', 'data.frame'))
+  expect_s3_class(workflow$.__enclos_env__$private$dataGBIF$Fraxinus_excelsior$GBIFTEST, 'sf')
 
   #Change dataset type to PA
   workflow$addGBIF(datasetName = 'GBIFTEST2', datasetType = 'PA')
 
   expect_equal(workflow$.__enclos_env__$private$classGBIF$Fraxinus_excelsior$GBIFTEST2, 'PA')
-  expect_setequal(class(workflow$.__enclos_env__$private$dataGBIF$Fraxinus_excelsior$GBIFTEST2), c('sf', 'data.frame'))
+  expect_s3_class(workflow$.__enclos_env__$private$dataGBIF$Fraxinus_excelsior$GBIFTEST2, 'sf')
   expect_true(all(unique(workflow$.__enclos_env__$private$dataGBIF$Fraxinus_excelsior$GBIFTEST2$occurrenceStatus) %in% c(0,1)))
 
   ##Change to Counts and check that NAs are removed.
   expect_warning(workflow$addGBIF(datasetName = 'GBIFTEST3', datasetType = 'Counts', limit = 1000), 'Removing reccords with NA individualCount values')
-  expect_setequal(class(workflow$.__enclos_env__$private$dataGBIF$Fraxinus_excelsior$GBIFTEST3), c('sf', 'data.frame'))
+  expect_s3_class(workflow$.__enclos_env__$private$dataGBIF$Fraxinus_excelsior$GBIFTEST3, 'sf')
   expect_true(sum(is.na(workflow$.__enclos_env__$private$dataGBIF$GBIFTEST3$individualCount)) == 0)
 
   ##Check assign2global
@@ -205,13 +205,13 @@ testthat::test_that('addStructured can add the data correctly to the model', {
   #Add an sp dataset
   #dataPASP <- as(dataPA, 'Spatial')
   #workflow$addStructured(dataStructured = dataPASP, datasetType = 'PA', responseName = 'Presence', speciesName = 'species')
-  #expect_setequal(class(workflow$.__enclos_env__$private$dataStructured$Fraxinus_excelsior$dataPASP), c('sf', 'data.frame'))
+  #expect_s3_class(workflow$.__enclos_env__$private$dataStructured$Fraxinus_excelsior$dataPASP, 'sf')
 
   #dataSP <- as(st_as_sf(st_sample(x = countries, size = 100)), 'Spatial')
   #dataSP$species <- species
   #workflow$addStructured(dataStructured = dataSP, datasetType = 'PO', speciesName = 'species')
   #expect_setequal(names(workflow$.__enclos_env__$private$dataStructured$Fraxinus_excelsior$dataSP), c('geometry', 'speciesName'))
-  #expect_setequal(class(workflow$.__enclos_env__$private$dataStructured$Fraxinus_excelsior$dataSP), c('sf', 'data.frame'))
+  #expect_s3_class(workflow$.__enclos_env__$private$dataStructured$Fraxinus_excelsior$dataSP, 'sf')
 
   #Add a data.frame object
   dataFrame <- st_transform(dataPA, proj)
@@ -220,7 +220,7 @@ testthat::test_that('addStructured can add the data correctly to the model', {
   dataFrame$species <- species
 
   workflow$addStructured(dataStructured = dataFrame, datasetType = 'PO', coordinateNames = c('X', 'Y'), speciesName = 'species')
-  expect_setequal(class(workflow$.__enclos_env__$private$dataStructured$Fraxinus_excelsior$dataFrame), c('sf', 'data.frame'))
+  expect_s3_class(workflow$.__enclos_env__$private$dataStructured$Fraxinus_excelsior$dataFrame, 'sf')
 
   #Add data not in boundary
   dataNotIn <- st_as_sf(st_sample(x = giscoR::gisco_countries_2024[giscoR::gisco_countries_2024$NAME_ENGL == 'Portugal',], size = 100))
