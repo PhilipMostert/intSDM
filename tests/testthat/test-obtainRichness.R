@@ -1,6 +1,7 @@
 testthat::test_that('obtainRichness can produce an sf object of species richness', {
 
   skip_on_cran()
+  skip_if_not_installed("R.utils")
   library(R.utils)
 
   proj <- '+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs'

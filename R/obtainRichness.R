@@ -86,7 +86,7 @@ obtainRichness = function(modelObject, predictionData,
       #.__thin.__ <- paste0(paste(paste0(.__species.__, '[!1:length(',.__species.__,') %in% seq(', 1:length(.__species.__),',length(',.__species.__,'),', length(.__species.__), ')] <- FALSE'), collapse=';'),';')
 
 
-      predictionFormula <- paste('{',
+      predictionFormula <- paste('~ {',
                                  .__speciesFormulas.__,
                                  #.__thin.__, ##REMOVE THIS
                                  .__speciesEval.__ ,'}')
@@ -99,7 +99,7 @@ obtainRichness = function(modelObject, predictionData,
         if (!is.null(modelObject$spatCovs$biasFormula)) covariates <- covariates[!covariates %in% labels(terms(modelObject$spatCovs$biasFormula))]
 
         richPredicts <- PointedSDMs:::predict.modSpecies(modelObject, predictionData, covariates = covariates,
-                                                     formula = parse(text = predictionFormula))
+                                                     formula = as.formula(predictionFormula))
 
         speciesProb <- mapply(function(x, seq) {
 
