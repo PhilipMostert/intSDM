@@ -38,12 +38,12 @@ testthat::test_that('obtainRichness can produce an sf object of species richness
   ##Try wrong modelObject
   Rich <- expect_error(obtainRichness(modelObject = model), 'modelObject needs to be a modSpecies object obtained from the PointedSDMs function fitISDM.')
   Rich <- expect_error(obtainRichness(modelObject = model$RichnessModel,
-                                      predictionData = fm_pixels(workflow$.__enclos_env__$private$Mesh)),'predictionIntercept cannot be missing.')
+                                      predictionData = fmesher::fm_pixels(workflow$.__enclos_env__$private$Mesh)),'predictionIntercept cannot be missing.')
   Rich <- expect_error(obtainRichness(modelObject = model$RichnessModel,
-                                      predictionData = fm_pixels(workflow$.__enclos_env__$private$Mesh),
+                                      predictionData = fmesher::fm_pixels(workflow$.__enclos_env__$private$Mesh),
                                       predictionIntercept = 'wrong'),'predictionIntercept needs to be the name of a dataset included in modelObject.')
 
-  predDat <- fm_pixels(workflow$.__enclos_env__$private$Mesh)
+  predDat <- fmesher::fm_pixels(workflow$.__enclos_env__$private$Mesh)
   predDat$tmax <- rnorm(nrow(predDat))
   Rich <- obtainRichness(modelObject = model$RichnessModel,
                        predictionData = predDat,

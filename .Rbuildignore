@@ -8,3 +8,5 @@
 /docs/
 ^Meta$
 ^doc$
+^\.positai$
+^\.claude$

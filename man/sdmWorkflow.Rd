@@ -24,7 +24,7 @@ sdmWorkflow(
 
 \item{inlaOptions}{Options to specify in \link[INLA]{inla} from the \code{inla} function. See \code{?inla} for more details.}
 
-\item{ipointsOptions}{Options to specify in \link[inlabru]{fm_int}'s \code{int.args} argument. See \code{?fmesher::fm_int} for more details.}
+\item{ipointsOptions}{Options to specify in \link[fmesher]{fm_int}'s \code{int.args} argument. See \code{?fmesher::fm_int} for more details.}
 }
 \value{
 The return of the function depends on the argument \code{Save} from the \code{startWorkflow} function. If this argument is \code{FALSE} then the objects will be saved to the specidfied directory. If this argument is \code{TRUE} then a list of different outcomes from the workflow will be returned.

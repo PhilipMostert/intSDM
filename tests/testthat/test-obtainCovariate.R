@@ -21,7 +21,7 @@ testthat::test_that('obtainCovariate can correctly obtain the covariate layer, a
   if ('cov' %in% ls()) {
 
   expect_equal(class(cov)[1], 'SpatRaster')
-  expect_identical(fm_crs(cov)[2], fm_crs(projection)[2])
+  expect_identical(fmesher::fm_crs(cov)[2], fmesher::fm_crs(projection)[2])
 
 
   }
@@ -34,7 +34,7 @@ testthat::test_that('obtainCovariate can correctly obtain the covariate layer, a
   if ('cov2' %in% ls()) {
 
   expect_equal(class(cov2)[1], 'SpatRaster')
-  expect_identical(fm_crs(cov2)[2], fm_crs(projection2)[2])
+  expect_identical(fmesher::fm_crs(cov2)[2], fmesher::fm_crs(projection2)[2])
   }
 
   ##Try landcover
