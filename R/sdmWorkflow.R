@@ -124,7 +124,7 @@ sdmWorkflow <- function(Workflow = NULL,
 
    speciesNameInd <- sub(' ', '_', species)
 
-   if (saveObjects) dir.create(path = paste0(modDirectory, '/', speciesNameInd))
+   if (saveObjects) dir.create(path = file.path(modDirectory, speciesNameInd), recursive = TRUE)
 
    speciesDataset <- append(Workflow$.__enclos_env__$private$dataGBIF[[species]],
                             Workflow$.__enclos_env__$private$dataStructured[[species]])

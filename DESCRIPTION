@@ -32,7 +32,7 @@ Depends:
     terra,
     sf,
     stats,
-    PointedSDMs (>= 2.1.0),
+    PointedSDMs (>= 2.1.4),
     methods
 Imports:
     R6,
@@ -59,6 +59,6 @@ Additional_repositories: https://inla.r-inla-download.org/R/testing/
 License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.3
 Config/testthat/edition: 3
 VignetteBuilder: knitr
+Config/roxygen2/version: 8.0.0

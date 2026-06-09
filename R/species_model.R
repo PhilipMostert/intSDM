@@ -84,7 +84,7 @@ addArea = function(Object = NULL,
 
   if (!is.null(private$Area)) {
 
-    warning('Area already specified. Deleting all species occurance reccords added to the model.')
+    warning('Area already specified. Deleting all species occurance records added to the model.')
 
     private$dataStructured <- list()
     private$dataGBIF <- list()
@@ -814,8 +814,8 @@ addGBIF = function(Species = 'All', datasetName = NULL,
   if (is.null(Object)) {
 
     covDirectory <- paste0(private$Directory, '/Covariates')
-    dir.create(covDirectory, showWarnings = FALSE)
-    if (!dir.exists(covDirectory)) covDirectory <- getwd()#dir.create(covDirectory)
+    dir.create(covDirectory, recursive = TRUE, showWarnings = FALSE)
+    if (!dir.exists(covDirectory)) covDirectory <- getwd()
     if (!private$Quiet) message(paste('Saved covariate objects may be found in', covDirectory))
 
     if (!is.null(worldClim)) {
@@ -880,6 +880,11 @@ addGBIF = function(Species = 'All', datasetName = NULL,
 
   }
     else {
+
+      if (inherits(Object, 'SpatRasterCollection')) {
+        stop('SpatRasterCollection objects are not currently supported.\n',
+             'Please provide a SpatRaster object instead, perhaps from terra::merge()')
+      }
 
       if (!inherits(Object, c('SpatRaster', 'Spatial', 'Raster'))) stop('Object needs to be either a SpatRaster, SpatialPixelsDataFrame or raster object.')
 

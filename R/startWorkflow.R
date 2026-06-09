@@ -101,19 +101,21 @@ startWorkflow <- function(Countries, Species,
 
   if (Save) {
 
-    dir.create(path = paste0(saveOptions$projectDirectory, '/', saveOptions$projectName))
+    dir.create(path = file.path(saveOptions$projectDirectory, saveOptions$projectName),
+               recursive = TRUE,
+               showWarnings = FALSE)
 
-    if (!Quiet) cat('Directory for model outputs is:\n', paste0(saveOptions$projectDirectory, '/', saveOptions$projectName))
+    if (!Quiet) cat('Directory for model outputs is:\n', file.path(saveOptions$projectDirectory, saveOptions$projectName))
 
   }
 
   modelSetup <- species_model$new(Countries = Countries,
                                   Species = Species,
-                                  Projection,
+                                  Projection = Projection,
                                   Save = Save,
                                   Quiet = Quiet,
                                   Richness = Richness,
                                   nameProject = saveOptions$projectName,
-                                  Directory = paste0(saveOptions$projectDirectory, '/', saveOptions$projectName))
+                                  Directory = file.path(saveOptions$projectDirectory, saveOptions$projectName))
 
 }
