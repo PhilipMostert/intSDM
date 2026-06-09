@@ -17,10 +17,16 @@
 # @examples
 # skip_if_not(local_testthat_geodata_path())
 local_testthat_geodata_path <- function(force = TRUE, envir = parent.frame()) {
-  res <- tryCatch(
-    geodata::geodata_path("user_data_dir", persistent = FALSE)
-  )
-  if (!inherits(res, "error")) {
+  check_dir <- function() {
+    path <- geodata::geodata_path()
+    path_test <- tempfile("intSDM_test_", tmpdir = path)
+    withr::defer(unlink(path_test))
+    res <- try(writeLines("intSDM_test", con = path_test), silent = TRUE)
+    return(!inherits(res, "try-error"))
+  }
+
+  res <- try(geodata::geodata_path("user_data_dir", persistent = FALSE))
+  if (!inherits(res, "try-error") && check_dir()) {
     return(TRUE)
   }
   if (!force) {
@@ -30,6 +36,6 @@ local_testthat_geodata_path <- function(force = TRUE, envir = parent.frame()) {
   withr::defer(unlink(geodata_temp_path, recursive = TRUE), envir = envir)
   dir.create(geodata_temp_path, recursive = TRUE, showWarnings = FALSE)
   geodata::geodata_path(geodata_temp_path, persistent = FALSE)
-  return(TRUE)
+  return(check_dir())
 }
 
