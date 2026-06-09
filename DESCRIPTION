@@ -38,7 +38,7 @@ Imports:
     R6,
     geodata,
     fmesher,
-    inlabru (>= 2.3.1),
+    inlabru (>= 2.14.1),
     giscoR,
     blockCV,
     rgbif,
