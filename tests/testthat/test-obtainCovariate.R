@@ -1,7 +1,7 @@
 testthat::test_that('obtainCovariate can correctly obtain the covariate layer, and transform it to the desired projection', {
 
   skip_on_cran()
-  geodata::geodata_path("user_data_dir", persistent = FALSE)
+  skip_if_not(local_testthat_geodata_path())
   library(R.utils)
 
   covname <- "tavg"

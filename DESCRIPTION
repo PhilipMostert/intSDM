@@ -43,7 +43,8 @@ Imports:
     blockCV,
     rgbif,
     tidyterra,
-    units
+    units,
+    withr
 Suggests:
     viridis,
     INLA (>= 21.08.31),

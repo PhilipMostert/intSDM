@@ -2,7 +2,7 @@ testthat::test_that('obtainRichness can produce an sf object of species richness
 
   skip_on_cran()
   skip_if_not_installed("R.utils")
-  geodata::geodata_path("user_data_dir", persistent = FALSE)
+  skip_if_not(local_testthat_geodata_path())
 
   library(R.utils)
 

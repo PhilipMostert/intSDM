@@ -1,7 +1,7 @@
 testthat::test_that('formatStructured can correctly convert a dataset into the correct format required by the model.', {
   set.seed(1)
   skip_on_cran()
-  geodata::geodata_path("user_data_dir", persistent = FALSE)
+  skip_if_not(local_testthat_geodata_path())
 
   proj <- '+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
   map <-  try(obtainArea(names = c('Norway'), projection = proj))

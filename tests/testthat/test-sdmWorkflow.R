@@ -1,7 +1,7 @@
 testthat::test_that('sdmWorkflow produces the correct output given different Workflow situations.', {
 
   skip_on_cran()
-  geodata::geodata_path("user_data_dir", persistent = FALSE)
+  skip_if_not(local_testthat_geodata_path())
 
   projectDir <- tempfile("intSDM_sdmWorkflow_test_")
   on.exit(unlink(projectDir, recursive = TRUE))

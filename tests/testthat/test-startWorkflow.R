@@ -1,7 +1,7 @@
 testthat::test_that('startWorkflow can correctly create a species_model object, and store all the relavant metadata required by the workflow.', {
 
   skip_on_cran()
-  geodata::geodata_path("user_data_dir", persistent = FALSE)
+  skip_if_not(local_testthat_geodata_path())
 
   projectDir <- tempfile("intSDM_startWorkflow_test_")
   on.exit(unlink(projectDir, recursive = TRUE))

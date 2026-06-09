@@ -1,7 +1,7 @@
 testthat::test_that('obtainGBIF can correctly obtain observations of species in the correct boundary, and transform it to the desired projection', {
 
   skip_on_cran()
-  geodata::geodata_path("user_data_dir", persistent = FALSE)
+  skip_if_not(local_testthat_geodata_path())
 
   #args
   speciesIn <- 'Fraxinus excelsior'

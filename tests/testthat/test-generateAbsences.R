@@ -2,8 +2,7 @@ testthat::test_that('generateAbsences correctly creates absences for the data.',
 
   ##First set up workflow
   skip_on_cran()
-  geodata::geodata_path("user_data_dir", persistent = FALSE)
-
+  skip_if_not(local_testthat_geodata_path())
 
   proj <- '+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
   species <- c('Fraxinus excelsior', 'Ulmus glabra', 'Arnica montana')
