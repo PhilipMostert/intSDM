@@ -21,7 +21,9 @@ local_testthat_geodata_path <- function(force = TRUE, envir = parent.frame()) {
     path <- geodata::geodata_path()
     path_test <- tempfile("intSDM_test_", tmpdir = path)
     withr::defer(unlink(path_test))
-    res <- try(writeLines("intSDM_test", con = path_test), silent = TRUE)
+    res <- suppressWarnings(
+      try(writeLines("intSDM_test", con = path_test), silent = TRUE)
+    )
     return(!inherits(res, "try-error"))
   }
 
