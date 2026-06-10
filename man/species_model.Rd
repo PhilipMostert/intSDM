@@ -9,7 +9,7 @@ An object containing the data, covariates  and other relevant information to be 
 \examples{
 
 ## ------------------------------------------------
-## Method `species_model$addArea()`
+## Method `species_model$addArea`
 ## ------------------------------------------------
 
 \dontrun{
@@ -23,7 +23,7 @@ workflow$addArea(countryName = 'Sweden')
 }
 
 ## ------------------------------------------------
-## Method `species_model$print()`
+## Method `species_model$print`
 ## ------------------------------------------------
 
 workflow <- startWorkflow(Species = 'Fraxinus excelsior',
@@ -34,7 +34,7 @@ workflow <- startWorkflow(Species = 'Fraxinus excelsior',
 workflow$print()
 
 ## ------------------------------------------------
-## Method `species_model$plot()`
+## Method `species_model$plot`
 ## ------------------------------------------------
 
 \dontrun{
@@ -49,7 +49,7 @@ workflow$plot(Boundary = TRUE)
 }
 
 ## ------------------------------------------------
-## Method `species_model$workflowOutput()`
+## Method `species_model$workflowOutput`
 ## ------------------------------------------------
 
 workflow <- startWorkflow(Species = 'Fraxinus excelsior',
@@ -59,7 +59,7 @@ workflow <- startWorkflow(Species = 'Fraxinus excelsior',
 workflow$workflowOutput('Predictions')
 
 ## ------------------------------------------------
-## Method `species_model$addStructured()`
+## Method `species_model$addStructured`
 ## ------------------------------------------------
 
 \dontrun{
@@ -82,7 +82,7 @@ workflow$addStructured(dataStructured = speciesData, datasetType = 'PA',
                        }
 
 ## ------------------------------------------------
-## Method `species_model$addMesh()`
+## Method `species_model$addMesh`
 ## ------------------------------------------------
 
 \dontrun{
@@ -100,7 +100,7 @@ workflow$addMesh(cutoff = 20000,
 }
 
 ## ------------------------------------------------
-## Method `species_model$addGBIF()`
+## Method `species_model$addGBIF`
 ## ------------------------------------------------
 
 \dontrun{
@@ -117,7 +117,7 @@ workflow$addGBIF(datasetName = 'exampleGBIF',
 }
 
 ## ------------------------------------------------
-## Method `species_model$addCovariates()`
+## Method `species_model$addCovariates`
 ## ------------------------------------------------
 
 \dontrun{
@@ -136,7 +136,7 @@ workflow$addCovariates(worldClim = 'tavg', res = '10')
 }
 
 ## ------------------------------------------------
-## Method `species_model$crossValidation()`
+## Method `species_model$crossValidation`
 ## ------------------------------------------------
 
 workflow <- startWorkflow(Species = 'Fraxinus excelsior',
@@ -147,7 +147,7 @@ workflow <- startWorkflow(Species = 'Fraxinus excelsior',
 workflow$crossValidation(Method = 'Loo')
 
 ## ------------------------------------------------
-## Method `species_model$modelOptions()`
+## Method `species_model$modelOptions`
 ## ------------------------------------------------
 
 workflow <- startWorkflow(Species = 'Fraxinus excelsior',
@@ -157,7 +157,7 @@ workflow <- startWorkflow(Species = 'Fraxinus excelsior',
 
 
 ## ------------------------------------------------
-## Method `species_model$specifySpatial()`
+## Method `species_model$specifySpatial`
 ## ------------------------------------------------
 
 \dontrun{
@@ -178,7 +178,7 @@ workflow$specifySpatial(prior.range = c(200000, 0.05),
 }
 
 ## ------------------------------------------------
-## Method `species_model$specifyPriors()`
+## Method `species_model$specifyPriors`
 ## ------------------------------------------------
 
 \dontrun{
@@ -198,7 +198,7 @@ workflow$specifyPriors(effectName = 'Intercept', mean = 0, Precision = 0.1)
 }
 
 ## ------------------------------------------------
-## Method `species_model$biasFields()`
+## Method `species_model$biasFields`
 ## ------------------------------------------------
 
 \dontrun{
@@ -219,7 +219,7 @@ workflow$biasFields(datasetName = 'exampleGBIF')
 }
 
 ## ------------------------------------------------
-## Method `species_model$modelFormula()`
+## Method `species_model$modelFormula`
 ## ------------------------------------------------
 
 \dontrun{
@@ -239,7 +239,7 @@ workflow$addFormula(biasFormula = ~ biasFormula)
 }
 
 ## ------------------------------------------------
-## Method `species_model$obtainMeta()`
+## Method `species_model$obtainMeta`
 ## ------------------------------------------------
 
 \dontrun{
@@ -258,54 +258,51 @@ workflow$obtainMeta()
 }
 \section{Methods}{
 \subsection{Public methods}{
-  \itemize{
-    \item \href{#method-species_model-help}{\code{species_model$help()}}
-    \item \href{#method-species_model-initialize}{\code{species_model$new()}}
-    \item \href{#method-species_model-addArea}{\code{species_model$addArea()}}
-    \item \href{#method-species_model-print}{\code{species_model$print()}}
-    \item \href{#method-species_model-plot}{\code{species_model$plot()}}
-    \item \href{#method-species_model-workflowOutput}{\code{species_model$workflowOutput()}}
-    \item \href{#method-species_model-addStructured}{\code{species_model$addStructured()}}
-    \item \href{#method-species_model-addMesh}{\code{species_model$addMesh()}}
-    \item \href{#method-species_model-addGBIF}{\code{species_model$addGBIF()}}
-    \item \href{#method-species_model-addCovariates}{\code{species_model$addCovariates()}}
-    \item \href{#method-species_model-crossValidation}{\code{species_model$crossValidation()}}
-    \item \href{#method-species_model-modelOptions}{\code{species_model$modelOptions()}}
-    \item \href{#method-species_model-specifySpatial}{\code{species_model$specifySpatial()}}
-    \item \href{#method-species_model-specifyPriors}{\code{species_model$specifyPriors()}}
-    \item \href{#method-species_model-biasFields}{\code{species_model$biasFields()}}
-    \item \href{#method-species_model-modelFormula}{\code{species_model$modelFormula()}}
-    \item \href{#method-species_model-obtainMeta}{\code{species_model$obtainMeta()}}
-    \item \href{#method-species_model-clone}{\code{species_model$clone()}}
-  }
+\itemize{
+\item \href{#method-species_model-help}{\code{species_model$help()}}
+\item \href{#method-species_model-new}{\code{species_model$new()}}
+\item \href{#method-species_model-addArea}{\code{species_model$addArea()}}
+\item \href{#method-species_model-print}{\code{species_model$print()}}
+\item \href{#method-species_model-plot}{\code{species_model$plot()}}
+\item \href{#method-species_model-workflowOutput}{\code{species_model$workflowOutput()}}
+\item \href{#method-species_model-addStructured}{\code{species_model$addStructured()}}
+\item \href{#method-species_model-addMesh}{\code{species_model$addMesh()}}
+\item \href{#method-species_model-addGBIF}{\code{species_model$addGBIF()}}
+\item \href{#method-species_model-addCovariates}{\code{species_model$addCovariates()}}
+\item \href{#method-species_model-crossValidation}{\code{species_model$crossValidation()}}
+\item \href{#method-species_model-modelOptions}{\code{species_model$modelOptions()}}
+\item \href{#method-species_model-specifySpatial}{\code{species_model$specifySpatial()}}
+\item \href{#method-species_model-specifyPriors}{\code{species_model$specifyPriors()}}
+\item \href{#method-species_model-biasFields}{\code{species_model$biasFields()}}
+\item \href{#method-species_model-modelFormula}{\code{species_model$modelFormula()}}
+\item \href{#method-species_model-obtainMeta}{\code{species_model$obtainMeta()}}
+\item \href{#method-species_model-clone}{\code{species_model$clone()}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-species_model-help"></a>}}
 \if{latex}{\out{\hypertarget{method-species_model-help}{}}}
-\subsection{\code{species_model$help()}}{
-  Obtain documentation for a \code{species_model} object.
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{species_model$help(...)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{...}}{Not used}
-    }
-    \if{html}{\out{</div>}}
-  }
+\subsection{Method \code{help()}}{
+Obtain documentation for a \code{species_model} object.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{species_model$help(...)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{...}}{Not used}
+}
+\if{html}{\out{</div>}}
+}
+}
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-species_model-initialize"></a>}}
-\if{latex}{\out{\hypertarget{method-species_model-initialize}{}}}
-\subsection{\code{species_model$new()}}{
-  initialize the species_model object.
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{species_model$new(
+\if{html}{\out{<a id="method-species_model-new"></a>}}
+\if{latex}{\out{\hypertarget{method-species_model-new}{}}}
+\subsection{Method \code{new()}}{
+initialize the species_model object.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{species_model$new(
   Countries,
   Species,
   nameProject,
@@ -314,46 +311,54 @@ workflow$obtainMeta()
   Directory,
   Projection,
   Quiet = TRUE
-)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{Countries}}{Name of the countries to include in the workflow.}
-      \item{\code{Species}}{Name of the species to include in the workflow.}
-      \item{\code{nameProject}}{Name of the project for the workflow.}
-      \item{\code{Save}}{Logical argument indicating if the model outputs should be saved.}
-      \item{\code{Richness}}{Logical create a species richness model or not.}
-      \item{\code{Directory}}{Directory where the model outputs should be saved.}
-      \item{\code{Projection}}{The coordinate reference system used in the workflow.}
-      \item{\code{Quiet}}{Logical variable indicating if the workflow should provide messages throughout the estimation procedure.}
-    }
-    \if{html}{\out{</div>}}
-  }
+)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{Countries}}{Name of the countries to include in the workflow.}
+
+\item{\code{Species}}{Name of the species to include in the workflow.}
+
+\item{\code{nameProject}}{Name of the project for the workflow.}
+
+\item{\code{Save}}{Logical argument indicating if the model outputs should be saved.}
+
+\item{\code{Richness}}{Logical create a species richness model or not.}
+
+\item{\code{Directory}}{Directory where the model outputs should be saved.}
+
+\item{\code{Projection}}{The coordinate reference system used in the workflow.}
+
+\item{\code{Quiet}}{Logical variable indicating if the workflow should provide messages throughout the estimation procedure.}
+}
+\if{html}{\out{</div>}}
+}
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-species_model-addArea"></a>}}
 \if{latex}{\out{\hypertarget{method-species_model-addArea}{}}}
-\subsection{\code{species_model$addArea()}}{
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{species_model$addArea(Object = NULL, countryName = NULL, ...)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{Object}}{An \code{sf} object of the study area. If \code{NULL} then \code{countryName} needs to be provided.}
-      \item{\code{countryName}}{Name of the countries to obtain a boundary for. This argument will then use the \link[giscoR]{gisco_get_countries} function from the \code{giscoR} package to obtain a boundary.}
-      \item{\code{...}}{Additional arguments passed to \link[giscoR]{gisco_get_countries}.}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Examples}{
-    \if{html}{\out{<div class="r example copy">}}
-    \preformatted{workflow <- startWorkflow(Species = 'Fraxinus excelsior',
+\subsection{Method \code{addArea()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{species_model$addArea(Object = NULL, countryName = NULL, ...)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{Object}}{An \code{sf} object of the study area. If \code{NULL} then \code{countryName} needs to be provided.}
+
+\item{\code{countryName}}{Name of the countries to obtain a boundary for. This argument will then use the \link[giscoR]{gisco_get_countries} function from the \code{giscoR} package to obtain a boundary.}
+
+\item{\code{...}}{Additional arguments passed to \link[giscoR]{gisco_get_countries}.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+workflow <- startWorkflow(Species = 'Fraxinus excelsior',
                           Projection = '+proj=longlat +ellps=WGS84',
                           Save = FALSE,
                           saveOptions = list(projectName = 'example'))
@@ -361,71 +366,76 @@ workflow$obtainMeta()
 #Add boundary
 workflow$addArea(countryName = 'Sweden')
 }
-    \if{html}{\out{</div>}}
-  }
+}
+\if{html}{\out{</div>}}
+
 }
 
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-species_model-print"></a>}}
 \if{latex}{\out{\hypertarget{method-species_model-print}{}}}
-\subsection{\code{species_model$print()}}{
-  Prints the datasets, their data type and the number of observations, as well as the marks and their respective families.
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{species_model$print(...)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{...}}{Not used.}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Examples}{
-    \if{html}{\out{<div class="r example copy">}}
-    \preformatted{workflow <- startWorkflow(Species = 'Fraxinus excelsior',
+\subsection{Method \code{print()}}{
+Prints the datasets, their data type and the number of observations, as well as the marks and their respective families.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{species_model$print(...)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{...}}{Not used.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{workflow <- startWorkflow(Species = 'Fraxinus excelsior',
                           Projection = '+proj=longlat +ellps=WGS84',
                           Save = FALSE,
                           saveOptions = list(projectName = 'example'))
 
 workflow$print()
 }
-    \if{html}{\out{</div>}}
-  }
+\if{html}{\out{</div>}}
+
 }
 
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-species_model-plot"></a>}}
 \if{latex}{\out{\hypertarget{method-species_model-plot}{}}}
-\subsection{\code{species_model$plot()}}{
-  Makes a plot of the features used in the integrated model.
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{species_model$plot(
+\subsection{Method \code{plot()}}{
+Makes a plot of the features used in the integrated model.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{species_model$plot(
   Mesh = FALSE,
   Boundary = TRUE,
   Species = FALSE,
   Covariates = FALSE
-)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{Mesh}}{Add the mesh to the plot.}
-      \item{\code{Boundary}}{Add the boundary to the plot.}
-      \item{\code{Species}}{Add the species location data to the plot.}
-      \item{\code{Covariates}}{Add the spatial covariates to the plot.}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    A ggplot object.
-  }
-  \subsection{Examples}{
-    \if{html}{\out{<div class="r example copy">}}
-    \preformatted{workflow <- startWorkflow(Species = 'Fraxinus excelsior',
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{Mesh}}{Add the mesh to the plot.}
+
+\item{\code{Boundary}}{Add the boundary to the plot.}
+
+\item{\code{Species}}{Add the species location data to the plot.}
+
+\item{\code{Covariates}}{Add the spatial covariates to the plot.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A ggplot object.
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+workflow <- startWorkflow(Species = 'Fraxinus excelsior',
                           Projection = '+proj=longlat +ellps=WGS84',
                           Save = FALSE,
                           saveOptions = list(projectName = 'example'))
@@ -434,47 +444,48 @@ workflow$print()
 workflow$addArea(countryName = 'Germany')
 workflow$plot(Boundary = TRUE)
 }
-    \if{html}{\out{</div>}}
-  }
+}
+\if{html}{\out{</div>}}
+
 }
 
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-species_model-workflowOutput"></a>}}
 \if{latex}{\out{\hypertarget{method-species_model-workflowOutput}{}}}
-\subsection{\code{species_model$workflowOutput()}}{
-  Function to specify the workflow output from the model. This argument must be at least one of: \code{'Model'}, \code{'Prediction'}, \code{'Maps'} \code{'Cross-validation'}, \code{Bias} and \code{'Summary'}.
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{species_model$workflowOutput(Output)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{Output}}{The names of the outputs to give in the workflow. Must be at least one of: \code{'Model'}, \code{'Prediction'}, \code{'Maps'}, \code{'Bias'}, \code{Summary} and \code{'Cross-validation'}.}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Examples}{
-    \if{html}{\out{<div class="r example copy">}}
-    \preformatted{workflow <- startWorkflow(Species = 'Fraxinus excelsior',
+\subsection{Method \code{workflowOutput()}}{
+Function to specify the workflow output from the model. This argument must be at least one of: \code{'Model'}, \code{'Prediction'}, \code{'Maps'} \code{'Cross-validation'}, \code{Bias} and \code{'Summary'}.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{species_model$workflowOutput(Output)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{Output}}{The names of the outputs to give in the workflow. Must be at least one of: \code{'Model'}, \code{'Prediction'}, \code{'Maps'}, \code{'Bias'}, \code{Summary} and \code{'Cross-validation'}.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{workflow <- startWorkflow(Species = 'Fraxinus excelsior',
                           Projection = '+proj=longlat +ellps=WGS84',
                           Save = FALSE,
                           saveOptions = list(projectName = 'example'))
 workflow$workflowOutput('Predictions')
 }
-    \if{html}{\out{</div>}}
-  }
+\if{html}{\out{</div>}}
+
 }
 
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-species_model-addStructured"></a>}}
 \if{latex}{\out{\hypertarget{method-species_model-addStructured}{}}}
-\subsection{\code{species_model$addStructured()}}{
-  The function is used to convert structured datasets into a framework which is usable by the model. The three types of structured data allowed by this function are presence-absence (PA), presence-only (PO) and counts/abundance datasets, which are controlled using the \code{datasetType} argument. The other arguments of this function are used to specify the appropriate variable (such as response name, trial name, species name and coordinate name) names in these datasets.
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{species_model$addStructured(
+\subsection{Method \code{addStructured()}}{
+The function is used to convert structured datasets into a framework which is usable by the model. The three types of structured data allowed by this function are presence-absence (PA), presence-only (PO) and counts/abundance datasets, which are controlled using the \code{datasetType} argument. The other arguments of this function are used to specify the appropriate variable (such as response name, trial name, species name and coordinate name) names in these datasets.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{species_model$addStructured(
   dataStructured,
   datasetType,
   responseName,
@@ -483,26 +494,34 @@ workflow$workflowOutput('Predictions')
   speciesName,
   coordinateNames,
   generateAbsences = FALSE
-)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{dataStructured}}{The dataset used in the model. Must be either a \code{data.frame}, \code{sf} or \code{SpatialPoints*} object, or a \code{list} containing multiples of these classes.}
-      \item{\code{datasetType}}{A vector which gives the type of dataset. Must be either \code{'count'}, \code{'PO'} or \code{'PA'}.}
-      \item{\code{responseName}}{Name of the response variable in the dataset. If \code{dataType} is \code{'PO'}, then this argument may be missing.}
-      \item{\code{trialsName}}{Name of the trial name variable in the \code{PA} datasets.}
-      \item{\code{datasetName}}{An optional argument to create a new name for the dataset. Must be the same length as \code{dataStructured} if that is provided as a \code{list}.}
-      \item{\code{speciesName}}{Name of the species variable name in the datasets.}
-      \item{\code{coordinateNames}}{Names of the coordinate vector in the dataset. Only required if the datasets added are \code{data.frame} objects.}
-      \item{\code{generateAbsences}}{Generates absences for \code{'PA'} data. This is done by combining all the sampling locations for all the species in a given dataset, and creating an absence where each of the species do not occur. Requires \code{datasetType = 'PA'}.}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Examples}{
-    \if{html}{\out{<div class="r example copy">}}
-    \preformatted{workflow <- startWorkflow(Species = 'Fraxinus excelsior',
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{dataStructured}}{The dataset used in the model. Must be either a \code{data.frame}, \code{sf} or \code{SpatialPoints*} object, or a \code{list} containing multiples of these classes.}
+
+\item{\code{datasetType}}{A vector which gives the type of dataset. Must be either \code{'count'}, \code{'PO'} or \code{'PA'}.}
+
+\item{\code{responseName}}{Name of the response variable in the dataset. If \code{dataType} is \code{'PO'}, then this argument may be missing.}
+
+\item{\code{trialsName}}{Name of the trial name variable in the \code{PA} datasets.}
+
+\item{\code{datasetName}}{An optional argument to create a new name for the dataset. Must be the same length as \code{dataStructured} if that is provided as a \code{list}.}
+
+\item{\code{speciesName}}{Name of the species variable name in the datasets.}
+
+\item{\code{coordinateNames}}{Names of the coordinate vector in the dataset. Only required if the datasets added are \code{data.frame} objects.}
+
+\item{\code{generateAbsences}}{Generates absences for \code{'PA'} data. This is done by combining all the sampling locations for all the species in a given dataset, and creating an absence where each of the species do not occur. Requires \code{datasetType = 'PA'}.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+workflow <- startWorkflow(Species = 'Fraxinus excelsior',
                           Projection = '+proj=longlat +ellps=WGS84',
                           Save = FALSE,
                           saveOptions = list(projectName = 'example'))
@@ -518,33 +537,35 @@ speciesData <- data.frame(X = runif(1000, 12, 24),
 workflow$addStructured(dataStructured = speciesData, datasetType = 'PA',
                        datasetName = 'xx', responseName = 'Response',
                        speciesName = 'Name', coordinateNames = c('X', 'Y'))
-                       
+                       }
 }
-    \if{html}{\out{</div>}}
-  }
+\if{html}{\out{</div>}}
+
 }
 
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-species_model-addMesh"></a>}}
 \if{latex}{\out{\hypertarget{method-species_model-addMesh}{}}}
-\subsection{\code{species_model$addMesh()}}{
-  Function to add an \code{fm_mesh_2d} object to the workflow. The user may either add their own mesh to the workflow, or use the arguments of this function to help create one.
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{species_model$addMesh(Object, ...)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{Object}}{An \code{fm_mesh_2d} object to add to the workflow.}
-      \item{\code{...}}{Additional arguments to pass to \code{fmesher}'s \code{fm_mesh_2d_inla}. Use \code{?fm_mesh_2d_inla} to find out more about the different arguments.}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Examples}{
-    \if{html}{\out{<div class="r example copy">}}
-    \preformatted{workflow <- startWorkflow(Species = 'Fraxinus excelsior',
+\subsection{Method \code{addMesh()}}{
+Function to add an \code{fm_mesh_2d} object to the workflow. The user may either add their own mesh to the workflow, or use the arguments of this function to help create one.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{species_model$addMesh(Object, ...)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{Object}}{An \code{fm_mesh_2d} object to add to the workflow.}
+
+\item{\code{...}}{Additional arguments to pass to \code{fmesher}'s \code{fm_mesh_2d_inla}. Use \code{?fm_mesh_2d_inla} to find out more about the different arguments.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+workflow <- startWorkflow(Species = 'Fraxinus excelsior',
                           Projection = '+proj=longlat +ellps=WGS84',
                           Save = FALSE,
                           saveOptions = list(projectName = 'example'))
@@ -554,19 +575,21 @@ workflow$addArea(countryName = 'Sweden')
 workflow$addMesh(cutoff = 20000,
                  max.edge=c(60000, 80000),
                  offset= 100000)
+
 }
-    \if{html}{\out{</div>}}
-  }
+}
+\if{html}{\out{</div>}}
+
 }
 
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-species_model-addGBIF"></a>}}
 \if{latex}{\out{\hypertarget{method-species_model-addGBIF}{}}}
-\subsection{\code{species_model$addGBIF()}}{
-  Function to add species occurrence records from GBIF (using the \code{rgbif} package) to the reproducible workflow. The arguments for this function are used to either filter the GBIF records, or to specify the characteristics of the observation model.
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{species_model$addGBIF(
+\subsection{Method \code{addGBIF()}}{
+Function to add species occurrence records from GBIF (using the \code{rgbif} package) to the reproducible workflow. The arguments for this function are used to either filter the GBIF records, or to specify the characteristics of the observation model.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{species_model$addGBIF(
   Species = "All",
   datasetName = NULL,
   datasetType = "PO",
@@ -575,26 +598,34 @@ workflow$addMesh(cutoff = 20000,
   filterDistance = 0,
   findDatasets = FALSE,
   ...
-)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{Species}}{The names of the species to include in the workflow (initially specified using \link[intSDM]{startWorkflow}). Defaults to \code{All}, which will find occurrence records for all specie specified in \link[intSDM]{startWorkflow}.}
-      \item{\code{datasetName}}{The name to give the dataset obtained from GBIF. Cannot be \code{NULL}.}
-      \item{\code{datasetType}}{The data type of the dataset. Defaults to \code{PO}, but may also be \code{PA} or \code{Counts}.}
-      \item{\code{removeDuplicates}}{Argument used to remove duplicate observations for a species across datasets. May take a long time if there are many observations obtained across multiple datasets. Defaults to \code{FALSE}.}
-      \item{\code{generateAbsences}}{Generates absences for \code{'PA'} data. This is done by combining all the sampling locations for all the species, and creating an absence where a given species does not occur.}
-      \item{\code{filterDistance}}{Remove all points that are x kilometers away from the boundary polygon. Value must be provided in kilometers. Defaults to 0 km which removes no points.}
-      \item{\code{findDatasets}}{Find a list of dataset keys for the species included in the model.}
-      \item{\code{...}}{Additional arguments to specify the \link[rgbif]{occ_data} function from \code{rgbif}. See \code{?occ_data} for more details.}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Examples}{
-    \if{html}{\out{<div class="r example copy">}}
-    \preformatted{workflow <- startWorkflow(Species = 'Fraxinus excelsior',
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{Species}}{The names of the species to include in the workflow (initially specified using \link[intSDM]{startWorkflow}). Defaults to \code{All}, which will find occurrence records for all specie specified in \link[intSDM]{startWorkflow}.}
+
+\item{\code{datasetName}}{The name to give the dataset obtained from GBIF. Cannot be \code{NULL}.}
+
+\item{\code{datasetType}}{The data type of the dataset. Defaults to \code{PO}, but may also be \code{PA} or \code{Counts}.}
+
+\item{\code{removeDuplicates}}{Argument used to remove duplicate observations for a species across datasets. May take a long time if there are many observations obtained across multiple datasets. Defaults to \code{FALSE}.}
+
+\item{\code{generateAbsences}}{Generates absences for \code{'PA'} data. This is done by combining all the sampling locations for all the species, and creating an absence where a given species does not occur.}
+
+\item{\code{filterDistance}}{Remove all points that are x kilometers away from the boundary polygon. Value must be provided in kilometers. Defaults to 0 km which removes no points.}
+
+\item{\code{findDatasets}}{Find a list of dataset keys for the species included in the model.}
+
+\item{\code{...}}{Additional arguments to specify the \link[rgbif]{occ_data} function from \code{rgbif}. See \code{?occ_data} for more details.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+workflow <- startWorkflow(Species = 'Fraxinus excelsior',
                           Projection = '+proj=longlat +ellps=WGS84',
                           Save = FALSE,
                           saveOptions = list(projectName = 'example'))
@@ -605,18 +636,19 @@ workflow$addGBIF(datasetName = 'exampleGBIF',
                  limit = 10000,
                  coordinateUncertaintyInMeters = '0,50')
 }
-    \if{html}{\out{</div>}}
-  }
+}
+\if{html}{\out{</div>}}
+
 }
 
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-species_model-addCovariates"></a>}}
 \if{latex}{\out{\hypertarget{method-species_model-addCovariates}{}}}
-\subsection{\code{species_model$addCovariates()}}{
-  Function to add spatial covariates to the workflow. The covariates may either be specified by the user, or they may come from worldClim obtained with the \code{geodata} package.
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{species_model$addCovariates(
+\subsection{Method \code{addCovariates()}}{
+Function to add spatial covariates to the workflow. The covariates may either be specified by the user, or they may come from worldClim obtained with the \code{geodata} package.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{species_model$addCovariates(
   Object = NULL,
   worldClim = NULL,
   landCover = NULL,
@@ -624,25 +656,32 @@ workflow$addGBIF(datasetName = 'exampleGBIF',
   Months = "All",
   Function = "mean",
   ...
-)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{Object}}{A object of class: \code{spatRaster}, \code{SpatialPixelsDataFrame} or \code{raster} containing covariate information across the area. Note that this function will check if the covariates span the boundary area, so it may be preferable to add your own boundary using \code{`.$addArea`} if this argument is specified.}
-      \item{\code{worldClim}}{Name of the worldClim to include in the model. See \code{?worldclim_country} from the \code{geodata} package for more information.}
-      \item{\code{landCover}}{Name of the land cover covariates to include in the model. See \code{?landcover} from the \code{geodata} package for more information.}
-      \item{\code{res}}{Resolution of the worldclim variable. Valid options are: \code{10}, \code{5}, \code{2.5} or \code{0.5} (minutes of a degree).}
-      \item{\code{Months}}{The months to include the covariate for. Defaults to \code{All} which includes covariate layers for all months.}
-      \item{\code{Function}}{The function to aggregate the temporal data into one layer. Defaults to \code{mean}.}
-      \item{\code{...}}{Not used.}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Examples}{
-    \if{html}{\out{<div class="r example copy">}}
-    \preformatted{if (requireNamespace('INLA')) {
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{Object}}{A object of class: \code{spatRaster}, \code{SpatialPixelsDataFrame} or \code{raster} containing covariate information across the area. Note that this function will check if the covariates span the boundary area, so it may be preferable to add your own boundary using \code{`.$addArea`} if this argument is specified.}
+
+\item{\code{worldClim}}{Name of the worldClim to include in the model. See \code{?worldclim_country} from the \code{geodata} package for more information.}
+
+\item{\code{landCover}}{Name of the land cover covariates to include in the model. See \code{?landcover} from the \code{geodata} package for more information.}
+
+\item{\code{res}}{Resolution of the worldclim variable. Valid options are: \code{10}, \code{5}, \code{2.5} or \code{0.5} (minutes of a degree).}
+
+\item{\code{Months}}{The months to include the covariate for. Defaults to \code{All} which includes covariate layers for all months.}
+
+\item{\code{Function}}{The function to aggregate the temporal data into one layer. Defaults to \code{mean}.}
+
+\item{\code{...}}{Not used.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+if (requireNamespace('INLA')) {
 
 workflow <- startWorkflow(Species = 'Fraxinus excelsior',
                           Projection = '+proj=longlat +ellps=WGS84',
@@ -655,97 +694,103 @@ workflow$addCovariates(worldClim = 'tavg', res = '10')
 
 }
 }
-    \if{html}{\out{</div>}}
-  }
+}
+\if{html}{\out{</div>}}
+
 }
 
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-species_model-crossValidation"></a>}}
 \if{latex}{\out{\hypertarget{method-species_model-crossValidation}{}}}
-\subsection{\code{species_model$crossValidation()}}{
-  Function to add a spatial cross validation method to the workflow.
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{species_model$crossValidation(
+\subsection{Method \code{crossValidation()}}{
+Function to add a spatial cross validation method to the workflow.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{species_model$crossValidation(
   Method,
   blockOptions = list(k = 5, rows_cols = c(4, 4), plot = FALSE, seed = 123),
   blockCVType = "DIC"
-)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{Method}}{The spatial cross-validation methods to use in the workflow. May be at least one of \code{spatialBlock} or \code{Loo} (leave-one-out). See the \code{PointedSDMs} package for more details.}
-      \item{\code{blockOptions}}{A list of options to specify the spatial block cross-validation. Must be a named list with arguments specified for: \code{k}, \code{rows_cols}, \code{plot}, \code{seed}. See \code{blockCV::cv_spatial} for more information.}
-      \item{\code{blockCVType}}{The cross-validation method to complete if \code{Method = 'spatialBlock'}. May be one of \code{'DIC'} (default) which will iteratively return the DIC scores for each block, or \code{'Predict'}. This method return scores of marginal likelihood for each combination of dataset across all blocks, by fitting a model on all blocks but one, and predicting on the left out block. The prediction dataset is automatically chosen as the first PA dataset added to the model. See \link[PointedSDMs]{blockedCV} for more information. Note that this may take a long time to estimate if there are many datasets included in the model.}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Examples}{
-    \if{html}{\out{<div class="r example copy">}}
-    \preformatted{workflow <- startWorkflow(Species = 'Fraxinus excelsior',
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{Method}}{The spatial cross-validation methods to use in the workflow. May be at least one of \code{spatialBlock} or \code{Loo} (leave-one-out). See the \code{PointedSDMs} package for more details.}
+
+\item{\code{blockOptions}}{A list of options to specify the spatial block cross-validation. Must be a named list with arguments specified for: \code{k}, \code{rows_cols}, \code{plot}, \code{seed}. See \code{blockCV::cv_spatial} for more information.}
+
+\item{\code{blockCVType}}{The cross-validation method to complete if \code{Method = 'spatialBlock'}. May be one of \code{'DIC'} (default) which will iteratively return the DIC scores for each block, or \code{'Predict'}. This method return scores of marginal likelihood for each combination of dataset across all blocks, by fitting a model on all blocks but one, and predicting on the left out block. The prediction dataset is automatically chosen as the first PA dataset added to the model. See \link[PointedSDMs]{blockedCV} for more information. Note that this may take a long time to estimate if there are many datasets included in the model.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{workflow <- startWorkflow(Species = 'Fraxinus excelsior',
                           Projection = '+proj=longlat +ellps=WGS84',
                           Save = FALSE,
                           saveOptions = list(projectName = 'example'))
 
 workflow$crossValidation(Method = 'Loo')
 }
-    \if{html}{\out{</div>}}
-  }
+\if{html}{\out{</div>}}
+
 }
 
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-species_model-modelOptions"></a>}}
 \if{latex}{\out{\hypertarget{method-species_model-modelOptions}{}}}
-\subsection{\code{species_model$modelOptions()}}{
-  Function to specify model options for the \code{INLA} and \code{PointedSDMs} parts of the model.
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{species_model$modelOptions(ISDM = list(), Richness = list())}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{ISDM}}{Arguments to specify in \link[PointedSDMs]{startISDM} from the \code{PointedSDMs} function. This argument needs to be a named list of the following options:
+\subsection{Method \code{modelOptions()}}{
+Function to specify model options for the \code{INLA} and \code{PointedSDMs} parts of the model.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{species_model$modelOptions(ISDM = list(), Richness = list())}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{ISDM}}{Arguments to specify in \link[PointedSDMs]{startISDM} from the \code{PointedSDMs} function. This argument needs to be a named list of the following options:
 \enumerate{\item{\code{pointCovariates}: non-spatial covariates attached to the data points to be included in the model.} \item{\code{pointsIntercept}: Logical: intercept terms for the dataset. Defaults to \code{TRUE}} \item{\code{pointsSpatial}: Choose how the spatial effects are included in the model. If \code{'copy'} then the spatial effects are shared across the datasets, if \code{'individual'} then the spatial effects are created for each dataset individually, and if \code{'correlate'} then the spatial effects are correlated. If \code{NULL}, then spatial effects are turned off for the datasets.} \item{\code{Offset}: The name of the offset variable.}} See \code{?PointedSDMs::startISDM} for more details on these choices.}
-      \item{\code{Richness}}{Options to specify the richness model. This argument needs to be a named list of the following options:
+
+\item{\code{Richness}}{Options to specify the richness model. This argument needs to be a named list of the following options:
 \enumerate{\item{\code{predictionIntercept}: The name of the dataset to use as the prediction intercept in the richness model. The sampling size of the protocol must be known.} \item{\code{samplingSize}: The sample area size for the dataset provided in \code{predictionIntercept}. The units should be the same as specified in \link{startWorkflow}} \item{\code{speciesSpatial}: Specify the species spatial model. If \code{'replicate'} then create a spatial effect for each species with shared hyperparameters, if \code{'copy'} create a spatial effect for each species. If \code{NULL} then the spatial effects for the species will be turned off.}\item{\code{speciesIntercept:} If \code{TRUE} (default) incorporate a random intercept for the species, if \code{FALSE} use a fixed intercept and if \code{NULL} include no intercept for the species.}}}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Examples}{
-    \if{html}{\out{<div class="r example copy">}}
-    \preformatted{workflow <- startWorkflow(Species = 'Fraxinus excelsior',
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{workflow <- startWorkflow(Species = 'Fraxinus excelsior',
                           Projection = '+proj=longlat +ellps=WGS84',
                           Save = FALSE,
                           saveOptions = list(projectName = 'example'))
+
 }
-    \if{html}{\out{</div>}}
-  }
+\if{html}{\out{</div>}}
+
 }
 
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-species_model-specifySpatial"></a>}}
 \if{latex}{\out{\hypertarget{method-species_model-specifySpatial}{}}}
-\subsection{\code{species_model$specifySpatial()}}{
-  Function to specify pc priors for the shared random field in the model. See \code{?INLA::inla.spde2.pcmatern} for more details.
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{species_model$specifySpatial(...)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{...}}{Arguments passed on to \link[INLA]{inla.spde2.pcmatern}.}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Examples}{
-    \if{html}{\out{<div class="r example copy">}}
-    \preformatted{if (requireNamespace('INLA')) {
+\subsection{Method \code{specifySpatial()}}{
+Function to specify pc priors for the shared random field in the model. See \code{?INLA::inla.spde2.pcmatern} for more details.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{species_model$specifySpatial(...)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{...}}{Arguments passed on to \link[INLA]{inla.spde2.pcmatern}.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+if (requireNamespace('INLA')) {
 workflow <- startWorkflow(Species = 'Fraxinus excelsior',
                           Projection = '+proj=longlat +ellps=WGS84',
                           Save = FALSE,
@@ -760,18 +805,19 @@ workflow$specifySpatial(prior.range = c(200000, 0.05),
                         prior.sigma = c(5, 0.1))
 }
 }
-    \if{html}{\out{</div>}}
-  }
+}
+\if{html}{\out{</div>}}
+
 }
 
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-species_model-specifyPriors"></a>}}
 \if{latex}{\out{\hypertarget{method-species_model-specifyPriors}{}}}
-\subsection{\code{species_model$specifyPriors()}}{
-  Function to specify priors for the fixed effects in the model. The priors of the fixed effects are assumed to be Gaussian; this function alows the user to specify the parameters of this distribution.
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{species_model$specifyPriors(
+\subsection{Method \code{specifyPriors()}}{
+Function to specify priors for the fixed effects in the model. The priors of the fixed effects are assumed to be Gaussian; this function alows the user to specify the parameters of this distribution.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{species_model$specifyPriors(
   effectNames,
   Mean = 0,
   Precision = 0.01,
@@ -779,24 +825,30 @@ workflow$specifySpatial(prior.range = c(200000, 0.05),
   priorIntercept = list(prior = "loggamma", param = c(1, 5e-05)),
   priorGroup = list(model = "iid", hyper = list(prec = list(prior = "loggamma", param =
     c(1, 5e-05))))
-)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{effectNames}}{The name of the effects to specify the prior for. Must be the name of any of the covariates incldued in the model, or 'Intercept' to specify the priors for the intercept terms.}
-      \item{\code{Mean}}{The mean of the prior distribution. Defaults to \code{0}.}
-      \item{\code{Precision}}{The precision (inverse variance) of the prior distribution. Defaults to \code{0.01}.}
-      \item{\code{copyModel}}{List of model specifications given to the hyper parameters for the \code{"copy"} model. Defaults to \code{list(beta = list(fixed = FALSE))}.}
-      \item{\code{priorIntercept}}{Prior for the precision parameter for the random intercept in the species richness model. Needs \code{Output = "Richness"}. Defaults to the default \emph{INLA} prior.}
-      \item{\code{priorGroup}}{Prior for the precision for the \emph{iid} effect in the species spatial effect in the richness model. Needs \code{Output = "Richness"} and \code{speciesSpatial = "replicate"} in the richness options. Defualts to the default \emph{INLA} prior.}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Examples}{
-    \if{html}{\out{<div class="r example copy">}}
-    \preformatted{if (requireNamespace('INLA')) {
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{effectNames}}{The name of the effects to specify the prior for. Must be the name of any of the covariates incldued in the model, or 'Intercept' to specify the priors for the intercept terms.}
+
+\item{\code{Mean}}{The mean of the prior distribution. Defaults to \code{0}.}
+
+\item{\code{Precision}}{The precision (inverse variance) of the prior distribution. Defaults to \code{0.01}.}
+
+\item{\code{copyModel}}{List of model specifications given to the hyper parameters for the \code{"copy"} model. Defaults to \code{list(beta = list(fixed = FALSE))}.}
+
+\item{\code{priorIntercept}}{Prior for the precision parameter for the random intercept in the species richness model. Needs \code{Output = "Richness"}. Defaults to the default \emph{INLA} prior.}
+
+\item{\code{priorGroup}}{Prior for the precision for the \emph{iid} effect in the species spatial effect in the richness model. Needs \code{Output = "Richness"} and \code{speciesSpatial = "replicate"} in the richness options. Defualts to the default \emph{INLA} prior.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+if (requireNamespace('INLA')) {
 workflow <- startWorkflow(Species = 'Fraxinus excelsior',
                           Projection = '+proj=longlat +ellps=WGS84',
                           Save = FALSE,
@@ -810,38 +862,43 @@ workflow$addMesh(cutoff = 20000,
 workflow$specifyPriors(effectName = 'Intercept', mean = 0, Precision = 0.1)
 }
 }
-    \if{html}{\out{</div>}}
-  }
+}
+\if{html}{\out{</div>}}
+
 }
 
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-species_model-biasFields"></a>}}
 \if{latex}{\out{\hypertarget{method-species_model-biasFields}{}}}
-\subsection{\code{species_model$biasFields()}}{
-  Function to add bias fields to the model.
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{species_model$biasFields(
+\subsection{Method \code{biasFields()}}{
+Function to add bias fields to the model.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{species_model$biasFields(
   datasetName,
   copyModel = FALSE,
   shareModel = FALSE,
   ...
-)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{datasetName}}{Name of the dataset to add a bias field to.}
-      \item{\code{copyModel}}{Create copies of the biasField across the different datasets. Defaults to \code{FALSE}.}
-      \item{\code{shareModel}}{Share a bias field across the datasets specified with \code{datasetNames}. Defaults to \code{FALSE}.}
-      \item{\code{...}}{Additional arguments passed on to \link[INLA]{inla.spde2.pcmatern} to customize the priors for the pc matern for the bias fields.}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Examples}{
-    \if{html}{\out{<div class="r example copy">}}
-    \preformatted{if(requireNamespace('INLA')) {
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{datasetName}}{Name of the dataset to add a bias field to.}
+
+\item{\code{copyModel}}{Create copies of the biasField across the different datasets. Defaults to \code{FALSE}.}
+
+\item{\code{shareModel}}{Share a bias field across the datasets specified with \code{datasetNames}. Defaults to \code{FALSE}.}
+
+\item{\code{...}}{Additional arguments passed on to \link[INLA]{inla.spde2.pcmatern} to customize the priors for the pc matern for the bias fields.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+if(requireNamespace('INLA')) {
 
 workflow <- startWorkflow(Species = 'Fraxinus excelsior',
                           Projection = '+proj=longlat +ellps=WGS84',
@@ -856,31 +913,35 @@ workflow$addGBIF(datasetName = 'exampleGBIF',
 workflow$biasFields(datasetName = 'exampleGBIF')
 }
 }
-    \if{html}{\out{</div>}}
-  }
+}
+\if{html}{\out{</div>}}
+
 }
 
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-species_model-modelFormula"></a>}}
 \if{latex}{\out{\hypertarget{method-species_model-modelFormula}{}}}
-\subsection{\code{species_model$modelFormula()}}{
-  Add a formula to the model
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{species_model$modelFormula(covariateFormula, biasFormula)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{covariateFormula}}{Change the covariate formula of the model.}
-      \item{\code{biasFormula}}{Change the bias formula of the model}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Examples}{
-    \if{html}{\out{<div class="r example copy">}}
-    \preformatted{workflow <- startWorkflow(Species = 'Fraxinus excelsior',
+\subsection{Method \code{modelFormula()}}{
+Add a formula to the model
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{species_model$modelFormula(covariateFormula, biasFormula)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{covariateFormula}}{Change the covariate formula of the model.}
+
+\item{\code{biasFormula}}{Change the bias formula of the model}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+
+workflow <- startWorkflow(Species = 'Fraxinus excelsior',
                           Projection = '+proj=longlat +ellps=WGS84',
                           Save = FALSE,
                           saveOptions = list(projectName = 'example'))
@@ -890,32 +951,37 @@ workflow$addCovariate(rasterStack)
 
 workflow$addFormula(covariateFormula = ~ covariate)
 workflow$addFormula(biasFormula = ~ biasFormula)
+
+
 }
-    \if{html}{\out{</div>}}
-  }
+}
+\if{html}{\out{</div>}}
+
 }
 
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-species_model-obtainMeta"></a>}}
 \if{latex}{\out{\hypertarget{method-species_model-obtainMeta}{}}}
-\subsection{\code{species_model$obtainMeta()}}{
-  Obtain metadata from the workflow.
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{species_model$obtainMeta(Number = TRUE, Citations = TRUE)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{Number}}{Print the number of observations per dataset. Defaults to \code{TRUE}.}
-      \item{\code{Citations}}{Print the citations for the GBIF obtained datasets. Defaults to \code{TRUE}.}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Examples}{
-    \if{html}{\out{<div class="r example copy">}}
-    \preformatted{workflow <- startWorkflow(Species = 'Fraxinus excelsior',
+\subsection{Method \code{obtainMeta()}}{
+Obtain metadata from the workflow.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{species_model$obtainMeta(Number = TRUE, Citations = TRUE)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{Number}}{Print the number of observations per dataset. Defaults to \code{TRUE}.}
+
+\item{\code{Citations}}{Print the citations for the GBIF obtained datasets. Defaults to \code{TRUE}.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+workflow <- startWorkflow(Species = 'Fraxinus excelsior',
                           Projection = '+proj=longlat +ellps=WGS84',
                           Save = FALSE,
                           saveOptions = list(projectName = 'example'))
@@ -927,27 +993,27 @@ workflow$addGBIF(datasetName = 'exampleGBIF',
                  coordinateUncertaintyInMeters = '0,50')
 workflow$obtainMeta()
 }
-    \if{html}{\out{</div>}}
-  }
+}
+\if{html}{\out{</div>}}
+
 }
 
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-species_model-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-species_model-clone}{}}}
-\subsection{\code{species_model$clone()}}{
-  The objects of this class are cloneable with this method.
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{species_model$clone(deep = FALSE)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{deep}}{Whether to make a deep clone.}
-    }
-    \if{html}{\out{</div>}}
-  }
+\subsection{Method \code{clone()}}{
+The objects of this class are cloneable with this method.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{species_model$clone(deep = FALSE)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{deep}}{Whether to make a deep clone.}
+}
+\if{html}{\out{</div>}}
+}
+}
 }
