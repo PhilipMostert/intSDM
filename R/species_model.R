@@ -538,7 +538,7 @@ if (nrow(strucData) > 0) {
       if (length(private$dataStructured) > 0) {
 
       private$dataStructured <- generateAbsences(dataList = private$dataStructured, speciesName = speciesName,
-                                                 datasetName = dataAdd, responseName = responseName,
+                                                 datasetName = dataAdd, responseName = responseNew,
                                                  Projection = private$Projection, Richness = private$richnessEstimate)
 
       }
