@@ -49,8 +49,11 @@ formatStructured <- function(dataOCC, type, varsOld, varsNew, projection, bounda
 
   dataOCC <- dataOCC[unlist(st_intersects(boundary, dataOCC)),]
 
-  if (nrow(dataOCC) == 0) warning('Dataset provided has no reccords over the boundary.')
-  if (initRows > nrow(dataOCC)) warning('Some of the records provided are not over the boundary, and will therefore be removed.')
+  if (nrow(dataOCC) == 0) {
+    warning('Dataset provided has no records over the boundary.')
+  } else if (initRows > nrow(dataOCC)) {
+    warning('Some of the records provided are not over the boundary, and will therefore be removed.')
+  }
 
   dataOCC
 

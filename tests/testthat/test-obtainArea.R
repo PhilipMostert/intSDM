@@ -10,14 +10,14 @@ testthat::test_that('obtainArea can correctly obtain the boundary layer of a cou
 
   skip_if(inherits(map, 'try-error'))
 
-  expect_equal(class(map), c('sf', 'data.frame'))
+  expect_s3_class(map, 'sf')
   expect_identical(st_crs(map)[2], st_crs(proj)[2])
 
   proj2 <- 'EPSG:4326'
 
   map2 <- obtainArea(country, proj2)
 
-  expect_equal(class(map2), c('sf', 'data.frame'))
+  expect_s3_class(map2, 'sf')
   expect_identical(st_crs(map2)[2], st_crs(proj2)[2])
 
 

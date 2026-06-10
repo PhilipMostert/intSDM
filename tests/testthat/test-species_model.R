@@ -1,14 +1,25 @@
 ##First set up workflow
-library(lwgeom)
-proj <- '+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
-species <- 'Fraxinus excelsior'
-workflow <- startWorkflow(Species = species,
-                          saveOptions = list(projectName = 'testthatexample'),
-                          Projection = proj,
-                          Quiet = TRUE, Save = FALSE)
+.workflow_setup_successfully. <- FALSE
+if (requireNamespace("lwgeom", quietly = TRUE)) {
+  proj <- '+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
+  species <- 'Fraxinus excelsior'
 
+  projectDir <- tempfile("inSDM_testthat_")
+  on.exit(unlink(projectDir, recursive = TRUE), add = TRUE)
+  dir.create(projectDir, recursive = TRUE, showWarnings = FALSE)
+
+  workflow <- startWorkflow(Species = species,
+                            saveOptions = list(projectName = 'testthatexample',
+                                               projectDirectory = projectDir),
+                            Projection = proj,
+                            Quiet = TRUE, Save = FALSE
+                            )
+  .workflow_setup_successfully. <- TRUE
+}
 testthat::test_that('Test that addArea correctly adds the correct area to the model', {
   skip_on_cran()
+  skip_if_not(.workflow_setup_successfully.)
+  skip_if_not(local_testthat_geodata_path())
 
   #Check that countryName works
   expect_error(workflow$addArea(), 'One of object or countryName is required.')
@@ -17,23 +28,24 @@ testthat::test_that('Test that addArea correctly adds the correct area to the mo
 
   ##Check adding an area as an object
   workflow2 <- startWorkflow(Species = species,
-                             saveOptions = list(projectName = 'testthatexample'),
+                             saveOptions = list(projectName = 'testthatexample2',
+                                                projectDirectory = projectDir),
                              Projection = proj,
                              Quiet = TRUE, Save = FALSE)
 
   if (!is.null(workflow$.__enclos_env__$private$Area)) {
 
-  expect_setequal(class(workflow$.__enclos_env__$private$Area), c('sf', 'data.frame'))
+  expect_s3_class(workflow$.__enclos_env__$private$Area, 'sf')
   expect_setequal(workflow$.__enclos_env__$private$Area$NAME_ENGL, c('Sweden', 'Norway'))
   expect_identical(st_crs(workflow$.__enclos_env__$private$Area)[2], st_crs(proj)[2])
 
   #Obtain object
-  countries <<- giscoR::gisco_countries[giscoR::gisco_countries$NAME_ENGL %in% c('Sweden', 'Norway'), ]
+  countries <<- giscoR::gisco_countries_2024[giscoR::gisco_countries_2024$NAME_ENGL %in% c('Sweden', 'Norway'), ]
 
   }
   else {
 
-    countries <- st_as_sf(geodata::world(path = tempdir()))
+    countries <- st_as_sf(geodata::world(path = geodata::geodata_path()))
     countries <- countries[countries$NAME_0 %in% c('Norway', 'Sweden'),]
     countries <<- st_transform(countries, proj)
     workflow$addArea(Object = countries)
@@ -43,10 +55,20 @@ testthat::test_that('Test that addArea correctly adds the correct area to the mo
   workflow2$addArea(Object = countries)
   #expect_identical(workflow2$.__enclos_env__$private$Area, countries) Won't be identical due to change in CRS
 
-  countriesSP <- as(countries, 'Spatial')
-  workflow2$addArea(Object = countriesSP)
+  expect_warning(
+    {
+      countriesSP <- as(countries, 'Spatial')
+      workflow2$addArea(Object = countriesSP)
+    },
+    "Area already specified. Deleting all species occurance records added to the model."
+  )
 
-  expect_error(workflow2$addArea(Object = data.frame(x = runif(100), y = runif(100))), 'Object needs to be a sp or sf object.')
+  expect_warning(
+    {
+      expect_error(workflow2$addArea(Object = data.frame(x = runif(100), y = runif(100))), 'Object needs to be a sp or sf object.')
+    },
+    "Area already specified. Deleting all species occurance records added to the model."
+  )
 
 
 })
@@ -54,6 +76,8 @@ testthat::test_that('Test that addArea correctly adds the correct area to the mo
 testthat::test_that('Test that addGBIF correctly adds the correct data to the model', {
 
   skip_on_cran()
+  skip_if_not(.workflow_setup_successfully.)
+  skip_if_not(local_testthat_geodata_path())
 
   expect_error(workflow$addGBIF(), 'Please provide a name to give your dataset using datasetName.')
   expect_error(workflow$addGBIF(Species = 'Not_provided', datasetName = 'TEST'), 'Species provided not specified in startWorkflow().')
@@ -64,18 +88,18 @@ testthat::test_that('Test that addGBIF correctly adds the correct data to the mo
   expect_equal(class(workflow$.__enclos_env__$private$dataGBIF), 'list')
   expect_equal(names(workflow$.__enclos_env__$private$dataGBIF), 'Fraxinus_excelsior')
   expect_equal(names(workflow$.__enclos_env__$private$dataGBIF$Fraxinus_excelsior), 'GBIFTEST')
-  expect_setequal(class(workflow$.__enclos_env__$private$dataGBIF$Fraxinus_excelsior$GBIFTEST), c('sf', 'data.frame'))
+  expect_s3_class(workflow$.__enclos_env__$private$dataGBIF$Fraxinus_excelsior$GBIFTEST, 'sf')
 
   #Change dataset type to PA
   workflow$addGBIF(datasetName = 'GBIFTEST2', datasetType = 'PA')
 
   expect_equal(workflow$.__enclos_env__$private$classGBIF$Fraxinus_excelsior$GBIFTEST2, 'PA')
-  expect_setequal(class(workflow$.__enclos_env__$private$dataGBIF$Fraxinus_excelsior$GBIFTEST2), c('sf', 'data.frame'))
+  expect_s3_class(workflow$.__enclos_env__$private$dataGBIF$Fraxinus_excelsior$GBIFTEST2, 'sf')
   expect_true(all(unique(workflow$.__enclos_env__$private$dataGBIF$Fraxinus_excelsior$GBIFTEST2$occurrenceStatus) %in% c(0,1)))
 
   ##Change to Counts and check that NAs are removed.
-  expect_warning(workflow$addGBIF(datasetName = 'GBIFTEST3', datasetType = 'Counts', limit = 1000), 'Removing reccords with NA individualCount values')
-  expect_setequal(class(workflow$.__enclos_env__$private$dataGBIF$Fraxinus_excelsior$GBIFTEST3), c('sf', 'data.frame'))
+  expect_warning(workflow$addGBIF(datasetName = 'GBIFTEST3', datasetType = 'Counts', limit = 1000), 'Removing records with NA individualCount values')
+  expect_s3_class(workflow$.__enclos_env__$private$dataGBIF$Fraxinus_excelsior$GBIFTEST3, 'sf')
   expect_true(sum(is.na(workflow$.__enclos_env__$private$dataGBIF$GBIFTEST3$individualCount)) == 0)
 
   ##Check assign2global
@@ -87,13 +111,15 @@ testthat::test_that('Test that addGBIF correctly adds the correct data to the mo
 testthat::test_that('Test that addCovariate correctly adds the desired covariate to the model', {
 
   skip_on_cran()
+  skip_if_not(.workflow_setup_successfully.)
+  skip_if_not(local_testthat_geodata_path())
 
-  skip(message = 'geodata is down for now')
-  expect_error(workflow$addCovariates(), 'One of object or worldClim is required.')
+  #  skip(message = 'geodata is down for now')
+  expect_error(workflow$addCovariates(), 'One of object, worldClim or landCover is required.')
 
   covariateWorkflow <- startWorkflow(Species = species,
-                                     saveOptions = list(projectName = 'testthatexample',
-                                                        projectDirectory = './tests'),
+                                     saveOptions = list(projectName = 'testthatexample3',
+                                                        projectDirectory = projectDir),
                                      Projection = proj,
                                      Quiet = TRUE, Save = TRUE)
 
@@ -103,7 +129,7 @@ testthat::test_that('Test that addCovariate correctly adds the desired covariate
 
   expect_error(covariateWorkflow$addCovariates(worldClim = 'prec', Months = c('Monday', 'Tuesday')), 'Month provided is not valid.')
   expect_error(covariateWorkflow$addCovariates(worldClim = 'depth', Months = c('June', 'July', 'August')), 'worldClim argument is not a valid option.')
-  expect_error(covariateWorkflow$addCovariates(worldClim = c('prec', 'bio'), Months = c('June', 'July', 'August')), 'Please only add one worldClim variable at a time.')
+  expect_error(covariateWorkflow$addCovariates(worldClim = c('prec', 'bio'), Months = c('June', 'July', 'August')), 'Please only add one worldClim or landCover variable at a time.')
 
   covariateWorkflow$addCovariates(worldClim = 'prec', Months = c('June', 'July', 'August'))
 
@@ -112,20 +138,27 @@ testthat::test_that('Test that addCovariate correctly adds the desired covariate
   expect_true(length(covariateWorkflow$.__enclos_env__$private$Covariates) == 1)
   expect_true(names(covariateWorkflow$.__enclos_env__$private$Covariates$prec) == 'prec')
 
-  unlink('./tests/testthatexample', recursive = TRUE)
-
   ##Test adding own covariate layer
-  NorSwe <- geodata::worldclim_country(country = c('Norway', 'Sweden'), var = 'tavg', path = './tests/testthatremove')
-  Port <- geodata::worldclim_country(country = c('Portugal'), var = 'tavg', path = './tests/testthatremove')
+  NorSwe <- geodata::worldclim_country(country = c('Norway', 'Sweden'), var = 'tavg',
+                                       path = geodata::geodata_path())
+  Port <- geodata::worldclim_country(country = c('Portugal'), var = 'tavg',
+                                     path = geodata::geodata_path())
 
-  expect_error(covariateWorkflow$addCovariates(Object = Port[[1]]), 'The covariate provided and the area specified do not match.')
-  expect_error(covariateWorkflow$addCovariates(Object = NorSwe), 'Please provide each covariate into the workflow as their own object.')
+  # With terra 1.9.27, terra::crop gives an error, so the intSDM error message is never reached.
+  # expect_error(covariateWorkflow$addCovariates(Object = Port[[1]]), 'The covariate provided and the area specified do not match.')
+  expect_error(covariateWorkflow$addCovariates(Object = Port[[1]]), 'extents do not overlap')
 
+  # terra 1.9.27 produces a SpatRasterCollection with two SpatRaster objects,
+  # with variable names prefixed by the country name, but addCovariates only
+  # handles single SpatRaster objects. terra::merge(Object) produces a combined raster,
+  # but with variable names taken from the first raster.
+  expect_error(covariateWorkflow$addCovariates(Object = NorSwe),
+               'SpatRasterCollection objects are not currently supported.')
 
-  covariateWorkflow$addCovariates(Object = NorSwe[[1]])
+  covariateWorkflow$addCovariates(Object = NorSwe[1][[1]])
   expect_setequal(names(covariateWorkflow$.__enclos_env__$private$Covariates), c("prec", "NOR_wc2.1_30s_tavg_1"))
 
-  NorSwe <- as(NorSwe, 'Raster')
+  NorSwe <- as(NorSwe[1], 'Raster')
   covariateWorkflow$addCovariates(Object = NorSwe[[1]])
   expect_equal((class(covariateWorkflow$.__enclos_env__$private$Covariates$NOR_wc2.1_30s_tavg_1))[1], 'SpatRaster')
 
@@ -133,18 +166,19 @@ testthat::test_that('Test that addCovariate correctly adds the desired covariate
   covariateWorkflow$addCovariates(Object = NorSwe[, 1])
   expect_equal((class(covariateWorkflow$.__enclos_env__$private$Covariates$NOR_wc2.1_30s_tavg_1))[1], 'SpatRaster')
 
-  unlink('./tests/testthatremove', recursive = TRUE)
-
-
 })
 
 testthat::test_that('addStructured can add the data correctly to the model', {
 
   skip_on_cran()
+  skip_if_not(.workflow_setup_successfully.)
+  skip_if_not(local_testthat_geodata_path())
 
+  set.seed(1235L)
 
   workflow <- startWorkflow(Species = species,
-                            saveOptions = list(projectName = 'testthatexample'),
+                            saveOptions = list(projectName = 'testthatexample4',
+                                               projectDirectory = projectDir),
                             Projection = proj,
                             Quiet = TRUE, Save = FALSE)
   try(workflow$addArea(countryName = c('Norway', 'Sweden')))
@@ -161,7 +195,10 @@ testthat::test_that('addStructured can add the data correctly to the model', {
   expect_error(workflow$addStructured(dataStructured = dataPA, speciesName = 'species'), 'datasetType needs to be one of "PO", "PA" or "Counts".')
   expect_error(workflow$addStructured(dataStructured = dataPA, datasetType = 'PA', speciesName = 'species'), 'responseName cannot be missing for PA and counts datasets.')
 
-  expect_error(workflow$addStructured(dataStructured = dataPA, datasetType = 'PA', responseName = 'Presence', speciesName = 'species'))
+  expect_error(
+    expect_warning(workflow$addStructured(dataStructured = dataPA, datasetType = 'PA', responseName = 'Presence', speciesName = 'species'),
+                   "Species found in dataset not specified in the original startWorkflow call.")
+  )
 
   dataPA$species <- sample(c('Bird', species), 100, replace = TRUE)
   expect_warning(workflow$addStructured(dataStructured = dataPA, datasetType = 'PA', responseName = 'Presence', speciesName = 'species'))
@@ -190,7 +227,12 @@ testthat::test_that('addStructured can add the data correctly to the model', {
   dataCounts$num <- rpois(n = 100, lambda = 10)
   dataCounts$species <- species
 
-  workflow$addStructured(dataStructured = dataCounts, datasetType = 'Counts', responseName = 'num', speciesName = 'species')
+  expect_warning(
+    {
+      workflow$addStructured(dataStructured = dataCounts, datasetType = 'Counts', responseName = 'num', speciesName = 'species')
+    },
+    "Some of the records provided are not over the boundary"
+  )
 
   expect_setequal(names(workflow$.__enclos_env__$private$dataStructured$Fraxinus_excelsior), c('dataPA', 'dataPA2', 'dataCounts'))
   expect_setequal(names(workflow$.__enclos_env__$private$dataStructured$Fraxinus_excelsior$dataCounts), c('geometry', 'individualCount', 'speciesName'))
@@ -198,13 +240,13 @@ testthat::test_that('addStructured can add the data correctly to the model', {
   #Add an sp dataset
   #dataPASP <- as(dataPA, 'Spatial')
   #workflow$addStructured(dataStructured = dataPASP, datasetType = 'PA', responseName = 'Presence', speciesName = 'species')
-  #expect_setequal(class(workflow$.__enclos_env__$private$dataStructured$Fraxinus_excelsior$dataPASP), c('sf', 'data.frame'))
+  #expect_s3_class(workflow$.__enclos_env__$private$dataStructured$Fraxinus_excelsior$dataPASP, 'sf')
 
   #dataSP <- as(st_as_sf(st_sample(x = countries, size = 100)), 'Spatial')
   #dataSP$species <- species
   #workflow$addStructured(dataStructured = dataSP, datasetType = 'PO', speciesName = 'species')
   #expect_setequal(names(workflow$.__enclos_env__$private$dataStructured$Fraxinus_excelsior$dataSP), c('geometry', 'speciesName'))
-  #expect_setequal(class(workflow$.__enclos_env__$private$dataStructured$Fraxinus_excelsior$dataSP), c('sf', 'data.frame'))
+  #expect_s3_class(workflow$.__enclos_env__$private$dataStructured$Fraxinus_excelsior$dataSP, 'sf')
 
   #Add a data.frame object
   dataFrame <- st_transform(dataPA, proj)
@@ -213,22 +255,21 @@ testthat::test_that('addStructured can add the data correctly to the model', {
   dataFrame$species <- species
 
   workflow$addStructured(dataStructured = dataFrame, datasetType = 'PO', coordinateNames = c('X', 'Y'), speciesName = 'species')
-  expect_setequal(class(workflow$.__enclos_env__$private$dataStructured$Fraxinus_excelsior$dataFrame), c('sf', 'data.frame'))
+  expect_s3_class(workflow$.__enclos_env__$private$dataStructured$Fraxinus_excelsior$dataFrame, 'sf')
 
   #Add data not in boundary
-  dataNotIn <- st_as_sf(st_sample(x = giscoR::gisco_countries[giscoR::gisco_countries$NAME_ENGL == 'Portugal',], size = 100))
+  dataNotIn <- st_as_sf(st_sample(x = giscoR::gisco_countries_2024[giscoR::gisco_countries_2024$NAME_ENGL == 'Portugal',], size = 100))
   dataNotIn$species <- species
-  expect_warning(workflow$addStructured(dataStructured = dataNotIn, datasetType = 'PO', speciesName = 'species'), 'Dataset provided has no reccords over the boundary.')
+  expect_warning(workflow$addStructured(dataStructured = dataNotIn, datasetType = 'PO', speciesName = 'species'), 'Dataset provided has no records over the boundary.')
 
   workflow <<- workflow
-
-  unlink('./tests/testthatexample', recursive = TRUE)
-
 })
 
 testthat::test_that('addMesh correctly adds the mesh to the model', {
 
   skip_on_cran()
+  skip_if_not(.workflow_setup_successfully.)
+  skip_if_not(local_testthat_geodata_path())
 
   expect_error(workflow$addMesh())
 
@@ -245,6 +286,9 @@ testthat::test_that('addMesh correctly adds the mesh to the model', {
 })
 
 testthat::test_that('crossValidation correctly specifies the correct cross-validation method', {
+  skip_on_cran()
+  skip_if_not(.workflow_setup_successfully.)
+  skip_if_not(local_testthat_geodata_path())
 
   expect_error(workflow$crossValidation())
 
@@ -274,6 +318,8 @@ testthat::test_that('crossValidation correctly specifies the correct cross-valid
 testthat::test_that('modelOptions correctly adds options', {
 
   skip_on_cran()
+  skip_if_not(.workflow_setup_successfully.)
+  skip_if_not(local_testthat_geodata_path())
 
   expect_error(workflow$modelOptions(ISDM = list(marks = TRUE)), 'ISDM needs to be a named list with at least one of the following options: "pointCovariates", "pointsIntercept", "pointsSpatial" or "Offset".')
   expect_error(workflow$modelOptions(ISDM = list(pointsSpatial = FALSE, marks = TRUE)), 'ISDM needs to be a named list with at least one of the following options: "pointCovariates", "pointsIntercept", "pointsSpatial" or "Offset".')
@@ -289,10 +335,13 @@ testthat::test_that('modelOptions correctly adds options', {
 testthat::test_that('specifySpatial correctly specifies the spatial fields', {
 
   skip_on_cran()
+  skip_if_not(.workflow_setup_successfully.)
+  skip_if_not(local_testthat_geodata_path())
 
   expect_error(workflow$specifySpatial(), 'Please provide arguments to customize the INLA spde object using the ... argument.')
   workflowNoMesh <- startWorkflow(Species = species,
-                                  saveOptions = list(projectName = 'testthatexample'),
+                                  saveOptions = list(projectName = 'testthatexample5',
+                                                     projectDirectory = projectDir),
                                   Projection = proj,
                                   Quiet = TRUE, Save = FALSE)
 
@@ -307,6 +356,8 @@ testthat::test_that('specifySpatial correctly specifies the spatial fields', {
 testthat::test_that('biasFields correctly adds the bias field', {
 
   skip_on_cran()
+  skip_if_not(.workflow_setup_successfully.)
+  skip_if_not(local_testthat_geodata_path())
 
   workflow2 <- workflow
 
@@ -341,6 +392,8 @@ testthat::test_that('biasFields correctly adds the bias field', {
 testthat::test_that('workflowOutput gives the correct output', {
 
   skip_on_cran()
+  skip_if_not(.workflow_setup_successfully.)
+  skip_if_not(local_testthat_geodata_path())
 
   expect_error(workflow$workflowOutput(), 'argument "Output" is missing, with no default')
 
@@ -351,6 +404,11 @@ testthat::test_that('workflowOutput gives the correct output', {
   })
 
 testthat::test_that('specifyPriors can correctly specify the correct priors', {
+
+  skip_on_cran()
+  skip_if_not(.workflow_setup_successfully.)
+  skip_if_not(local_testthat_geodata_path())
+
   #Wrong name
   expect_error(workflow$specifyPriors(effectNames = 'xx'))
 
@@ -369,6 +427,9 @@ testthat::test_that('specifyPriors can correctly specify the correct priors', {
 })
 
 testthat::test_that('modelFormula correctly adds the formula', {
+  skip_on_cran()
+  skip_if_not(.workflow_setup_successfully.)
+  skip_if_not(local_testthat_geodata_path())
 
   workflow$modelFormula(covariateFormula = ~ covariate)
   workflow$modelFormula(biasFormula = ~ biasFormula)

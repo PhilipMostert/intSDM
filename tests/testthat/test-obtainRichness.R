@@ -1,15 +1,20 @@
 testthat::test_that('obtainRichness can produce an sf object of species richness', {
 
   skip_on_cran()
+  skip_if_not_installed("R.utils")
+  skip_if_not(local_testthat_geodata_path())
+
   library(R.utils)
 
   proj <- '+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
-  countries <- st_as_sf(geodata::world(path = tempdir()))
+  countries <- st_as_sf(geodata::world(path = geodata::geodata_path()))
   countries <- countries[countries$NAME_0 %in% c('Norway'),]
   countries <- st_transform(countries, proj)
   species <- c('Fraxinus excelsior')
+  projDir <- tempfile("intSDM_obtainRichness")
+  on.exit(unlink(projDir, recursive = TRUE))
   workflow <- try(startWorkflow(Species = species,
-                                saveOptions = list(projectName = 'testthatexample', projectDirectory = './'),
+                                saveOptions = list(projectName = 'testthatexample', projectDirectory = projDir),
                                 Projection = proj, Countries = 'Norway', Richness = TRUE,
                                 Quiet = TRUE, Save = FALSE))
 
@@ -17,7 +22,7 @@ testthat::test_that('obtainRichness can produce an sf object of species richness
 
 
     workflow <- startWorkflow(Species = species,
-                              saveOptions = list(projectName = 'testthatexample', projectDirectory = './'),
+                              saveOptions = list(projectName = 'testthatexample', projectDirectory = projDir),
                               Projection = proj, Quiet = TRUE, Save = FALSE, Richness = TRUE)
 
 
@@ -38,12 +43,12 @@ testthat::test_that('obtainRichness can produce an sf object of species richness
   ##Try wrong modelObject
   Rich <- expect_error(obtainRichness(modelObject = model), 'modelObject needs to be a modSpecies object obtained from the PointedSDMs function fitISDM.')
   Rich <- expect_error(obtainRichness(modelObject = model$RichnessModel,
-                                      predictionData = fm_pixels(workflow$.__enclos_env__$private$Mesh)),'predictionIntercept cannot be missing.')
+                                      predictionData = fmesher::fm_pixels(workflow$.__enclos_env__$private$Mesh)),'predictionIntercept cannot be missing.')
   Rich <- expect_error(obtainRichness(modelObject = model$RichnessModel,
-                                      predictionData = fm_pixels(workflow$.__enclos_env__$private$Mesh),
+                                      predictionData = fmesher::fm_pixels(workflow$.__enclos_env__$private$Mesh),
                                       predictionIntercept = 'wrong'),'predictionIntercept needs to be the name of a dataset included in modelObject.')
 
-  predDat <- fm_pixels(workflow$.__enclos_env__$private$Mesh)
+  predDat <- fmesher::fm_pixels(workflow$.__enclos_env__$private$Mesh)
   predDat$tmax <- rnorm(nrow(predDat))
   Rich <- obtainRichness(modelObject = model$RichnessModel,
                        predictionData = predDat,

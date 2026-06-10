@@ -146,8 +146,8 @@ obtainGBIF <- function(query,
     rowsOCC <- nrow(speciesOCC)
     speciesOCC <- speciesOCC[!is.na(speciesOCC$individualCount),]
 
-    if (nrow(speciesOCC) == 0) stop('All reccords had NA for individualCount.')
-    if (rowsOCC > nrow(speciesOCC)) warning('Removing reccords with NA individualCount values')
+    if (nrow(speciesOCC) == 0) stop('All records had NA for individualCount.')
+    if (rowsOCC > nrow(speciesOCC)) warning('Removing records with NA individualCount values')
 
   }
 
@@ -178,7 +178,7 @@ obtainGBIF <- function(query,
 
   }
 
-  if (nrow(speciesIn) == 0) warning(paste(species, 'provided no occurrence reccords over the specified region.'))
+  if (nrow(speciesIn) == 0) warning(paste(species, 'provided no occurrence records over the specified region.'))
 
   if (datasettype !=  'PA') speciesIn$occurrenceStatus <- NULL
   if (datasettype != 'Counts') speciesIn$individualCount <- NULL

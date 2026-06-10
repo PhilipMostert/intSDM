@@ -1,8 +1,15 @@
-## *intSDM* version 2.0.1
+# intSDM (development version)
+
+## Package updates
+
+-  Increased compatibility with *PointedSDMs* version 2.1.5 and *inlabru*
+   version 2.14.0 and later
 
 ------------------------------------------------------------------------
 
-### Package updates
+# *intSDM* version 2.0.1
+
+## Package updates
 
 -   Fixes to the plot function such that it works even if no species present in a given dataset.
 

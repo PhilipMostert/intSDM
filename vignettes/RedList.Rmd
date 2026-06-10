@@ -76,12 +76,12 @@ We then use `.$plot()` to see what the boundary looks like.
 
 ```{r addArea}
 
-Norway <- fm_transform(giscoR::gisco_get_countries(country = 'Norway', resolution = 60),
+Norway <- fmesher::fm_transform(giscoR::gisco_get_countries(country = 'Norway', resolution = 60),
                        proj)
 Norway <- st_cast(st_as_sf(Norway), 'POLYGON')
 Norway <- Norway[which.max(st_area(Norway)),]
 Norway <- rmapshaper::ms_simplify(Norway, keep = 0.8)
-Norway <- st_as_sf(fm_extensions(Norway, convex = c(10, 20))[[1]])
+Norway <- st_as_sf(fmesher::fm_extensions(Norway, convex = c(10, 20))[[1]])
 
 workflow$addArea(Object = Norway)
 workflow$plot()

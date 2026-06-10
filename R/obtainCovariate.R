@@ -31,7 +31,10 @@ obtainCovariate <- function(covariates, type,
 
     }
 
-  if (inherits(covariateLayers, 'try-error')) stop('Could not download covariate layers. Please try again later.')
+  if (is.null(covariateLayers) ||
+      inherits(covariateLayers, 'try-error')) {
+    stop('Could not download covariate layers. Please try again later.')
+  }
 
   covariateLayers <- terra::project(covariateLayers, projection)
 

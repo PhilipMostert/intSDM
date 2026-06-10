@@ -2,6 +2,7 @@ testthat::test_that('generateAbsences correctly creates absences for the data.',
 
   ##First set up workflow
   skip_on_cran()
+  skip_if_not(local_testthat_geodata_path())
 
   proj <- '+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
   species <- c('Fraxinus excelsior', 'Ulmus glabra', 'Arnica montana')
@@ -19,7 +20,7 @@ testthat::test_that('generateAbsences correctly creates absences for the data.',
                   Projection = proj,
                   Quiet = TRUE, Save = FALSE)
 
-    countries <- st_as_sf(geodata::world(path = tempdir()))
+    countries <- st_as_sf(geodata::world(path = geodata::geodata_path()))
     countries <- countries[countries$NAME_0 %in% c('Norway', 'Sweden'),]
     countries <- st_transform(countries, proj)
 
@@ -30,7 +31,7 @@ testthat::test_that('generateAbsences correctly creates absences for the data.',
 
   if (is.null(workflow$.__enclos_env__$private$Area)) {
 
-    map <- st_as_sf(geodata::world(path = tempdir()))
+    map <- st_as_sf(geodata::world(path = geodata::geodata_path()))
     map <- map[map$NAME_0 == 'Norway',]
     map <- st_transform(map, proj)
 
@@ -80,7 +81,7 @@ testthat::test_that('generateAbsences correctly creates absences for the data.',
                               Projection = proj, Richness = TRUE,
                               Quiet = TRUE, Save = FALSE)
 
-    countries <- st_as_sf(geodata::world(path = tempdir()))
+    countries <- st_as_sf(geodata::world(path = geodata::geodata_path()))
     countries <- countries[countries$NAME_0 %in% c('Norway', 'Sweden'),]
     countries <- st_transform(countries, proj)
 
@@ -92,7 +93,7 @@ testthat::test_that('generateAbsences correctly creates absences for the data.',
 
   if (is.null(workflow$.__enclos_env__$private$Area)) {
 
-    map <- st_as_sf(geodata::world(path = tempdir()))
+    map <- st_as_sf(geodata::world(path = geodata::geodata_path()))
     map <- map[map$NAME_0 == 'Norway',]
     map <- st_transform(map, proj)
 
@@ -106,7 +107,12 @@ testthat::test_that('generateAbsences correctly creates absences for the data.',
 
   paData <- lapply(workflow$.__enclos_env__$private$dataGBIF, function(x) x[['PA']])
 
-  workflow$addGBIF(datasetType = 'PA', datasetName = 'PA', generateAbsences = TRUE)
+  expect_warning(
+    {
+      workflow$addGBIF(datasetType = 'PA', datasetName = 'PA', generateAbsences = TRUE)
+    },
+    "datasetName already provided before. The older dataset will therefore be removed."
+  )
 
   expect_true(all(names(workflow$.__enclos_env__$private$dataGBIF) %in% c('PO', 'PA')))
 

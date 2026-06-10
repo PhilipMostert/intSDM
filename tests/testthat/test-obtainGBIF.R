@@ -1,6 +1,7 @@
 testthat::test_that('obtainGBIF can correctly obtain observations of species in the correct boundary, and transform it to the desired projection', {
 
   skip_on_cran()
+  skip_if_not(local_testthat_geodata_path())
 
   #args
   speciesIn <- 'Fraxinus excelsior'
@@ -11,7 +12,7 @@ testthat::test_that('obtainGBIF can correctly obtain observations of species in 
 
   if (inherits(map, 'try-error')) {
 
-    map <- st_as_sf(geodata::world(path = tempdir()))
+    map <- st_as_sf(geodata::world(path = geodata::geodata_path()))
     map <- map[map$NAME_0 == 'Norway',]
     map <- st_transform(map, proj)
   }
@@ -21,7 +22,7 @@ testthat::test_that('obtainGBIF can correctly obtain observations of species in 
                         coordinateUncertaintyInMeters = 50,
                         geometry = map, projection = proj)
 
-  expect_equal(class(species), c('sf', 'data.frame'))
+  expect_s3_class(species, 'sf')
   expect_true(all(species$coordinateUncertaintyInMeters <= 50))
   expect_identical(st_crs(species)[2], st_crs(proj)[2])
 
@@ -33,9 +34,17 @@ testthat::test_that('obtainGBIF can correctly obtain observations of species in 
 
   speciesIn2 <- 'Ceratotherium simum'
 
-  expect_error(obtainGBIF(query = speciesIn2, datasettype = 'PA',
-                          country = 'NO', filterDistance = 0,
-                          geometry = map, projection = proj), 'Species provided not available in specified area.')
+  expect_warning(
+    expect_warning(
+      expect_error(
+        obtainGBIF(query = speciesIn2, datasettype = 'PA',
+                   country = 'NO', filterDistance = 0,
+                   geometry = map, projection = proj),
+        'Species provided not available in specified area.'),
+      'No presences found for the specified species.'
+    ),
+    'No absences found for the specified species.'
+  )
 
   ##Multiple years
 
@@ -55,8 +64,21 @@ testthat::test_that('obtainGBIF can correctly obtain observations of species in 
   dists <- units::set_units(st_distance(speciesFilter, st_cast(map,"MULTILINESTRING")), km)
   expect_true(all(as.vector(dists) > 10))
 
-  expect_warning(obtainGBIF(query = speciesIn, filterDistance = 1e8,
-                            datasettype = 'PO',country = 'NO',
-                            geometry = map, projection = proj, year = 2010:2012), 'Fraxinus excelsior provided no occurrence reccords over the specified region.')
+  expect_warning(
+    expect_warning(
+      expect_warning(
+        expect_warning(
+          expect_warning(obtainGBIF(query = speciesIn, filterDistance = 1e8,
+                                    datasettype = 'PO',country = 'NO',
+                                    geometry = map, projection = proj, year = 2010:2012),
+                         'Fraxinus excelsior provided no occurrence records over the specified region.'),
+          'no non-missing arguments to min'
+        ),
+        'no non-missing arguments to min'
+      ),
+      'no non-missing arguments to max'
+    ),
+    'no non-missing arguments to max'
+  )
 
 })

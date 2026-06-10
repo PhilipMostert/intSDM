@@ -5,7 +5,7 @@
 #' @param predictionData Optional argument for the user to specify their own data to predict on. Must be a \code{sf} or \code{SpatialPixelsDataFrame} object. Defaults to \code{NULL}.
 #' @param initialValues Find initial values using a GLM before the model is estimated. Defaults to \code{FALSE}.
 #' @param inlaOptions Options to specify in \link[INLA]{inla} from the \code{inla} function. See \code{?inla} for more details.
-#' @param ipointsOptions Options to specify in \link[inlabru]{fm_int}'s \code{int.args} argument. See \code{?fmesher::fm_int} for more details.
+#' @param ipointsOptions Options to specify in \link[fmesher]{fm_int}'s \code{int.args} argument. See \code{?fmesher::fm_int} for more details.
 
 #'
 #' @import PointedSDMs
@@ -110,7 +110,7 @@ sdmWorkflow <- function(Workflow = NULL,
 
   spatCovs <- do.call(c, unlist(list(spatCovs, Workflow$.__enclos_env__$private$biasCovariates), recursive = FALSE))
 
-  IPS <- fm_int(domain = .__mesh.__, samplers = Workflow$.__enclos_env__$private$Area,
+  IPS <- fmesher::fm_int(domain = .__mesh.__, samplers = Workflow$.__enclos_env__$private$Area,
                 int.args = ipointsOptions)
   st_geometry(IPS) <- 'geometry'
 
@@ -124,7 +124,7 @@ sdmWorkflow <- function(Workflow = NULL,
 
    speciesNameInd <- sub(' ', '_', species)
 
-   if (saveObjects) dir.create(path = paste0(modDirectory, '/', speciesNameInd))
+   if (saveObjects) dir.create(path = file.path(modDirectory, speciesNameInd), recursive = TRUE)
 
    speciesDataset <- append(Workflow$.__enclos_env__$private$dataGBIF[[species]],
                             Workflow$.__enclos_env__$private$dataStructured[[species]])
