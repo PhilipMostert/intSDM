@@ -40,12 +40,12 @@ formatStructured <- function(dataOCC, type, varsOld, varsNew, projection, bounda
   st_geometry(dataOCC) <- 'geometry'
   dataOCC <- sf::st_transform(dataOCC, as.character(projection))
 
-  namesData <- colnames(dataOCC)[!colnames(dataOCC) %in% c('geometry', '.__PORESP.__')]
+  namesData <- colnames(dataOCC)[colnames(dataOCC) %in% unlist(varsOld)] #colnames(dataOCC)[!colnames(dataOCC) %in% c('geometry', '.__PORESP.__')]
 
   oldNames <- unlist(varsOld)[match(namesData, unlist(varsOld))]
   newNames <- unlist(varsNew)[match(names(oldNames), names(unlist(varsNew)))]
 
-  colnames(dataOCC)[!colnames(dataOCC) %in% c('geometry', '.__PORESP.__')] <- newNames
+  colnames(dataOCC)[colnames(dataOCC) %in% unlist(varsOld)] <- newNames
 
   dataOCC <- dataOCC[unlist(st_intersects(boundary, dataOCC)),]
 
