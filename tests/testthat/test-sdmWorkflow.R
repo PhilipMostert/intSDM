@@ -9,7 +9,15 @@ testthat::test_that('sdmWorkflow produces the correct output given different Wor
 
   ##Create different workflows here:
   #1. Just GBIF data
-  proj <- '+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
+  inlaOptions <- list(control.inla = list(int.strategy = 'eb', diagonal = 1))
+
+  test_data <- readRDS(system.file('extdata/test_data.rds', package = 'intSDM'))
+
+  POpoints <- test_data$POpoints
+  PApoints <- test_data$PApoints
+  Mesh <- test_data$Mesh
+
+  proj <- '+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=km +no_defs'
   countries <- st_as_sf(geodata::world(path = geodata::geodata_path()))
   countries <- countries[countries$NAME_0 %in% c('Norway'),]
   countries <- st_transform(countries, proj)
@@ -31,26 +39,26 @@ testthat::test_that('sdmWorkflow produces the correct output given different Wor
 
   }
 
-  workflow$addGBIF(datasetName = 'GBIF_data', limit = 100) #Get less species
-  workflow$addGBIF(datasetName = 'GBIF_data2', limit = 100, datasetType = 'PA')
+  workflow$addStructured(dataStructured = POpoints, datasetType = 'PO', datasetName = 'PO', speciesName = 'name')
+  workflow$addStructured(dataStructured = PApoints, datasetType = 'PA', datasetName = 'PA', speciesName = 'name', responseName = 'pres')
+
   expect_error(sdmWorkflow(Workflow = workflow)) #Test no output given
   workflow$workflowOutput('Model')
   expect_error(sdmWorkflow(Workflow = workflow)) #Test no mesh provided
-  workflow$addMesh(max.edge = 500000) #200000
-  #Test something about CV-method -- none specified but given as output
-  #Need to test a lot of the copy model; points spatial; points intercept parts
+  workflow$addMesh(Mesh)
+
   workflow$modelOptions(ISDM = list(pointsSpatial = 'shared'))
   # May generate a warning (under rstudio);
   # 'package:stats' may not be available when loading
-  suppressWarnings(sdmWorkflow(Workflow = workflow))
+  suppressWarnings(sdmWorkflow(Workflow = workflow, inlaOptions = inlaOptions))
   expect_true(all(c(dir.exists(file.path(projectDir, 'testthatexample', 'Fraxinus_excelsior')))))
 
   expect_true(all(c(file.exists(file.path(projectDir, 'testthatexample', 'Fraxinus_excelsior' , 'intModel.rds')))))
 
   Fraxinus_excelsior <- readRDS(file = file.path(projectDir, 'testthatexample', 'Fraxinus_excelsior', 'intModel.rds'))
-  expect_setequal(rownames(Fraxinus_excelsior$summary.fixed), c("GBIF_data_intercept", "GBIF_data2_intercept"))
+  expect_setequal(rownames(Fraxinus_excelsior$summary.fixed), c("PO_intercept", "PA_intercept"))
   expect_equal(as.character(Fraxinus_excelsior$componentsJoint)[2],
-               "-1 + shared_spatial(main = geometry, model = shared_field) + GBIF_data_intercept(1) + GBIF_data2_intercept(1)")
+               "-1 + shared_spatial(main = geometry, model = shared_field) + PO_intercept(1) + PA_intercept(1)")
   rm(Fraxinus_excelsior)
   biasCopyonCRAN <- FALSE
   if (biasCopyonCRAN) {
@@ -63,17 +71,19 @@ testthat::test_that('sdmWorkflow produces the correct output given different Wor
     biasWorkflow$addArea(Object = countries)
 
 
-    biasWorkflow$addGBIF(datasetName = 'GBIF_data') #Get less species
-    biasWorkflow$addGBIF(datasetName = 'GBIF_data2', limit = 50, datasetType = 'PA')
-    biasWorkflow$workflowOutput('Model')
-    biasWorkflow$addMesh(max.edge = 500000) #200000
-    biasWorkflow$biasFields('GBIF_data')
-    biasWorkflow$modelOptions(ISDM = list(pointsSpatial = 'shared'))
-    biasMod <- sdmWorkflow(biasWorkflow)
+    biasWorkflow$addStructured(dataStructured = POpoints, datasetType = 'PO', datasetName = 'PO', speciesName = 'name')
+    biasWorkflow$addStructured(dataStructured = PApoints, datasetType = 'PA', datasetName = 'PA', speciesName = 'name', responseName = 'pres')
 
-    expect_setequal(names(biasMod$Fraxinus_excelsior$Model$summary.random), c("shared_spatial", "GBIF_data_biasField"))
+    biasWorkflow$workflowOutput('Model')
+    biasWorkflow$addMesh(Mesh) #200000
+    biasWorkflow$biasFields('PO')
+    biasWorkflow$modelOptions(ISDM = list(pointsSpatial = 'shared'))
+    biasMod <- sdmWorkflow(biasWorkflow, inlaOptions = inlaOptions)
+
+    expect_setequal(names(biasMod$Fraxinus_excelsior$Model$summary.random), c("shared_spatial", "PO_biasField"))
     expect_setequal(class(biasMod$Fraxinus_excelsior$Model), c("modISDM", "bru", "iinla", "inla"))
     rm(biasWorkflow)
+
   }
   copyWorkflow <- startWorkflow(Species = species,
                                 saveOptions = list(projectName = 'testthatexample3', projectDirectory = projectDir),
@@ -82,23 +92,20 @@ testthat::test_that('sdmWorkflow produces the correct output given different Wor
 
   copyWorkflow$addArea(Object = countries)
 
-  copyWorkflow$addGBIF(datasetName = 'GBIF_data', limit = 100) #Get less species
-  copyWorkflow$addGBIF(datasetName = 'GBIF_data2', limit = 50, datasetType = 'PA')
+  copyWorkflow$addStructured(dataStructured = POpoints, datasetType = 'PO', datasetName = 'PO', speciesName = 'name')
+  copyWorkflow$addStructured(dataStructured = PApoints, datasetType = 'PA', datasetName = 'PA', speciesName = 'name', responseName = 'pres')
+
   copyWorkflow$workflowOutput('Model')
-  copyWorkflow$addMesh(max.edge = 500000) #200000
+  copyWorkflow$addMesh(Mesh) #200000
   copyWorkflow$modelOptions(ISDM = list(pointsSpatial = 'copy'))
   copyWorkflow$specifyPriors(copyModel = list(beta = list(fixed = TRUE)))
-  copyMod <- sdmWorkflow(copyWorkflow)
+  copyMod <- sdmWorkflow(copyWorkflow, inlaOptions = inlaOptions)
 
-  expect_setequal(names(copyMod$Fraxinus_excelsior$Model$summary.random), c("GBIF_data_spatial", "GBIF_data2_spatial"))
+  expect_setequal(names(copyMod$Fraxinus_excelsior$Model$summary.random), c("PO_spatial", "PA_spatial"))
   expect_equal(as.character(copyMod$Fraxinus_excelsior$Model$componentsJoint)[2],
-               "-1 + GBIF_data_spatial(main = geometry, model = GBIF_data_field) + GBIF_data2_spatial(main = geometry, copy = \"GBIF_data_spatial\", hyper = list(beta = list(fixed = TRUE))) + GBIF_data_intercept(1) + GBIF_data2_intercept(1)")
+               "-1 + PO_spatial(main = geometry, model = PO_field) + PA_spatial(main = geometry, copy = \"PO_spatial\", hyper = list(beta = list(fixed = TRUE))) + PO_intercept(1) + PA_intercept(1)")
 
   ##Test Richness model
-  proj <- '+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
-  countries <- st_as_sf(geodata::world(path = geodata::geodata_path()))
-  countries <- countries[countries$NAME_0 %in% c('Norway'),]
-  countries <- st_transform(countries, proj)
   species <- c('Fraxinus excelsior')
   workflow <- try(startWorkflow(Species = species,
                                 saveOptions = list(projectName = 'richness', projectDirectory = projectDir),
@@ -117,29 +124,32 @@ testthat::test_that('sdmWorkflow produces the correct output given different Wor
 
   }
 
-  workflow$addGBIF(datasetName = 'GBIF_data', limit = 100) #Get less species
-  workflow$addGBIF(datasetName = 'GBIF_data2', limit = 100, datasetType = 'PA')
+  workflow$addStructured(dataStructured = POpoints, datasetType = 'PO', datasetName = 'PO', speciesName = 'name')
+  workflow$addStructured(dataStructured = PApoints, datasetType = 'PA', datasetName = 'PA', speciesName = 'name', responseName = 'pres')
+
   expect_error(sdmWorkflow(Workflow = workflow)) #Test no output given
+
   workflow$workflowOutput(c('Model', 'Predictions'))
+
   expect_error(sdmWorkflow(Workflow = workflow)) #Test no mesh provided
-  workflow$addMesh(max.edge = 500000) #200000
-  #Test something about CV-method -- none specified but given as output
-  #Need to test a lot of the copy model; points spatial; points intercept parts
+
+  workflow$addMesh(Mesh) #200000
+
   workflow$modelOptions(ISDM = list(pointsSpatial = 'shared'))
   expect_error(sdmWorkflow(Workflow = workflow))
-  workflow$modelOptions(Richness = list(predictionIntercept = 'GBIF_data'))
+  workflow$modelOptions(Richness = list(predictionIntercept = 'PA'))
   # May generate a warning (under rstudio);
   # 'package:stats' may not be available when loading
-  suppressWarnings(sdmWorkflow(Workflow = workflow))
+  suppressWarnings(sdmWorkflow(Workflow = workflow, inlaOptions = inlaOptions))
 
   expect_true(all(c(file.exists(file.path(projectDir, 'richness', 'richnessModel.rds')))))
 
   expect_true(all(c(file.exists(file.path(projectDir, 'richness', 'richnessPredictions.rds')))))
 
   RichModel <- readRDS(file = file.path(projectDir, 'richness', 'richnessModel.rds'))
-  expect_setequal(rownames(RichModel$summary.fixed), c("GBIF_data_intercept", "GBIF_data2_intercept"))
+  expect_setequal(rownames(RichModel$summary.fixed), c("PA_intercept", "PO_intercept"))
   expect_equal(deparse1(RichModel$componentsJoint),
-               "~-1 + shared_spatial(main = geometry, model = shared_field) + speciesShared(main = geometry, model = speciesField, group = speciesSpatialGroup, control.group = list(model = \"iid\", hyper = list(prec = list(prior = \"loggamma\", param = c(1, 5e-05))))) + GBIF_data_intercept(1) + GBIF_data2_intercept(1) + speciesName_intercepts(main = speciesName, model = \"iid\", constr = TRUE, hyper = list(prec = list(fixed = TRUE, initial = log(INLA::inla.set.control.fixed.default()$prec))))")
+               "~-1 + shared_spatial(main = geometry, model = shared_field) + speciesShared(main = geometry, model = speciesField, group = speciesSpatialGroup, control.group = list(model = \"iid\", hyper = list(prec = list(prior = \"loggamma\", param = c(1, 5e-05))))) + PA_intercept(1) + PO_intercept(1) + speciesName_intercepts(main = speciesName, model = \"iid\", constr = TRUE, hyper = list(prec = list(fixed = TRUE, initial = log(INLA::inla.set.control.fixed.default()$prec))))")
   rm(RichModel)
 
 })

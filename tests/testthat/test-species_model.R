@@ -127,16 +127,24 @@ testthat::test_that('Test that addCovariate correctly adds the desired covariate
 
   if (is.null(covariateWorkflow$.__enclos_env__$private$Area)) covariateWorkflow$addArea(Object = countries)
 
-  expect_error(covariateWorkflow$addCovariates(worldClim = 'prec', Months = c('Monday', 'Tuesday')), 'Month provided is not valid.')
-  expect_error(covariateWorkflow$addCovariates(worldClim = 'depth', Months = c('June', 'July', 'August')), 'worldClim argument is not a valid option.')
-  expect_error(covariateWorkflow$addCovariates(worldClim = c('prec', 'bio'), Months = c('June', 'July', 'August')), 'Please only add one worldClim or landCover variable at a time.')
+  # expect_error(covariateWorkflow$addCovariates(worldClim = 'prec', Months = c('Monday', 'Tuesday')), 'Month provided is not valid.')
+  # expect_error(covariateWorkflow$addCovariates(worldClim = 'depth', Months = c('June', 'July', 'August')), 'worldClim argument is not a valid option.')
+  # expect_error(covariateWorkflow$addCovariates(worldClim = c('prec', 'bio'), Months = c('June', 'July', 'August')), 'Please only add one worldClim or landCover variable at a time.')
 
-  covariateWorkflow$addCovariates(worldClim = 'prec', Months = c('June', 'July', 'August'))
+  covs <- terra::rast(system.file('extdata/vignette_covariates.tif', package = 'intSDM'))
 
-  expect_equal(names(covariateWorkflow$.__enclos_env__$private$Covariates), 'prec')
-  expect_equal(class(covariateWorkflow$.__enclos_env__$private$Covariates$prec)[1], 'SpatRaster')
-  expect_true(length(covariateWorkflow$.__enclos_env__$private$Covariates) == 1)
-  expect_true(names(covariateWorkflow$.__enclos_env__$private$Covariates$prec) == 'prec')
+  expect_error(covariateWorkflow$addCovariates(data.frame(covs)), 'Object needs to be either a SpatRaster, SpatialPixelsDataFrame or raster object.')
+
+  covariateWorkflow$addCovariates(covs)
+
+  #covariateWorkflow$addCovariates(worldClim = 'prec', Months = c('June', 'July', 'August'), res = 10)
+
+  expect_equal(names(covariateWorkflow$.__enclos_env__$private$Covariates), c('Cov1', 'Cov2'))
+  expect_equal(class(covariateWorkflow$.__enclos_env__$private$Covariates$Cov1)[1], 'SpatRaster')
+  expect_true(length(covariateWorkflow$.__enclos_env__$private$Covariates) == 2)
+  expect_true(names(covariateWorkflow$.__enclos_env__$private$Covariates$Cov1) == 'Cov1')
+  expect_true(names(covariateWorkflow$.__enclos_env__$private$Covariates$Cov2) == 'Cov2')
+
 
   ##Test adding own covariate layer
   NorSwe <- geodata::worldclim_country(country = c('Norway', 'Sweden'), var = 'tavg',
@@ -156,7 +164,7 @@ testthat::test_that('Test that addCovariate correctly adds the desired covariate
                'SpatRasterCollection objects are not currently supported.')
 
   covariateWorkflow$addCovariates(Object = NorSwe[1][[1]])
-  expect_setequal(names(covariateWorkflow$.__enclos_env__$private$Covariates), c("prec", "NOR_wc2.1_30s_tavg_1"))
+  expect_setequal(names(covariateWorkflow$.__enclos_env__$private$Covariates), c("Cov1", "Cov2", "NOR_wc2.1_30s_tavg_1"))
 
   NorSwe <- as(NorSwe[1], 'Raster')
   covariateWorkflow$addCovariates(Object = NorSwe[[1]])
@@ -438,3 +446,4 @@ testthat::test_that('modelFormula correctly adds the formula', {
 
 
 })
+

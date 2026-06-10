@@ -6,13 +6,22 @@ testthat::test_that('obtainRichness can produce an sf object of species richness
 
   library(R.utils)
 
-  proj <- '+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
+  inlaOptions <- list(control.inla = list(int.strategy = 'eb', diagonal = 1))
+
+  test_data <- readRDS(system.file('extdata/test_data.rds', package = 'intSDM'))
+
+  POpoints <- test_data$POpoints
+  PApoints <- test_data$PApoints
+  Mesh <- test_data$Mesh
+
+  proj <- '+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=km +no_defs'
   countries <- st_as_sf(geodata::world(path = geodata::geodata_path()))
   countries <- countries[countries$NAME_0 %in% c('Norway'),]
   countries <- st_transform(countries, proj)
   species <- c('Fraxinus excelsior')
   projDir <- tempfile("intSDM_obtainRichness")
   on.exit(unlink(projDir, recursive = TRUE))
+
   workflow <- try(startWorkflow(Species = species,
                                 saveOptions = list(projectName = 'testthatexample', projectDirectory = projDir),
                                 Projection = proj, Countries = 'Norway', Richness = TRUE,
@@ -30,15 +39,19 @@ testthat::test_that('obtainRichness can produce an sf object of species richness
 
   }
 
-  workflow$addGBIF(datasetName = 'GBIF_data', limit = 100) #Get less species
-  workflow$addGBIF(datasetName = 'GBIF_data2', limit = 50, datasetType = 'PA')
+  workflow$addStructured(dataStructured = POpoints, datasetType = 'PO', datasetName = 'PO', speciesName = 'name')
+  workflow$addStructured(dataStructured = PApoints, datasetType = 'PA', datasetName = 'PA', speciesName = 'name', responseName = 'pres')
+
   workflow$workflowOutput(c('Model'))
-    try(withTimeout(workflow$addCovariates(worldClim = 'tmax', res = 10), timeout = 120, onTimeout = 'silent'))
-  workflow$addMesh(max.edge = 500000) #200000
-  workflow$modelOptions(Richness = list(predictionIntercept = 'GBIF_data'))
+
+  covs <- terra::rast(system.file('extdata/vignette_covariates.tif', package = 'intSDM'))
+
+  workflow$addCovariates(covs)
+
+  workflow$addMesh(Object = Mesh) #200000
+  workflow$modelOptions(Richness = list(predictionIntercept = 'PA'))
   #Make data if NA
-  values(workflow$.__enclos_env__$private$Covariates$tmax) <- rnorm(nrow(values(workflow$.__enclos_env__$private$Covariates$tmax)))
-  model <- sdmWorkflow(Workflow = workflow, inlaOptions = list(control.inla = list(diagonal = 10)))
+  model <- sdmWorkflow(Workflow = workflow, inlaOptions = inlaOptions)
 
   ##Try wrong modelObject
   Rich <- expect_error(obtainRichness(modelObject = model), 'modelObject needs to be a modSpecies object obtained from the PointedSDMs function fitISDM.')
@@ -49,10 +62,11 @@ testthat::test_that('obtainRichness can produce an sf object of species richness
                                       predictionIntercept = 'wrong'),'predictionIntercept needs to be the name of a dataset included in modelObject.')
 
   predDat <- fmesher::fm_pixels(workflow$.__enclos_env__$private$Mesh)
-  predDat$tmax <- rnorm(nrow(predDat))
+  predDat$Cov1 <- rnorm(nrow(predDat))
+  predDat$Cov2 <- rnorm(nrow(predDat))
   Rich <- obtainRichness(modelObject = model$RichnessModel,
                        predictionData = predDat,
-                       predictionIntercept = 'GBIF_data')
+                       predictionIntercept = 'PA')
 
   expect_identical(class(Rich), 'list')
   expect_setequal(names(Rich), c('Richness', 'Probabilities'))

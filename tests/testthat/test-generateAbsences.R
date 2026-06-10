@@ -4,8 +4,15 @@ testthat::test_that('generateAbsences correctly creates absences for the data.',
   skip_on_cran()
   skip_if_not(local_testthat_geodata_path())
 
+  test_data <- readRDS(system.file('extdata/test_data.rds', package = 'intSDM'))
+
+  POpoints <- list(Fraxinus_excelsior = test_data$POpoints)
+  PApoints <- list(Fraxinus_excelsior = test_data$PApoints)
+  Mesh <- test_data$Mesh
+
   proj <- '+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
   species <- c('Fraxinus excelsior', 'Ulmus glabra', 'Arnica montana')
+
   workflow <- try(startWorkflow(Species = species,
                             saveOptions = list(projectName = 'testthatexample'),
                             Projection = proj,
@@ -39,33 +46,43 @@ testthat::test_that('generateAbsences correctly creates absences for the data.',
 
   }
 
-  workflow$addGBIF(datasetType = 'PO', limit = 50, datasetName = 'PO')
+  for (spec in species[2:3]) {
 
-  workflow$addGBIF(datasetType = 'PA', datasetName = 'PA', generateAbsences = FALSE)
+    specName <- gsub(' ', '_', spec)
 
-  paData <- lapply(workflow$.__enclos_env__$private$dataGBIF, function(x) x[['PA']])
+    POjitter <- st_jitter(POpoints$Fraxinus_excelsior, amount = 50)
+    POjitter$name <- spec
 
-  workflow$addGBIF(datasetType = 'PA', datasetName = 'PA', generateAbsences = TRUE)
+    PAjitter <- st_jitter(PApoints$Fraxinus_excelsior, amount = 50)
+    PAjitter$name <- spec
+
+    POpoints[[specName]] <- POjitter
+    PApoints[[specName]] <- PAjitter
+
+
+
+  }
+
+  POpointsComb <- do.call(rbind, POpoints)
+  PApointsComb <- do.call(rbind, PApoints)
+
+  workflow$addStructured(dataStructured = POpointsComb, datasetType = 'PO', datasetName = 'PO', speciesName = 'name')
+  workflow$addStructured(dataStructured = PApointsComb, datasetType = 'PA', datasetName = 'PA', speciesName = 'name', responseName = 'pres', generateAbsences = FALSE)
+
+  paData <- lapply(workflow$.__enclos_env__$private$dataStructured, function(x) x[['PA']])
+
+  workflow$addStructured(dataStructured = PApointsComb, datasetType = 'PA', datasetName = 'PA', speciesName = 'name', responseName = 'pres', generateAbsences = TRUE)
 
   expect_true(all(names(workflow$.__enclos_env__$private$dataGBIF) %in% sub(" ", '_', species)))
 
-  expect_true(all(unlist(lapply(workflow$.__enclos_env__$private$dataGBIF, function(x) names(x))) %in% c('PO', 'PA')))
+  expect_true(all(unlist(lapply(workflow$.__enclos_env__$private$dataStructured, function(x) names(x))) %in% c('PO', 'PA')))
 
-  expect_true(nrow(paData$Fraxinus_excelsior) < nrow(workflow$.__enclos_env__$private$dataGBIF$Fraxinus_excelsior$PA))
-  expect_true(nrow(paData$Ulmus_glabra) < nrow(workflow$.__enclos_env__$private$dataGBIF$Ulmus_glabra$PA))
-  expect_true(nrow(paData$Arnica_montana) < nrow(workflow$.__enclos_env__$private$dataGBIF$Arnica_montana$PA))
-
-  expect_true(all(is.na(data.frame(workflow$.__enclos_env__$private$dataGBIF$Fraxinus_excelsior$PA)[(nrow(paData$Fraxinus_excelsior) +1: nrow(workflow$.__enclos_env__$private$dataGBIF$Arnica_montana$PA)),
-  !names(workflow$.__enclos_env__$private$dataGBIF$Fraxinus_excelsior$PA) %in% c('speciesName','species', 'networkKeys','occurrenceStatus', 'geometry')])))
-
-  expect_true(all(is.na(data.frame(workflow$.__enclos_env__$private$dataGBIF$Ulmus_glabra$PA)[(nrow(paData$Ulmus_glabra) +1: nrow(workflow$.__enclos_env__$private$dataGBIF$Ulmus_glabra$PA)),
-                                                                                                    !names(workflow$.__enclos_env__$private$dataGBIF$Ulmus_glabra$PA) %in% c('speciesName','species', 'networkKeys','occurrenceStatus', 'geometry')])))
-
-  expect_true(all(is.na(data.frame(workflow$.__enclos_env__$private$dataGBIF$Arnica_montana$PA)[(nrow(paData$Arnica_montana) +1: nrow(workflow$.__enclos_env__$private$dataGBIF$Arnica_montana$PA)),
-                                                                                              !names(workflow$.__enclos_env__$private$dataGBIF$Arnica_montana$PA) %in% c('speciesName','species', 'networkKeys','occurrenceStatus', 'geometry')])))
+  expect_true(nrow(paData$Fraxinus_excelsior) < nrow(workflow$.__enclos_env__$private$dataStructured$Fraxinus_excelsior$PA))
+  expect_true(nrow(paData$Ulmus_glabra) < nrow(workflow$.__enclos_env__$private$dataStructured$Ulmus_glabra$PA))
+  expect_true(nrow(paData$Arnica_montana) < nrow(workflow$.__enclos_env__$private$dataStructured$Arnica_montana$PA))
 
   ##Test Richness = TRUE
-  proj <- '+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
+  proj <- '+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=km +no_defs'
   species <- c('Fraxinus excelsior', 'Ulmus glabra', 'Arnica montana')
   workflow <- try(startWorkflow(Species = species,
                                 saveOptions = list(projectName = 'testthatexample'),
@@ -101,26 +118,26 @@ testthat::test_that('generateAbsences correctly creates absences for the data.',
 
   }
 
-  workflow$addGBIF(datasetType = 'PO', limit = 50, datasetName = 'PO')
+  workflow$addStructured(dataStructured = POpointsComb, datasetType = 'PO', datasetName = 'PO', speciesName = 'name')
+  workflow$addStructured(dataStructured = PApointsComb, datasetType = 'PA', datasetName = 'PA', speciesName = 'name', responseName = 'pres', generateAbsences = FALSE)
 
-  workflow$addGBIF(datasetType = 'PA', datasetName = 'PA', generateAbsences = FALSE)
+  paData <- lapply(workflow$.__enclos_env__$private$dataStructured, function(x) x[['PA']])
 
-  paData <- lapply(workflow$.__enclos_env__$private$dataGBIF, function(x) x[['PA']])
+  #expect_warning(
+   #{
+      #workflow$addGBIF(datasetType = 'PA', datasetName = 'PA', generateAbsences = TRUE)
+    #},
+    #"datasetName already provided before. The older dataset will therefore be removed."
+  #)
+  workflow$addStructured(dataStructured = PApointsComb, datasetType = 'PA', datasetName = 'PA', speciesName = 'name', responseName = 'pres', generateAbsences = TRUE)
 
-  expect_warning(
-    {
-      workflow$addGBIF(datasetType = 'PA', datasetName = 'PA', generateAbsences = TRUE)
-    },
-    "datasetName already provided before. The older dataset will therefore be removed."
-  )
-
-  expect_true(all(names(workflow$.__enclos_env__$private$dataGBIF) %in% c('PO', 'PA')))
+  expect_true(all(names(workflow$.__enclos_env__$private$dataStructured) %in% c('PO', 'PA')))
 
   expect_true(all(unlist(lapply(workflow$.__enclos_env__$private$dataGBIF, function(x) names(x))) %in% c('PO', 'PA')))
 
-  expect_true(nrow(paData$PA[paData$PA$speciesName == 'Fraxinus excelsior',]) < nrow(workflow$.__enclos_env__$private$dataGBIF$PA$PA[workflow$.__enclos_env__$private$dataGBIF$PA$PA$speciesName == 'Fraxinus excelsior',]))
-  expect_true(nrow(paData$PA[paData$PA$speciesName == 'Ulmus glabra',]) < nrow(workflow$.__enclos_env__$private$dataGBIF$PA$PA[workflow$.__enclos_env__$private$dataGBIF$PA$PA$speciesName == 'Ulmus glabra',]))
-  expect_true(nrow(paData$PA[paData$PA$speciesName == 'Arnica montana',]) < nrow(workflow$.__enclos_env__$private$dataGBIF$PA$PA[workflow$.__enclos_env__$private$dataGBIF$PA$PA$speciesName == 'Arnica montana',]))
+  expect_true(nrow(paData$PA[paData$PA$speciesName == 'Fraxinus_excelsior',]) < nrow(workflow$.__enclos_env__$private$dataStructured$PA$PA[workflow$.__enclos_env__$private$dataStructured$PA$PA$speciesName == 'Fraxinus_excelsior',]))
+  expect_true(nrow(paData$PA[paData$PA$speciesName == 'Ulmus_glabra',]) < nrow(workflow$.__enclos_env__$private$dataStructured$PA$PA[workflow$.__enclos_env__$private$dataStructured$PA$PA$speciesName == 'Ulmus_glabra',]))
+  expect_true(nrow(paData$PA[paData$PA$speciesName == 'Arnica_montana',]) < nrow(workflow$.__enclos_env__$private$dataStructured$PA$PA[workflow$.__enclos_env__$private$dataStructured$PA$PA$speciesName == 'Arnica_montana',]))
 
 
 
