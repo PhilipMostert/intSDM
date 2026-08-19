@@ -48,21 +48,21 @@ obtainGBIF <- function(query,
 
   if (datasettype == 'PA') {
 
-  PresSpeciesOCC <- rgbif::occ_data(scientificName = species,
+  PresSpeciesOCC <- rgbif::occ_search(scientificName = species,
                                 # country = countryCode, #Country codes
                                 geometry = st_bbox(boundaryCheck),
                                 hasCoordinate = TRUE,
                                 occurrenceStatus = 'PRESENT',
                                 ...)
 
-  if (!all(names(PresSpeciesOCC) %in% c('meta', 'data'))) {
+  if (!all(c('meta', 'data') %in% names(PresSpeciesOCC))) {
 
     namesData <- Reduce(intersect, lapply(PresSpeciesOCC, function(x) names(x$data)))
     speciesOCC <- data.frame(do.call(rbind, lapply(PresSpeciesOCC, function(x) x$data[, namesData])))
 
   } else PresSpeciesOCC <- data.frame(PresSpeciesOCC$data)
 
-  AbsSpeciesOCC <- try(rgbif::occ_data(scientificName = species,
+  AbsSpeciesOCC <- try(rgbif::occ_search(scientificName = species,
                                     #country = countryCode, #Country codes
                                     geometry = st_bbox(boundaryCheck),
                                     hasCoordinate = TRUE,
@@ -71,7 +71,7 @@ obtainGBIF <- function(query,
 
   if (inherits(AbsSpeciesOCC, 'try-error')) stop('Could not download data from GBIF. Please change your search query or try again later.')
 
-  if (!all(names(AbsSpeciesOCC) %in% c('meta', 'data'))) {
+  if (!all(c('meta', 'data') %in% names(AbsSpeciesOCC))) {
 
     namesData <- Reduce(intersect, lapply(AbsSpeciesOCC, function(x) names(x$data)))
     AbsSpeciesOCC <- data.frame(do.call(rbind, lapply(AbsSpeciesOCC, function(x) x$data[, namesData])))
@@ -117,13 +117,13 @@ obtainGBIF <- function(query,
   } else {
 
 
-    speciesOCC <- rgbif::occ_data(scientificName = species,
+    speciesOCC <- rgbif::occ_search(scientificName = species,
                                   #country = countryCode,
                                   geometry = st_bbox(boundaryCheck),
                                   hasCoordinate = TRUE,
                                   ...) #Multiple countries
 
-   if (!all(names(speciesOCC) %in% c('meta', 'data'))) {
+   if (!all(c('meta', 'data') %in% names(speciesOCC))) {
 
      namesData <- Reduce(intersect, lapply(speciesOCC, function(x) names(x$data)))
      speciesOCC <- data.frame(do.call(rbind, lapply(speciesOCC, function(x) x$data[, namesData])))
