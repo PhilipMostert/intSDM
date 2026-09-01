@@ -255,6 +255,26 @@ workflow$addGBIF(datasetName = 'exampleGBIF',
                  coordinateUncertaintyInMeters = '0,50')
 workflow$obtainMeta()
 }
+
+## ------------------------------------------------
+## Method `species_model$addComponents()`
+## ------------------------------------------------
+
+\dontrun{
+if (requireNamespace('INLA')) {
+workflow <- startWorkflow(Species = 'Fraxinus excelsior',
+                          Projection = '+proj=longlat +ellps=WGS84',
+                          Save = FALSE,
+                          saveOptions = list(projectName = 'example'))
+
+#Add boundary
+workflow$addArea(countryName = 'Sweden')
+workflow$addMesh(cutoff = 20000,
+                 max.edge=c(60000, 80000),
+                 offset= 100000)
+workflow$addCompnent('precipitation(main = precipitation, model = "clinear")')
+}
+}
 }
 \section{Methods}{
 \subsection{Public methods}{
@@ -276,6 +296,7 @@ workflow$obtainMeta()
     \item \href{#method-species_model-biasFields}{\code{species_model$biasFields()}}
     \item \href{#method-species_model-modelFormula}{\code{species_model$modelFormula()}}
     \item \href{#method-species_model-obtainMeta}{\code{species_model$obtainMeta()}}
+    \item \href{#method-species_model-addComponents}{\code{species_model$addComponents()}}
     \item \href{#method-species_model-clone}{\code{species_model$clone()}}
   }
 }
@@ -926,6 +947,43 @@ workflow$addGBIF(datasetName = 'exampleGBIF',
                  limit = 10000,
                  coordinateUncertaintyInMeters = '0,50')
 workflow$obtainMeta()
+}
+    \if{html}{\out{</div>}}
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-species_model-addComponents"></a>}}
+\if{latex}{\out{\hypertarget{method-species_model-addComponents}{}}}
+\subsection{\code{species_model$addComponents()}}{
+  Function to add or change a component in the model.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{species_model$addComponents(Components)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{Components}}{A vector of the components to add or change in the model.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{if (requireNamespace('INLA')) {
+workflow <- startWorkflow(Species = 'Fraxinus excelsior',
+                          Projection = '+proj=longlat +ellps=WGS84',
+                          Save = FALSE,
+                          saveOptions = list(projectName = 'example'))
+
+#Add boundary
+workflow$addArea(countryName = 'Sweden')
+workflow$addMesh(cutoff = 20000,
+                 max.edge=c(60000, 80000),
+                 offset= 100000)
+workflow$addCompnent('precipitation(main = precipitation, model = "clinear")')
+}
 }
     \if{html}{\out{</div>}}
   }
