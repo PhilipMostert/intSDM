@@ -1324,7 +1324,33 @@ obtainMeta = function(Number = TRUE,
   }
 
 
+},
+
+#' @description Function to add or change a component in the model.
+#' @param Components A vector of the components to add or change in the model.
+#' @examples
+#' \dontrun{
+#' if (requireNamespace('INLA')) {
+#' workflow <- startWorkflow(Species = 'Fraxinus excelsior',
+#'                           Projection = '+proj=longlat +ellps=WGS84',
+#'                           Save = FALSE,
+#'                           saveOptions = list(projectName = 'example'))
+#'
+#' #Add boundary
+#' workflow$addArea(countryName = 'Sweden')
+#' workflow$addMesh(cutoff = 20000,
+#'                  max.edge=c(60000, 80000),
+#'                  offset= 100000)
+#' workflow$addCompnent('precipitation(main = precipitation, model = "clinear")')
+#' }
+#' }
+
+addComponents = function(Components) {
+
+private$newComponents <- Components
+
 }
+
   ))
 
 species_model$set('private', 'Area', NULL)
@@ -1367,6 +1393,8 @@ species_model$set('private', 'biasFormula', NULL)
 species_model$set('private', 'richnessEstimate', FALSE)
 species_model$set('private', 'speciesIntercept', TRUE)
 species_model$set('private', 'blockCVType', 'DIC')
+species_model$set('private', 'newComponents', NULL)
+
 
 
 

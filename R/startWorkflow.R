@@ -73,7 +73,8 @@ startWorkflow <- function(Countries, Species,
                                             'modelFormula',
                                             'workflowOutput',
                                             'obtainMeta',
-                                            'specifyPriors'),
+                                            'specifyPriors',
+                                            'addComponents'),
                                    Description = c('---------------','-> Plot data',
                                                    '-> Add structured data',
                                                    '-> Create an fm_mesh_2d object',
@@ -87,7 +88,8 @@ startWorkflow <- function(Countries, Species,
                                                    '-> Change Model formula',
                                                    '-> Output of workflow',
                                                    '-> Summary of metadata',
-                                                   '-> Specify priors'))
+                                                   '-> Specify priors',
+                                                   '-> Add model components'))
     print.data.frame(descriptionSlots, right = FALSE, row.names = FALSE)
 
     cat('\nUse .$help() to find documentation for the slot functions.')

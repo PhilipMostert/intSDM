@@ -182,6 +182,7 @@ else {
 
    }
 
+
   if (!is.null(Workflow$.__enclos_env__$private$priorsFixed)) {
 
     for (var in names(Workflow$.__enclos_env__$private$priorsFixed)) {
@@ -190,6 +191,12 @@ else {
 
 
     }
+
+  }
+
+  if (!is.null(Workflow$.__enclos_env__$private$newComponents)) {
+
+    for (comp in Workflow$.__enclos_env__$private$newComponents) initializeModel$changeComponents(addComponent = comp, print = FALSE)
 
   }
 
@@ -480,6 +487,12 @@ else {
                                        spatialCovariates = spatCovs,
                                        Formulas = list(covariateFormula = Workflow$.__enclos_env__$private$covariateFormula,
                                                        biasFormula = Workflow$.__enclos_env__$private$biasFormula))
+
+    if (!is.null(Workflow$.__enclos_env__$private$newComponents)) {
+
+      for (comp in Workflow$.__enclos_env__$private$newComponents) richSetup$changeComponents(addComponent = comp, print = FALSE)
+
+    }
 
     ##Redo this
     if (!is.null(Workflow$.__enclos_env__$private$priorsFixed)) {
